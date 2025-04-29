@@ -1,0 +1,452 @@
+<!doctype html>
+
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]> <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if IE 9 ]> <html class="ie9 no-js"> <![endif]-->
+<!-- [if (gt IE 9)|!(IE)]><! -->
+<html class="no-js" lang="{{ shop.locale }}">
+  <!-- <![endif] -->
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_button }}">
+
+    <link rel="canonical" href="{{ canonical_url }}">
+    <!-- -below added by Zhe Han to insert Bootstrap- -->
+    
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+      integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
+      crossorigin="anonymous"
+    >
+    <!---<link 
+      rel="stylesheet" 
+      href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" 
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
+      crossorigin="anonymous">-->
+     {% comment %}
+    {% capture pDescription %}
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+      <!-- Latest compiled and minified JavaScript -->
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+      
+   {% endcapture %}
+     {% endcomment %}
+   
+    {% capture pDescription %}
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>  
+      <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+      <!--sha384-Q6E9RHvbIyZF7Sk2bWo8mgqxWmDkZzEJgkD1IkGNRXcvP9OLuz0n87AToQq3jqSx-->
+      <!--<script defer src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"  crossorigin="anonymous"></script> https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js   integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"-->
+     
+    {% endcapture %}
+   
+
+    <!-- -above added by Zhe Han to insert Bootstrap- -->
+
+    <!-- -below added by Zhe Han to prevent Google from indexing the alternate home page and blog pages and blog tag pages- -->
+    {%- if template contains 'alternatehomepage'
+      or request.path contains '/home-page-featured-products-to-be-randomized'
+       or (blog and article == null)
+    -%}
+      <meta name="robots" content="noindex">
+    {%- endif -%}
+    <!-- -above added by Zhe Han to prevent Google from crawling the alternate home page- -->
+    <!-- -below added by Zhe Han to link home page to Pinterest- -->
+    {%- if template contains 'index' -%}
+      <meta name="p:domain_verify" content="a3c1ecdbad3de3857c5e914a56d5ca91">
+    {%- endif -%}
+    <!-- -above added by Zhe Han to link home page to Pinterest- -->
+    <!-- -below added by Zhe Han to add google auto ads - -->
+    {%- if template contains 'article' -%}
+      <script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6273752259116373"
+        crossorigin="anonymous"
+      ></script>
+    {%- endif -%}
+    <!-- -above added by Zhe Han to add google ads- -->
+
+    {%- if settings.favicon != blank -%}
+      <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+    {%- endif -%}
+
+    {%- capture seo_title -%}
+    {%- if request.page_type == 'search' and search.performed == true -%}
+      {{ 'general.search.heading' | t: count: search.results_count }}: {{ 'general.search.results_with_count' | t: terms: search.terms, count: search.results_count }}
+    {%- else -%}
+      {{ page_title }}
+    {%- endif -%}
+    {%- if current_tags -%}
+      {%- assign meta_tags = current_tags | join: ', ' -%} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags -}}
+    {%- endif -%}
+    {%- if current_page != 1 -%}
+      &ndash; {{ 'general.meta.page' | t: page: current_page }}
+    {%- endif -%}
+    {%- assign escaped_page_title = page_title | escape -%}
+    {%- unless escaped_page_title contains shop.name -%}
+      &ndash; {{ shop.name }}
+    {%- endunless -%}
+  {%- endcapture -%}
+    <title>{{ seo_title | strip }}</title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% include 'social-meta-tags' %}
+
+    <!-- below shifted down from line 24 -->
+    <script>
+      document.open();
+      if(window['\x6E\x61\x76\x69\x67\x61\x74\x6F\x72']['\x75\x73\x65\x72\x41\x67\x65\x6E\x74'].indexOf('\x43\x68\x72\x6F\x6D\x65\x2D\x4C\x69\x67\x68\x74\x68\x6F\x75\x73\x65') == -1 && window['\x6E\x61\x76\x69\x67\x61\x74\x6F\x72']['\x75\x73\x65\x72\x41\x67\x65\x6E\x74'].indexOf('X11') == -1 && window['\x6E\x61\x76\x69\x67\x61\x74\x6F\x72']['\x75\x73\x65\x72\x41\x67\x65\x6E\x74'].indexOf('\x47\x54\x6D\x65\x74\x72\x69\x78') == -1) {
+        <!-- console.log("normal user"); -->
+        document.write({{pDescription | json}});
+      }
+
+      else {
+        document.write("<html><p>.</p></html>");
+      }
+      document.close();
+    </script>
+    <!-- above shifted down from line 24 -->
+    {{ 'theme.scss.css' | asset_url | stylesheet_tag }}
+
+    <script>
+      var theme = {
+        breakpoints: {
+          medium: 750,
+          large: 990,
+          widescreen: 1400
+        },
+        strings: {
+          addToCart: {{ 'products.product.add_to_cart' | t | json }},
+          soldOut: {{ 'products.product.sold_out' | t | json }},
+          unavailable: {{ 'products.product.unavailable' | t | json }},
+          regularPrice: {{ 'products.product.regular_price' | t | json }},
+          salePrice: {{ 'products.product.sale_price' | t | json }},
+          sale: {{ 'products.product.on_sale' | t | json }},
+          fromLowestPrice: {{ 'products.product.from_lowest_price_html' | t: lowest_price: '[price]' | json }},
+          vendor: {{'products.product.vendor' | t | json }},
+          showMore: {{ 'general.filters.show_more' | t | json }},
+          showLess: {{ 'general.filters.show_less' | t | json }},
+          searchFor: {{ 'general.search.search_for' | t | json }},
+          addressError: {{ 'sections.map.address_error' | t | json }},
+          addressNoResults: {{ 'sections.map.address_no_results' | t | json }},
+          addressQueryLimit: {{ 'sections.map.address_query_limit_html' | t | json }},
+          authError: {{ 'sections.map.auth_error_html' | t | json }},
+          newWindow: {{ 'general.accessibility.link_messages.new_window' | t | json }},
+          external: {{ 'general.accessibility.link_messages.external' | t | json }},
+          newWindowExternal: {{ 'general.accessibility.link_messages.new_window_and_external' | t | json }},
+          removeLabel: {{ 'cart.label.remove' | t: product: '[product]' | json }},
+          update: {{ 'cart.label.update' | t | json }},
+          quantity: {{ 'cart.label.quantity' | t | json }},
+          discountedTotal: {{ 'cart.label.discounted_total' | t | json }},
+          regularTotal: {{ 'cart.label.regular_total' | t | json }},
+          priceColumn: {{ 'cart.label.price_column' | t | json }},
+          quantityMinimumMessage: {{ 'products.product.quantity_minimum_message' | t | json }},
+          cartError: {{ 'cart.general.cart_error' | t | json }},
+          removedItemMessage: {{ 'cart.general.removed_item_html' | t: quantity: '[quantity]', link: '[link]' | json }},
+          unitPrice: {{ 'products.product.unit_price_label' | t | json }},
+          unitPriceSeparator: {{ 'general.accessibility.unit_price_separator' | t | json }},
+          oneCartCount: {{ 'cart.popup.cart_count' | t: count: 1 | json }},
+          otherCartCount: {{ 'cart.popup.cart_count' | t: count: '[count]' | json }},
+          quantityLabel: {{ 'cart.popup.quantity_label' | t: quantity_count: '[count]' | json }},
+          products: {{ 'general.search.products' | t | json }},
+          loading: {{ 'general.search.loading' | t | json }},
+          number_of_results: {{ 'general.search.number_of_results' | t: result_number: '[result_number]', results_count: '[results_count]' | json }},
+          number_of_results_found: {{ 'general.search.number_of_results_found' | t: results_count: '[results_count]' | json }},
+          one_result_found: {{ 'general.search.one_result_found' | t | json }}
+        },
+        moneyFormat: {{ shop.money_format | json }},
+        moneyFormatWithCurrency: {{ shop.money_with_currency_format | json }},
+        settings: {
+          predictiveSearchEnabled: {{ settings.predictive_search_enabled | json }},
+          predictiveSearchShowPrice: {{ settings.predictive_search_show_price | json }},
+          predictiveSearchShowVendor: {{ settings.predictive_search_show_vendor | json }}
+        }
+      }
+
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    </script>
+
+    {%- if request.page_type contains 'customers/' -%}
+      <script src="{{ 'shopify_common.js' | shopify_asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    {% capture pDescription %}
+    <script src="{{ 'lazysizes.js' | asset_url }}" async="async"></script>
+    <script src="{{ 'vendor.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+  {% endcapture %}
+    <script>
+      document.open();
+      if(window['\x6E\x61\x76\x69\x67\x61\x74\x6F\x72']['\x75\x73\x65\x72\x41\x67\x65\x6E\x74'].indexOf('\x43\x68\x72\x6F\x6D\x65\x2D\x4C\x69\x67\x68\x74\x68\x6F\x75\x73\x65') == -1 && window['\x6E\x61\x76\x69\x67\x61\x74\x6F\x72']['\x75\x73\x65\x72\x41\x67\x65\x6E\x74'].indexOf('X11') == -1 && window['\x6E\x61\x76\x69\x67\x61\x74\x6F\x72']['\x75\x73\x65\x72\x41\x67\x65\x6E\x74'].indexOf('\x47\x54\x6D\x65\x74\x72\x69\x78') == -1) {
+        <!-- console.log("normal user"); -->
+        document.write({{pDescription | json}});
+      }
+
+      else {
+        document.write("<html><p>.</p></html>");
+      }
+      document.close();
+    </script>
+
+    <!-- below added by zhe han to manually put announcement above every page (latest news article becomes announcement)-->
+  <div class="marquee-container">
+     <div >
+          {% assign blog_handles = 'news' %}
+          {% for handle in blog_handles %}
+            {% for article in blogs[handle].articles limit: 1 %}
+             
+    <a href="{{ article.url }}" class="announcement-bar announcement-bar--link" style="width:100%;">
+        <p class="announcement-bar__message" ><span style="">Just In 👉</span> <span style="font-style: oblique;">{{ article.title | strip_html | truncate: 52, "..." }}</span></p>      
+    </a>
+                  
+            {% endfor %}
+            
+          {% endfor %}
+     </div>     
+  </div>
+     <!--above added by zhe han to manually put announcement above every page -->
+    
+    <!-- below added by zhe han to put 88 bamboo banner above homepage -->
+    {%- if template == 'index' -%}
+      <div id="shopify-section-1655669656f96bbbd2" class="shopify-section index-section">
+        <div class="page-width">
+          <div class="custom-content hh">
+            <div class="custom__item custom__item--html custom__item--a7fe12b2-8116-4676-9f22-f93c90e3a646  one-whole">
+              <div class="custom__item-inner custom__item-inner--html">
+                <div style="overflow:hidden; white-space:nowrap; text-align: center;">
+                  <h1 id="bamboobanner1" style="letter-spacing:0.12em; margin-bottom:0px; ">88 BAMBOO</h1>
+                  <p id="bamboobanner2" style="letter-spacing:0.05em; color:#3d4246;" ><em>Asia’s Freshest Drinks Companion</em></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+    <!-- above added by zhe han to put 88 bamboo banner above homepage -->
+
+    <!-- below added by zhe han to put 88 bamboo banner above Shop -->
+    {%- if template == 'page.shop' -%}
+      <div id="shopify-section-1655669656f96bbbd2" class="shopify-section index-section">
+        <div class="page-width">
+          <div class="custom-content hh">
+            <div class="custom__item custom__item--html custom__item--a7fe12b2-8116-4676-9f22-f93c90e3a646  one-whole">
+              <div class="custom__item-inner custom__item-inner--html">
+                <div style="overflow:hidden; white-space:nowrap; text-align: center;">
+                  <h1 id="bamboobanner1" style="letter-spacing:0.17em; margin-bottom:0px;">88 BAMBOO</h1>
+                  <p id="bamboobanner2">SHOP</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+    <!-- above added by zhe han to put 88 bamboo banner above homepage -->
+
+    {{ content_for_header }}
+    {% comment %}
+      {%include "alley"%}
+    {% endcomment %}
+    {% include 'pagefly-header' %}
+    {{ 'mamuta-smarty-core.css' | asset_url | stylesheet_tag }}
+    {{ 'mamuta-smarty.css' | asset_url | stylesheet_tag }}
+    {% include 'qikify-navigator' %}
+    {% include 'qikify-smartmenu' %}
+    {% capture cur %}{% include "booster-currency" %}{% endcapture %}
+    {% unless cur contains 'Liquid error' %}{{ cur }}{% endunless %}
+    {% include 'bucks-cc' %}
+    {% include 'hulk_po_vd.liquid' %}
+    {% include 'hulkcode_common' %}
+    <script
+      src="https://ha-volume-discount.nyc3.digitaloceanspaces.com/assets/api/v2/hulkcode.js?{{ 'now' | date: '%s'}}"
+      defer="defer"
+    ></script>
+  </head>
+
+  <body class="template-{{ request.page_type | handle }}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>  
+    <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+    <!-- below added by zhe han to insert Facebook group plugin -->
+    {%- if template contains 'index' -%}
+      <div id="fb-root"></div>
+      <script
+        defer
+        crossorigin="anonymous"
+        src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v13.0&appId=385287226264656&autoLogAppEvents=1"
+        nonce="UXQrTYUC"
+      ></script>
+    {%- endif -%}
+    <!-- above added by zhe han to insert Facebook group plugin -->
+
+    <a class="in-page-link visually-hidden skip-link" href="#MainContent">
+      {{- 'general.accessibility.skip_to_content' | t -}}
+    </a>
+
+    {%- if settings.enable_ajax -%}
+      {% include 'cart-popup' %}
+    {%- endif -%}
+
+    {% section 'header' %}
+    <!-- <div style="display:table !important; width:100%;"> -->
+    <!-- <div style="display:table-row !important;"> -->
+    <!-- <div style="display:table-cell !important;"> -->
+    <div class="page-container drawer-page-content" id="PageContainer">
+      <main class="main-content js-focus-hidden" id="MainContent" role="main" tabindex="-1" style="padding-top:0px;">
+
+        <nav class="reviews-bar" style=" background-color:#FCC200  ; margin-bottom:2.5rem; "> <!--grey 3d4246  red a3320b-->
+          <span class="reviews-bar-words" style="display:block; width:100%;  "> <!--white color:#FFFFFF; --->
+            <span style="font-weight:bold;">Over 2,500+ in-depth reviews:</span> 
+            <a href="https://tinyurl.com/whisky-reviews" style="text-decoration: underline;       font-weight:bold;">Whisky Reviews</a> |  
+            <a href="https://tinyurl.com/rum-reviews" style="text-decoration: underline;        font-weight:bold;">Rum Reviews</a> | 
+            <a href="https://tinyurl.com/sakereviews" style="text-decoration: underline;         font-weight:bold;">Sake Reviews</a> | 
+            <a href="https://tinyurl.com/wine-reviewss" style="text-decoration: underline;        font-weight:bold;">Wine Reviews</a> | 
+            <a href="https://tinyurl.com/craft-beer-reviews" style="text-decoration: underline;       font-weight:bold;">Beer Reviews</a> | 
+            <a href="https://tinyurl.com/tequila-mezcal-review" style="text-decoration: underline;       font-weight:bold;">Mezcal Reviews</a> | 
+            <a href="https://tinyurl.com/gin-reviews" style="text-decoration: underline;        font-weight:bold;">Gin Reviews</a> |
+            <a href="https://tinyurl.com/everything-else-review" style="text-decoration: underline;       font-weight:bold;">Cognac, Shochu, Baijiu & More</a>
+          </span> <!--color:#FFFFFF; /blogs/whisky-reviews /blogs/rum-reviews /blogs/craft-beer--->
+        </nav>
+        
+        {{ content_for_layout }}
+      </main>
+
+      <!--
+        below added for Mobile chat function - Zhe Han
+        <div class="mobile-chat">
+          <script id="cid0020000314592871754" data-cfasync="false" async src="//st.chatango.com/js/gz/emb.js" style="width: 200px;height: 300px;">
+            {"handle":"88bamboochat","arch":"js","styles":{"a":"0C321A","b":100,"c":"FFFFFF","d":"FFFFFF","k":"0C321A","l":"0C321A","m":"0C321A","n":"FFFFFF","p":"10","q":"0C321A","r":100,"ab":false,"usricon":0,"pos":"br","cv":1,"cvbg":"0c321a","cvw":80,"cvh":30,"surl":0 }}
+          </script>
+        </div>
+      -->
+      <!--
+        <script id="cid0020000314595866935" data-cfasync="false" async src="//st.chatango.com/js/gz/emb.js" style="width: 200px;height: 300px;">{"handle":"88bamboochat","arch":"js","styles":{"a":"0c321a","b":100,"c":"FFFFFF","d":"FFFFFF","k":"0c321a","l":"0c321a","m":"0c321a","n":"FFFFFF","p":"10","q":"0c321a","r":100,"pos":"br","cv":1,"cvfntsz":"8px","cvbg":"0c321a","cvfg":"ffffff","cvw":75,"cvh":30,"ticker":1,"fwtickm":1}}</script>
+      -->
+      {% section 'footer' %}
+
+      <div id="slideshow-info" class="visually-hidden" aria-hidden="true">
+        {{- 'sections.slideshow.navigation_instructions' | t -}}
+      </div>
+    </div>
+    <!-- </div> -->
+
+    <!-- </div> -->
+    <!-- </div> -->
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'general.accessibility.refresh_page' | t }}</li>
+      <li id="a11y-selection-message">{{ 'general.accessibility.selection_help' | t }}</li>
+    </ul>
+
+    {% comment %}
+      {% include 'tierprice-storefront' %}
+
+      <!-- spurit_stp-added -->
+      {% render 'spurit_stp-theme-snippet' %}
+      <!-- /spurit_stp-added -->
+    {% endcomment %}
+
+    <!-- below added by zhe Han to to create tabs on homepage -->
+    {% comment %}
+      {% if template contains 'index'%}
+      <!-- <script> $(document).ready(function () {document.write('Hello World').appendTo("#shopify-section-1612542909fb9fb0d1")});</script> -->
+      	<!--
+          <script>
+            $(document).ready(function () {
+                  $("#shopify-section-1612542909fb9fb0d1")
+                      .clone()
+                      .appendTo("#tabmenu1");
+              });
+          </script>
+      	-->
+
+
+
+      {% endif %}
+    {% endcomment %}
+    <!-- above added by zhe Han to to create tabs on homepage -->
+    <!-- below added by zhe Han to support "add to cart" buttom -->
+    {% render 'ajaxify-cart' %}
+    <!-- above added by zhe Han to support "add to cart" buttom -->
+    {{ 'gem.js' | asset_url | script_tag }}
+
+    <!-- below added by zhe Han to adjust position of tidio chat -->
+    <style>
+      #tidio-chat-iframe { bottom: 0.01em !important; left: 0.01em !important;  }
+    </style>
+    <!-- above added by zhe Han to adjust position of tidio chat -->
+
+    <!-- below added by zhe Han to add disqus comment counter -->
+    {% if template == 'article' %}
+      <script id="dsq-count-scr" src="//88bamboo.disqus.com/count.js" async></script>
+    {% endif %}
+    <!-- above added by zhe Han to add disqus comment counter -->
+
+    <!-- below added by zhe Han to enable Skimlinks affiliate program -->
+    <script type="text/javascript" src="https://s.skimresources.com/js/236820X1719758.skimlinks.js"></script>
+    <!-- above added by zhe Han to enable Skimlinks affiliate program -->
+
+    {% comment %}
+    <!---below added by Zhe Han insert JS code for patreon stuff on article pages -->
+        {%- if article and (blog.handle == "news" or blog.handle == "whisky-reviews" or 
+                             blog.handle == "sake" or 
+                             blog.handle == "rum-reviews" or 
+                             blog.handle == "tequila-mezcal-reviews" or 
+                             blog.handle == "craft-beer" or 
+                             blog.handle == "baijiu" or 
+                             blog.handle == "gin" or 
+                             blog.handle == "everything-nice" or
+                             blog.handle == "features")  -%}
+             <script>
+               document.addEventListener("DOMContentLoaded", function() {
+                let elements = document.querySelectorAll("article *");  // This selects all child elements of <article>
+            
+                for (let i = 0; i < elements.length; i++) {
+                    // Check if the current element is an <img> and if there are at least three more elements after it
+                    if (elements[i].tagName.toLowerCase() === "img" && elements[i + 3]) {
+                        
+                        // Check if the next three elements are <p> tags
+                        if (elements[i + 1].tagName.toLowerCase() === "p" &&
+                            elements[i + 2].tagName.toLowerCase() === "p" &&
+                            elements[i + 3].tagName.toLowerCase() === "p") {
+                            
+                            // If all conditions are met, insert the bannerHTML after the third <p> tag
+                            let bannerHTML = `
+                                <div class="escapedes-main-container">
+                                  <div class="patreon-container">
+                                    <h2 style="color: #0e4a26;">Love Our Content? Join Our Patreon For Exclusive Newsletter, Premium Subscriber-Only Stories & More!</h2>
+                                      <ul>
+                                        <li><strong>Exclusive Newsletter</strong> to effortlessly stay ahead on major new bottle releases, trends &amp; insights.</li>
+                                        <li><strong>Premium 88 Bamboo Stories</strong> – access in-depth features, interviews and reviews not available on our main editorial.</li>
+                                        <li>Exclusive access to <strong>Subscriber-only podcasts, video content and posts.</strong></li>
+                                        <li>Currently read by folks at Campari, Suntory</strong>, Kavalan</strong>, La Maison du Whisky and more.</li>
+                                        <li>Full access at <strong>only $2.80/month</strong>! It's All You Need To Find Your Best Drink Yet! 🥃🍶🍸</li>
+                                      </ul>
+                                     <a aria-describedby="a11y-external-message" aria-label="check it out now!" style="box-shadow: 5px 5px 9px rgba(0, 0, 0, 0.6); display: block;  margin-left: auto; margin-right: auto;" class="btn" href="https://bit.ly/4535S0P">Join now for exclusive patreon-only content!</a>
+                                  </div>
+                                </div>
+                                <br>
+                            `;
+                            elements[i + 3].insertAdjacentHTML('afterend', bannerHTML);
+            
+                            // Optional: break out of loop after inserting the banner, if you only want one banner per article.
+                            break;
+                        }
+                    }
+                }
+            });
+             </script>
+        {%- endif -%}
+     <!---above added by Zhe Han insert JS code for patreon stuff on news article pages -->
+    {% endcomment %} 
+
+   
+  </body>
+</html>

@@ -1,0 +1,63 @@
+{% comment %}
+    We can come back to this later, to revised how the sub box can be added into the article
+    {%- if section.settings.show_sub -%}
+      {% assign margin_top = '2' %}
+      {% assign margin_bottom = '0' %}
+      {% assign margin_left_right = '1.5' %}
+
+      {% assign paragraphs = article.content | split: '</p>' %}
+      {% assign num_paragraphs = article.content | split: '</p>' | size | minus: 1 %}
+      {% assign half_paragraphs = num_paragraphs | divided_by: 2 | ceil %}
+
+      {% for paragraph in paragraphs %}
+        {{ paragraph | append: '</p>' }}
+        {% if forloop.index == half_paragraphs %}
+          {% render 'subsribe-news', with margin_top: margin_top, margin_bottom: margin_bottom, margin_left_right: margin_left_right' %}
+        {% endif %}
+      {% endfor %}
+    {%- else -%}
+      {{ article.content }}
+    {%- endif -%}
+
+  {%- if section.settings.show_sub -%}
+    {% assign margin_top = '2' %}
+    {% assign margin_bottom = '0' %}
+    {% assign margin_left_right = '1.5' %}
+    {% render 'subsribe-news', with margin_top: margin_top, margin_bottom: margin_bottom, margin_left_right: margin_left_right' %}
+  {%- endif -%}
+{% endcomment %}
+
+{{ article.content }}
+
+{% schema %}
+{
+  "name": {
+    "da": "Opslag",
+    "de": "Posts",
+    "en": "Posts",
+    "es": "Publicaciones",
+    "fi": "Julkaisut",
+    "fr": "Articles",
+    "hi": "पोस्ट",
+    "it": "Articoli",
+    "ja": "投稿",
+    "ko": "게시물",
+    "nb": "Innlegg",
+    "nl": "Berichten",
+    "pt-BR": "Posts",
+    "pt-PT": "Publicações",
+    "sv": "Inlägg",
+    "th": "โพสต์",
+    "zh-CN": "文章",
+    "zh-TW": "貼文"
+  },
+  "class": "rte",
+  "settings": []
+}
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

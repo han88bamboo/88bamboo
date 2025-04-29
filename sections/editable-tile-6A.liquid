@@ -1,0 +1,133 @@
+<a href="{{ section.settings.custom_link }}" >
+<div class="editable-tile-container" >
+  <!-- Background Image -->
+  <div class="editable-tile-container--background" style="background-image: url('{{ section.settings.custom_image | img_url: 'master' }}');"></div>
+
+  <!-- Foreground Content -->
+  <div class="editable-tile-content">
+    <div class="editable-tile-image-left">
+      <img src="{{ section.settings.custom_image | img_url: 'master' }}" alt="Custom Image" class="editable-tile-foreground-image">
+    </div>
+    <div class="editable-tile-text-right text-center pt-0">
+      <span class="editable-tile-custom-title">{{ section.settings.custom_text }}</span>
+    </div>
+  </div>
+</div>
+</a>
+
+{% schema %}
+{
+   "name":"Editable Tile 6A",
+   "settings":[
+      {
+         "id":"custom_text",
+         "type":"text",
+         "label":"Input content"
+      },
+      {
+         "id":"custom_link",
+         "type":"url",
+         "label":"Custom URL"
+      },
+      {
+         "id":"custom_image",
+         "type":"image_picker",
+         "label":"Image"
+      }
+   ]
+}
+{% endschema %}
+
+{% stylesheet %}
+<style>
+/* Overall container */
+.editable-tile-container {
+  position: relative;
+  width: 100%;
+  /* height: 250px; Adjust height as necessary */
+  overflow: hidden;
+  cursor: pointer; /* Change cursor to indicate clickability */
+  
+}
+
+/* Background container */
+.editable-tile-container--background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: brightness(50%); /* Apply fading effect only to background */
+  z-index: 1; /* Ensure it's below content */
+  border-radius: 10px; /* Optional: Add rounded corners */
+}
+
+/* Foreground content */
+.editable-tile-content {
+  position: relative;
+  z-index: 2; /* Ensure it's above the background */
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 20px;
+}
+
+/* Image on the left */
+.editable-tile-image-left {
+  flex: 0 0 auto;
+  margin-right: 5px;
+}
+
+.editable-tile-foreground-image {
+  object-fit: cover;
+  border-radius: 10px; /* Optional: Add rounded corners */
+  }
+  
+/* Screen size > 1200px */
+@media (min-width: 1200px) {
+  .editable-tile-foreground-image {
+    width: 3.5em;
+    height: 3.5em;
+  }
+}
+
+/* Screen size between 992px and 1199px */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .editable-tile-foreground-image {
+    width: 3.5em;
+    height: 3.5em;
+  }
+}
+
+/* Screen size between 768px and 991px */
+@media (min-width: 768px) and (max-width: 991px) {
+  .editable-tile-foreground-image {
+    width: 3em;
+    height: 3em;
+  }
+}
+
+/* Screen size < 768px */
+@media (max-width: 767px) {
+  .editable-tile-foreground-image {
+    width: 3em;
+    height: 3em;
+  }
+}
+  
+/* Text on the right */
+.editable-tile-text-right {
+  flex: 1;
+}
+
+.editable-tile-custom-title {
+  font-size: 24px;
+  color: white; /* Ensure text stands out against the faded background */
+  /* text-decoration: none; */
+  font-weight: bold;
+}
+</style>
+{% endstylesheet %}

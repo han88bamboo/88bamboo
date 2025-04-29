@@ -1,0 +1,22 @@
+{% comment %}
+  The contents of the collection.liquid template can be found in /sections/collection-template.liquid
+{% endcomment %}
+
+<nav aria-label="Home" class="breadcrumb">
+  <a class="Breadcrumbs" href="/pages/shop">Shop Home</a> / 
+
+  {% if collection.all_tags contains "Bottles" %} <a class="Breadcrumbs" href="/collections/bottle-shop"> Bottle Shop </a> {% endif %} 
+
+  <span class="breadcrumb__link" aria-current="page" style="font-weight:bold;"> {{ product.title}}</span>
+</nav>
+<br><br>
+<!-- above to add breadcrumb list zhe han -->
+
+{% section 'collection-template2-bottleshop-A' %}
+
+{% section 'feature-columns6' %}
+
+{% section 'collection-template2-bottleshop-B' %}
+
+{% section 'feature-columns4' %}
+

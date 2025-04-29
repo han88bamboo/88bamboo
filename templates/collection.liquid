@@ -1,0 +1,26 @@
+{% comment %}
+  The contents of the collection.liquid template can be found in /sections/collection-template.liquid
+{% endcomment %}
+<!-- below to add breadcrumb list zhe han -->
+
+<nav aria-label="Home" class="breadcrumb">
+  <a class="Breadcrumbs" href="/pages/shop">Shop Home</a> / 
+
+  {% if collection.all_tags contains "Bottles" %} <a class="Breadcrumbs" href="/collections/bottle-shop"> Bottle Shop </a> {% endif %} 
+  {% if collection.all_tags contains "Dram" %} <a class="Breadcrumbs" href="/collections/build-your-own-set "> Build Your Own Tasting Set </a> {% endif %}
+  {% if collection.all_tags contains "Dram Set" %} <a class="Breadcrumbs" href="/collections/themed-tasting-sets "> Curated Tasting Sets </a> {% endif %}/
+  {% if collection.all_tags contains "Whisky" %} <a class="Breadcrumbs" href="/collections/whisky"> Whisky /</a> {% endif %} 
+  {% if collection.all_tags contains "Rum" %} <a class="Breadcrumbs" href="/collections/rum"> Rum </a> /{% endif %} 
+  {% unless collection.all_tags contains "Vodka" %}{% if collection.all_tags contains "Gin" %} <a class="Breadcrumbs" href="/collections/gin"> Gin </a> /{% endif %} {% endunless %}
+  {% if collection.all_tags contains "Beer" %} <a class="Breadcrumbs" href="/collections/craft-beer"> Craft Beer </a> /{% endif %}
+  {% if collection.all_tags contains "Sake"%} <a class="Breadcrumbs" href="/collections/sake"> Saké /</a> {% endif %}
+  {% unless collection.all_tags contains "Liqueur" %} {% if collection.all_tags contains "Other Spirits" or collection.all_tags contains "Vodka" %} <a class="Breadcrumbs" href="/collections/other-spirits"> Other Spirits /</a> {% endif %} {% endunless %} 
+  {% if collection.all_tags contains "Liqueur" %} {% if collection.all_tags contains "Vodka" %} <a class="Breadcrumbs" href="/collections/flavoured-spirits-liqueurs"> Flavoured Spirits &amp; Liqueurs /</a> {% endif %} {% endif %}
+  <span class="breadcrumb__link" aria-current="page" style="font-weight:bold;"> {{ product.title}}</span>
+</nav>
+<br><br>
+<!-- above to add breadcrumb list zhe han -->
+{% section 'collection-template' %}
+
+{% section 'feature-columns4' %}
+

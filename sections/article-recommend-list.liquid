@@ -1,0 +1,174 @@
+{% assign atc_cat = blog.url | split: '/' | last %}
+{% assign max_count = 2 %}
+{% assign article_count = 0 %}
+{% assign current_article_id = article.id %}
+{% assign blog_handles = atc_cat %}
+{% assign url_path = request.path %}
+
+<!-- article suggestion div for reader -->
+<!--
+  <div class="articles_suggestion d-flex flex-column">
+    <div class="d-flex justify-content-between new--header">
+      <h2>More To Explore</h2>
+    </div>
+    <div class="news-container">
+      {% for handle in blog_handles %}
+        {% for article in blogs[handle].articles limit: 5 %}
+          {% if article.id != current_article_id and article_count <= max_count %}
+            <div class="news-container--content d-flex">
+              {% if article.image %}
+                <a href="{{ article.url }}">
+                  <div class="news-container--image">
+                    <img
+                      src="{{ article.image | img_url: '260x' }}"
+                      alt="{{ article.image.alt | escape }}"
+                      class="img-fluid"
+                      loading="lazy"
+                      decoding="async"
+                    >
+                  </div>
+                </a>
+              {% endif %}
+              <div class="news-container--header">
+                <a href="{{ article.url }}">
+                  {{ article.title | strip_html | truncate: 99 }}
+                </a>
+              </div>
+            </div>
+            {% assign article_count = article_count | plus: 1 %}
+          {% elsif article.id == current_article_id %}
+            {% continue %}
+          {% elsif article_count == max_count %}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+-->
+
+<div class="article-card" style="margin-top:20px;">
+  <div class="article-list-title" style="transform: translateY(6px);" >
+     <h3>More To Explore</h3>
+  </div>
+  <div class="article-container">
+    {% for handle in blog_handles %}
+      {% for article in blogs[handle].articles limit: section.settings.recommend_nums %}
+        {% if article.id != current_article_id %}
+          <div class="article-container--content">
+            {% if article.image %}
+              <a href="{{ article.url }}">
+                <div class="article-container--img">
+                  {{ article.image | image_url: width: 260 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                </div>
+              </a>
+            {% endif %}
+            <div class="article-container--header">
+              <a href="{{ article.url }}">
+                {{ article.title | strip_html | truncate: 99 }}
+              </a>
+            </div>
+          </div>
+          {% assign article_count = article_count | plus: 1 %}
+        {% elsif article.id == current_article_id %}
+          {% continue %}
+        {% elsif article_count == max_count %}
+          {% break %}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Recommend article list",
+  "settings": [
+    {
+      "type": "number",
+      "id": "recommend_nums",
+      "label": "number of articles retrieve",
+      "default": 3
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+    .article-card {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+    }
+
+    .article-list-title {
+      font-size: 16px;
+      font-weight: normal;
+      margin-bottom: 5px;
+      border-bottom: 1px solid #707070;
+    }
+
+    .article-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .article-container .article-container--content{
+      display: grid;
+      grid-template-columns: auto auto;
+      padding: 10px 15px;
+      border-top: 1px solid #d6d6d6;
+    }
+
+    .article-container .article-container--content : first-of-type {
+      border-top: none;
+    }
+
+    .article-container.article-container--content:first-of-type {
+      border-top: none;
+    }
+
+    .article-container .article-container--content .article-container--img {
+      width: 130px;
+    }
+
+    .article-container .article-container--content .article-container--img img {
+      max-width: unset;
+      width: 100%;
+      object-fit: cover;
+    }
+
+    .article-container .article-container--content .article-container--header {
+      margin: 0px 10px;
+    }
+
+  @media only screen and (min-width: 600px) {
+    /* For tablets: */
+    .article-container .article-container--content{
+      display: grid;
+      grid-template-columns: auto auto;
+      padding: 10px 0;
+      border-top: 1px solid #d6d6d6;
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    /* For desktop: */
+    .article-container .article-container--content{
+      display: grid;
+      grid-template-columns: auto auto;
+      padding: 10px 0;
+      border-top: 1px solid #d6d6d6;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  //   window.addEventListener("resize", function() {
+  //   if (window.innerWidth < 950) {
+  //     const inner_cont = document.querySelector('.news-container--content.d-flex')
+  //     inner_cont.classList.remove("d-flex");
+  //   }
+
+  // });
+{% endjavascript %}

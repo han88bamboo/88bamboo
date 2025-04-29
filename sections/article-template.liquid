@@ -1,0 +1,383 @@
+{% comment %}
+  Variable declaration
+  -----------------------
+  by tokenizing the base url we can find the true intended category, metafields and tags doesnt really
+  provide the real category hence the workaround is implemented here.
+{% endcomment %}
+{% assign atc_cat = blog.url | split: '/' | last %}
+{% assign max_count = 2 %}
+{% assign article_count = 0 %}
+{% assign current_article_id = article.id %}
+{% assign blog_handles = atc_cat %}
+{% assign url_path = request.path %}
+
+{% schema %}
+{
+  "name": {
+    "da": "Opslag",
+    "de": "Posts",
+    "en": "Posts",
+    "es": "Publicaciones",
+    "fi": "Julkaisut",
+    "fr": "Articles",
+    "hi": "पोस्ट",
+    "it": "Articoli",
+    "ja": "投稿",
+    "ko": "게시물",
+    "nb": "Innlegg",
+    "nl": "Berichten",
+    "pt-BR": "Posts",
+    "pt-PT": "Publicações",
+    "sv": "Inlägg",
+    "th": "โพสต์",
+    "zh-CN": "文章",
+    "zh-TW": "貼文"
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "blog_show_author",
+      "label": {
+        "da": "Vis forfatter",
+        "de": "Autor anzeigen",
+        "en": "Show author",
+        "es": "Mostrar autor",
+        "fi": "Näytä tekijä",
+        "fr": "Afficher l'auteur",
+        "hi": "लेखक दिखाएं",
+        "it": "Mostra autore",
+        "ja": "執筆者を表示する",
+        "ko": "작성자 표시",
+        "nb": "Vis forfatter",
+        "nl": "Auteur weergeven",
+        "pt-BR": "Exibir autor",
+        "pt-PT": "Mostrar autor",
+        "sv": "Visa författare",
+        "th": "แสดงผู้เขียน",
+        "zh-CN": "显示作者",
+        "zh-TW": "顯示作者"
+      },
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "blog_show_date",
+      "label": {
+        "da": "Vis dato",
+        "de": "Datum anzeigen",
+        "en": "Show date",
+        "es": "Mostrar fecha",
+        "fi": "Näytä päivämäärä",
+        "fr": "Afficher la date",
+        "hi": "दिनांक दिखाएं",
+        "it": "Mostra data",
+        "ja": "日付を表示する",
+        "ko": "날짜 표시",
+        "nb": "Vis dato",
+        "nl": "Datum weergeven",
+        "pt-BR": "Exibir data",
+        "pt-PT": "Mostrar data",
+        "sv": "Visa datum",
+        "th": "แสดงวันที่",
+        "zh-CN": "显示日期",
+        "zh-TW": "顯示日期"
+      },
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share_buttons",
+      "label": {
+        "da": "Vis knapper til deling på sociale medier",
+        "de": "Buttons für Social Media anzeigen",
+        "en": "Show social sharing buttons",
+        "es": "Mostrar botones para compartir en redes sociales",
+        "fi": "Näytä sosiaalisen median jakamispainikkeet",
+        "fr": "Afficher les boutons de partage sur les médias sociaux",
+        "hi": "सोशल शेयरिंग बटन दिखाएं",
+        "it": "Mostra i pulsanti per la condivisione sui social",
+        "ja": "ソーシャル共有ボタンを表示する",
+        "ko": "소셜 공유 버튼 표시",
+        "nb": "Vis knapper for deling på sosiale medier",
+        "nl": "Knoppen voor sociaal delen weergeven",
+        "pt-BR": "Exibir botões de compartilhamento em redes sociais",
+        "pt-PT": "Mostrar botões de partilha nas redes sociais",
+        "sv": "Visa knappar för delning i sociala medier",
+        "th": "แสดงปุ่มสำหรับแชร์ลงโซเชียล",
+        "zh-CN": "显示社交分享按钮",
+        "zh-TW": "顯示社群分享按鈕"
+      },
+      "default": true
+    }
+  ]
+}
+{% endschema %}
+
+{% comment %}
+  Article component template
+  -----------------------
+{% endcomment %}
+<article class="container">
+  <!-- title section -->
+  <div class="section-header text-center">
+    <h1 class="article__title">{{ article.title }}</h1>
+    {% if section.settings.blog_show_author %}
+      <span class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+    {% endif %}
+
+    {% if section.settings.blog_show_date %}
+      <span class="article__date">
+        {{ article.published_at | time_tag: format: 'date' }}
+      </span>
+    {% endif %}
+  </div>
+
+  <div class="grid">
+    <div class="grid__item">
+      <div class="grid grid--full">
+        <!-- left column -->
+        <div class="grid__item medium-up--seven-tenths">
+          <!-- Content for main section -->
+          {{ article.content }}
+        </div>
+
+        <!-- right column -->
+        <div class="grid__item medium-up--three-tenths">
+          <!-- advertising area -->
+          <div class="advertising-container">
+            {% section 'article-advertising-area' %}
+          </div>
+
+          <!-- article suggestion div for reader -->
+          <div class="articles_suggestion d-flex flex-column">
+            <div class="d-flex justify-content-between new--header">
+              <h2>More To Explore</h2>
+            </div>
+            <div class="news-container">
+              {% for handle in blog_handles %}
+                {% for article in blogs[handle].articles limit: 5 %}
+                  {% if article.id != current_article_id and article_count <= max_count %}
+                    <div class="news-container--content d-flex">
+                      {% if article.image %}
+                        <a href="{{ article.url }}">
+                          <div class="news-container--image">
+                            <img
+                              src="{{ article.image | img_url: '260x' }}"
+                              alt="{{ article.image.alt | escape }}"
+                              class="img-fluid"
+                            >
+                          </div>
+                        </a>
+                      {% endif %}
+                      <div class="news-container--header">
+                        <a href="{{ article.url }}">
+                          {{ article.title | strip_html | truncate: 99 }}
+                        </a>
+                      </div>
+                    </div>
+                    {% assign article_count = article_count | plus: 1 %}
+                  {% elsif article.id == current_article_id %}
+                    {% continue %}
+                  {% elsif article_count == max_count %}
+                    {% break %}
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="articles-side-column-container">
+            <div class="d-flex justify-content-between new--header">
+              <h2>Become a Contributor!</h2>
+            </div>
+
+            <span>
+              Whether you're a rum diarist in Singapore, a malt reviewer in Philippines, a bar hopper in Tokyo or a gin
+              lover in Hong Kong, we're always introducing new voices to our vibrant editorial.
+              <a href="https://88bamboo.co/pages/send-us">Reach out here!</a>
+            </span>
+          </div>
+
+          <!-- advertising area 2 -->
+          <div class="advertising-container">
+            <iframe
+              class="advertising-content"
+              src="#"
+              width="100%"
+              height="100%"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="section_links">
+  {% if url_path contains '/blogs/whisky-reviews'
+    or url_path contains '/blogs/rum-reviews'
+    or url_path contains '/blogs/craft-beer'
+    or url_path contains '/blogs/gin'
+    or url_path contains '/blogs/sake'
+    or url_path contains '/blogs/tequila-mezcal-reviews'
+    or url_path contains '/blogs/baijiu'
+    or url_path contains '/blogs/everything-nice'
+  %}
+    <!-- Render content specific to all pages under /blog -->
+    <div style="background-color:#EFEDDC; width: auto; height: auto; margin-top: 20px;">
+      <h2 style="text-align: center;">
+        <em
+          >Read more reviews<br>
+          <a href="/blogs/whisky-reviews" style="border-bottom:none !important;">Whisky</a> |
+          <a href="/blogs/rum-reviews" style="border-bottom:none !important;">Rum</a> |
+          <a href="/blogs/craft-beer" style="border-bottom:none !important;">Beer</a> |
+          <a href="/blogs/gin" style="border-bottom:none !important;">Gin</a> |
+          <a href="/blogs/sake" style="border-bottom:none !important;">Sake</a> |
+          <a href="/blogs/tequila-mezcal-reviews" style="border-bottom:none !important;">Tequila</a> |
+          <a href="/blogs/baijiu" style="border-bottom:none !important;">Baijiu</a> |
+          <a href="/blogs/everything-nice" style="border-bottom:none !important;">Liqueurs & Others</a></em
+        >
+      </h2>
+    </div>
+    <br>
+  {% else %}
+    <!-- Render content for all other pages -->
+    <div style="background-color:#EFEDDC; width: auto;height:auto; margin-top: 20px;">
+      <h2 style="text-align: center;">
+        <em
+          >More from The Bamboo Post<br>
+          <a href="/blogs/news" style="border-bottom:none !important;">News & Releases </a> |
+          <a href="/blogs/features" style="border-bottom:none !important;">Features & Commentary</a> |
+          <a href="/blogs/interviews" style="border-bottom:none !important;">Interviews</a> |
+          <a href="/blogs/whisky-rum-gin-vodka-distillery-spotlight" style="border-bottom:none !important;"
+            >Distiller & Brewery Deep Dives</a
+          >
+        </em>
+      </h2>
+    </div>
+  {% endif %}
+</div>
+
+<!-- disqus plug-in section -->
+<section class="container">
+  <div id="disqus_thread"></div>
+  <span>
+    {% if section.settings.show_share_buttons %}
+      {% include 'social-sharing',
+        share_title: article.title,
+        share_permalink: article.url,
+        share_image: article.image
+      %}
+    {% endif %}
+  </span>
+</section>
+
+<!-- amazon banner section for advertisement -->
+<section class="container">
+  <h1>Filling a bookshelf? We picked these for you.</h1>
+  <iframe
+    sandbox="allow-popups allow-scripts allow-modals allow-forms allow-same-origin"
+    style="width:140px;height:200px;"
+    marginwidth="0"
+    marginheight="0"
+    scrolling="no"
+    frameborder="0"
+    src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ss&ref=as_ss_li_til&ad_type=product_link&tracking_id=88bamboo-20&language=en_US&marketplace=amazon&region=US&placement=1845339428&asins=1845339428&linkId=10dcdfc1dda2e4d4f6aa4615600ab0a0&show_border=false&link_opens_in_new_window=true"
+  ></iframe>
+  <iframe
+    sandbox="allow-popups allow-scripts allow-modals allow-forms allow-same-origin"
+    style="width:140px;height:200px;"
+    marginwidth="0"
+    marginheight="0"
+    scrolling="no"
+    frameborder="0"
+    src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ss&ref=as_ss_li_til&ad_type=product_link&tracking_id=88bamboo-20&language=en_US&marketplace=amazon&region=US&placement=1607747324&asins=1607747324&linkId=b35b399b4707e77a7e4897f675d44f1e&show_border=false&link_opens_in_new_window=true"
+  ></iframe>
+  <iframe
+    sandbox="allow-popups allow-scripts allow-modals allow-forms allow-same-origin"
+    style="width:140px;height:200px;"
+    marginwidth="0"
+    marginheight="0"
+    scrolling="no"
+    frameborder="0"
+    src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ss&ref=as_ss_li_til&ad_type=product_link&tracking_id=88bamboo-20&language=en_US&marketplace=amazon&region=US&placement=0525575022&asins=0525575022&linkId=5a4db72e78f099b8eb17d004be8fbec0&show_border=false&link_opens_in_new_window=true"
+  ></iframe>
+  <iframe
+    sandbox="allow-popups allow-scripts allow-modals allow-forms allow-same-origin"
+    style="width:140px;height:200px;"
+    marginwidth="0"
+    marginheight="0"
+    scrolling="no"
+    frameborder="0"
+    src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ss&ref=as_ss_li_til&ad_type=product_link&tracking_id=88bamboo-20&language=en_US&marketplace=amazon&region=US&placement=1784723983&asins=1784723983&linkId=f5d6191210f081577f192f1f1199d68d&show_border=false&link_opens_in_new_window=true"
+  ></iframe>
+  <iframe
+    sandbox="allow-popups allow-scripts allow-modals allow-forms allow-same-origin"
+    style="width:140px;height:200px;"
+    marginwidth="0"
+    marginheight="0"
+    scrolling="no"
+    frameborder="0"
+    src="//ws-na.amazon-adsystem.com/widgets/q?ServiceVersion=20070822&OneJS=1&Operation=GetAdHtml&MarketPlace=US&source=ss&ref=as_ss_li_til&ad_type=product_link&tracking_id=88bamboo-20&language=en_US&marketplace=amazon&region=US&placement=1616200464&asins=1616200464&linkId=7e8178ccde6b90349659dc09069f71cc&show_border=false&link_opens_in_new_window=true"
+  ></iframe>
+  <div class="ad-title">ADVERTISEMENT</div>
+  <div id="amzn-assoc-ad-18ffbb77-3089-4227-bdcb-81f8dbbfe006"></div>
+</section>
+
+<!--
+  will come back to clean-up this part later
+  <section class="container">
+    include 'relatedblogs'
+  </section>
+-->
+
+<!-- back to blog category button -->
+<section class="container">
+  <div class="text-center return-link-wrapper page-width">
+    <a href="{{ blog.url }}" class="btn btn--secondary btn--has-icon-before">
+      {% include 'icon-arrow-left' %}
+      {{ 'blogs.article.back_to_blog' | t: title: blog.title }}
+    </a>
+  </div>
+</section>
+
+{% comment %}
+  Remaining javascript area
+  ---------------------------
+{% endcomment %}
+<!-- javascript area for all page related stuff -->
+<script>
+  /**
+  *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+  *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+
+  var disqus_config = function () {
+  this.page.url = {{ canonical_url | prepend: "'" | append: "'" }};  // Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = {{ article.id }}; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+  };
+
+  (function() { // DON'T EDIT BELOW THIS LINE
+  var d = document, s = d.createElement('script');
+  s.src = 'https://88bamboo.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript
+  >Please enable JavaScript to view the
+  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript
+>
+<!-- amazon advertisement injection related script -->
+<script type="text/javascript">
+  amzn_assoc_placement = "adunit0";
+  amzn_assoc_search_bar = "false";
+  amzn_assoc_tracking_id = "88bamboo-20";
+  amzn_assoc_ad_mode = "manual";
+  amzn_assoc_ad_type = "smart";
+  amzn_assoc_marketplace = "amazon";
+  amzn_assoc_region = "US";
+  amzn_assoc_title = "Filling a bookshelf? We picked these for you";
+  amzn_assoc_linkid = "e4448e28b18f9ec23e46d2ea13bf8899";
+  amzn_assoc_asins = "1845339428,1607747324,0525575022,0735221251,1784723983";
+</script>
+<script src="//z-na.amazon-adsystem.com/widgets/onejs?MarketPlace=US"></script>

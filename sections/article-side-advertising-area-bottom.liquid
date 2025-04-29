@@ -1,0 +1,115 @@
+{% comment %}
+  {% if section.settings['custom-code'] != null and section.settings['custom-code'] != '' %}
+    {{ section.settings['custom-code'] }}
+  {% else %}
+    <div class="editable-container">
+      <div class="d-flex justify-content-between new--header">
+        <h2>{{ section.settings['text-box'] }}</h2>
+      </div>
+      <div class="editable-container--image">
+        <a href="{{ section.settings.custom-link }}">
+          <img
+            src="{{ section.settings.custom-image | img_url: 'master' }}"
+            loading="lazy"
+            decoding="async"
+          >
+        </a>
+      </div>
+    </div>
+  {% endif %}
+{% endcomment %}
+
+<!-- below is Google display ad -->
+<ins class="adsbygoogle"
+     style="display:block; text-align: center;"
+     data-ad-client="ca-pub-6273752259116373"
+     data-ad-slot="8401306957"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- above is Google display ad-->
+
+{%- if section.settings['display-ad'] -%}
+  <div class="ad-container" style="margin-top:20px;">
+    {% if section.settings['custom-code'] != null and section.settings['custom-code'] != '' %}
+      {{ section.settings['custom-code'] }}
+    {% else %}
+      <div>
+        <h1>{{ section.settings['text-box'] }}</h1>
+      </div>
+      <div>
+        <a href="{{ section.settings.custom-link }}">
+          <img
+            src="{{ section.settings.custom-image | img_url: 'master' }}"
+            loading="lazy"
+            decoding="async"
+          >
+        </a>
+      </div>
+    {% endif %}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Advertising area",
+  "class": "advert-area",
+  "settings": [
+    {
+      "id": "display-ad",
+      "type": "checkbox",
+      "label": "display ad?",
+      "default": false
+    },
+    {
+      "id": "text-box",
+      "type": "text",
+      "label": "Heading",
+      "default": "Title"
+    },
+    {
+      "id": "custom-link",
+      "type": "url",
+      "label": "Link to ad"
+    },
+    {
+      "id":"custom-image",
+      "type":"image_picker",
+      "label":"Image"
+    },
+    {
+      "id": "custom-code",
+      "type": "textarea",
+      "label": "Custom code"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+  .ad-container {
+    display : none;
+    margin : 0px 0px;
+  }
+
+  @media only screen and (min-width: 600px) {
+    /* For tablets: */
+    .ad-container {
+      display : block;
+      margin: 8px 0px 8px 0px;
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    /* For desktop: */
+    .ad-container {
+      display : block;
+      margin: 8px 0px 8px 0px;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

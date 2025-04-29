@@ -1,0 +1,1691 @@
+{% comment %}
+  
+<div class="page-width">
+  <div class="grid  shrinkage-to-make-way-for-side-bars"><!--zhe han added shrinkage class-->
+    <div class="grid__item medium-up--five-sixths medium-up--push-one-twelfth"> 
+      <div class="section-header text-center">
+        <h1>{{ page.title }}</h1>
+      </div>
+
+      <div class="rte">
+        {{ page.content }}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endcomment %}
+{% comment %}
+<!-- NEWSLETTER TOP AD BANNER PROMO-->
+{% section 'article-advertising-top-banner-homepage' %}
+{% endcomment %}
+
+
+{% assign nowTimestamp = 'now' | date: '%s' %}
+
+
+<!-- NEWS & RELEASES SECTION -->
+<div class="container">
+  <div class="d-flex justify-content-between new--header" style="border-bottom:none;">
+      <h1>THE LATEST IN SCOTCH WHISKY</h1>
+  </div>
+    <div class="row">
+    
+    <!-- LEFT COLUMN -->
+    <div class="col-md-6 col-lg-4 order-2 order-lg-2 mt-3 mt-md-0">
+      <div class="d-flex flex-column">
+        <div class="d-flex justify-content-between new--header">
+          <h3>NEWS &amp; RELEASES</h3>
+          <a href="https://88bamboo.co/blogs/news/tagged/scotch">SEE ALL NEWS →</a>
+        </div>
+        <div class="news-container left-border">
+          {% assign blog_handles = 'news' %} <!--assign blog-->
+          {% assign blog_tag = 'Scotch' %} <!--assign tag-->
+          {% assign counter = 0 %} <!-- Initialize a counter -->
+          
+          {% for handle in blog_handles %}
+              {% paginate blogs[handle].articles by 80 %} <!--paginate-->
+                  {% for article in blogs[handle].articles | slice: 0, 3 %} <!--shift limit down-->
+                      {% if article.tags contains blog_tag %} <!--add tag condition-->
+                          <div class="news-container--content d-flex">
+                          <a href="{{ article.url }}">
+                            <div class="news-container--image">
+                              {{ article.image | image_url: width: 260 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                            </div>
+                          </a>
+          
+                          <div class="news-container--header">
+                            <a href="{{ article.url }}">
+                              {{ article.title | strip_html | truncate: 99 }}
+                            </a>
+                          </div>
+                        </div>
+                            {% assign counter = counter | plus: 1 %} <!-- Increment counter -->
+                                {% if counter >= 3 %}
+                                    {% break %}
+                                {% endif %} <!-- end of increment counter -->
+                      {% endif %} <!--end of tag condition-->
+                  {% endfor %}
+                      {% if paginate.next %}
+                          {% continue %} <!-- Automatically fetch next page in the background -->
+                      {% endif %}
+              {% endpaginate %} <!--end of paginate-->
+          {% endfor %}
+
+          {% comment %}
+          
+          <!-- Placeholder for the fourth article -->
+          
+        <div class="d-flex justify-content-between new--header">
+          <h3>REVIEW OF THE WEEK</h3>
+          <a href="https://88bamboo.co/pages/all-our-reviews">SEE ALL REVIEWS →</a>
+        </div>
+            <div class="news-container--content d-flex">
+
+                {% assign blog_handles = 'whisky-reviews,sake,rum-reviews,tequila-mezcal-reviews,craft-beer,baijiu,gin,everything-nice,wine-reviews' | split: ',' %}
+                {% assign blog_tag = 'Review Of The Week' %}
+
+                {% for handle in blog_handles %}
+                        {% for article in blogs[handle].articles %}
+                            {% if article.tags contains blog_tag limit: 1 %}
+              
+                            <a href="{{ article.url }}">
+                                <div class="news-container--image">
+                                    {{ article.image | image_url: width: 260 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                                </div>
+                            </a>
+                            <div class="news-container--header">
+                                <a href="{{ article.url }}">
+                                    {{ article.title | strip_html }}
+                                </a>
+                            </div>
+                           {% endif %}
+                       {% endfor %}
+                 {% endfor %}        
+            </div>
+            <!-- End of placeholder -->
+          {% endcomment %}
+          
+        </div>
+      </div>
+    </div>
+    <!-- MIDDLE COLUMN -->
+    <div class="col-md-8 offset-md-2 col-lg-4 offset-lg-0 order-1 order-lg-1">
+      <div class="d-flex flex-column">
+        <div class="d-flex justify-content-between xmain--header new--header no-header-lg">
+          <h3>FEATURED REVIEW</h3>
+        </div>
+        <div class="main-middle-container" style="padding: 10px 0;">
+          {% assign blog_handles = 'whisky-reviews' %} 
+          {% assign blog_tag = 'Scotch' %}
+          {% assign counter = 0 %} <!-- Initialize a counter -->
+          
+          {% for handle in blog_handles %}
+            {% paginate blogs[handle].articles by 50 %}
+            {% for article in blogs[handle].articles | slice: 0, 1 %}
+              {% if article.tags contains blog_tag  %}
+                <div class="main-middle-container--content">
+                  <a href="{{ article.url }}">
+                    <div class="main-middle-container--image">
+                      {{ article.image | image_url: width: 800 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="main-middle-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 110 }}
+                    </a>
+                    {% comment %} <p>{{ article.excerpt }}</p>{% endcomment %}
+                  </div>
+                </div>
+                 {% assign counter = counter | plus: 1 %} <!-- Increment counter -->
+                  {% if counter >= 1 %}
+                    {% break %}
+                    {% endif %} <!-- end of increment counter -->
+              {% endif %}
+            {% endfor %}
+          {% if paginate.next %}
+        {% continue %} <!-- Automatically fetch next page in the background -->
+      {% endif %}
+          {% endpaginate %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <!-- RIGHT COLUMN -->
+    <div class="col-md-6 col-lg-4 order-3 order-lg-3 mt-3 mt-md-0">
+      <div class="d-flex flex-column">
+        <div class="d-flex justify-content-between new--header">
+          <h3>FEATURES</h3>
+          <a href="https://88bamboo.co/blogs/features/tagged/scotch">SEE ALL FEATURES →</a>
+        </div>
+        <div class="left-border no-psuedo-before-md">
+          <div class="main-right-container">
+            {% assign blog_handles = 'features' %}  <!--assign blog-->
+            {% assign blog_tag = 'Scotch' %} <!--assign tag-->
+            {% assign counter = 0 %} <!-- Initialize a counter -->
+            
+            {% for handle in blog_handles %}
+
+                {% paginate blogs[handle].articles by 150 %}
+              
+              {% for article in blogs[handle].articles | slice: 0, 1 %}
+                 {% if article.tags contains blog_tag %} <!--add tag condition-->
+                <div class="main-right-container--content d-flex">
+                  <a href="{{ article.url }}">
+                    <div class="main-right-container--image">
+                      {{ article.image | image_url: width: 300 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="main-right-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 115 }}
+                    </a>
+                  </div>
+                </div>
+                   {% assign counter = counter | plus: 1 %} <!-- Increment counter -->
+                  {% if counter >= 1 %}
+                    {% break %}
+                    {% endif %} <!-- end of increment counter -->
+              {% endif %}<!--end of tag condition-->
+              {% endfor %}
+                   {% if paginate.next %}
+        {% continue %} <!-- Automatically fetch next page in the background -->
+      {% endif %}
+    {% endpaginate %} 
+            {% endfor %}
+          </div>
+
+          <div class="d-flex justify-content-between new--header mt-0">
+            <h3>INTERVIEWS</h3>
+            <a href="https://88bamboo.co/blogs/interviews/tagged/scotch">SEE ALL INTERVIEWS →</a>
+          </div>
+          <div class="main-right-container">
+            {% assign blog_handles = 'interviews' %} <!--assign blog-->
+            {% assign blog_tag = 'Scotch' %} <!--assign tag-->
+            {% assign counter = 0 %} <!-- Initialize a counter -->
+            
+            {% for handle in blog_handles %}
+              {% paginate blogs[handle].articles by 20 %} <!--paginate-->
+              {% for article in blogs[handle].articles  | slice: 0, 1 %}
+                {% if article.tags contains blog_tag %} <!--add tag condition-->
+                <div class="main-right-container--content d-flex justify-content-between">
+                  <a href="{{ article.url }}">
+                    <div class="main-right-container--image">
+                      {{ article.image | image_url: width: 300 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="main-right-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 115 }}
+                    </a>
+                  </div>
+                </div>
+                {% assign counter = counter | plus: 1 %} <!-- Increment counter -->
+                                {% if counter >= 1 %}
+                                    {% break %}
+                                {% endif %} <!-- end of increment counter -->
+                      {% endif %} <!--end of tag condition-->
+                {% endfor %}
+                   {% if paginate.next %}
+                          {% continue %} <!-- Automatically fetch next page in the background -->
+                      {% endif %}
+              {% endpaginate %} <!--end of paginate-->
+            {% endfor %}
+          </div>
+
+          <div class="d-flex justify-content-between new--header mt-0">
+            <h3>SPOTLIGHTS</h3>
+            <a href="https://88bamboo.co/blogs/whisky-rum-gin-vodka-distillery-spotlight/tagged/scotch">SEE ALL SPOTLIGHTS →</a>
+          </div>
+          <div class="main-right-container">
+            {% assign blog_handles = 'whisky-rum-gin-vodka-distillery-spotlight' %}
+            {% assign blog_tag = 'Scotch' %} <!--assign tag-->
+            {% assign counter = 0 %} <!-- Initialize a counter -->
+
+            
+            {% for handle in blog_handles %}
+               {% paginate blogs[handle].articles by 200 %} <!--paginate-->
+              {% for article in blogs[handle].articles | slice: 0, 1 %}
+              {% if article.tags contains blog_tag %} 
+                <div class="main-right-container--content d-flex justify-content-between">
+                  <a href="{{ article.url }}">
+                    <div class="main-right-container--image">
+                      {{ article.image | image_url: width: 300 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="main-right-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 115 }}
+                    </a>
+                  </div>
+                </div>
+               {% assign counter = counter | plus: 1 %} <!-- Increment counter -->
+                                {% if counter >= 1 %}
+                                    {% break %}
+                                {% endif %} <!-- end of increment counter -->
+                      {% endif %} <!--end of tag condition-->
+                
+              {% endfor %}
+                  {% if paginate.next %}
+                          {% continue %} <!-- Automatically fetch next page in the background -->
+                      {% endif %}
+              {% endpaginate %} <!--end of paginate-->
+            {% endfor %}
+          </div>
+
+          {% comment %}
+          <div class="d-flex justify-content-between new--header mt-0">
+            <h3>EXPLAINED IN 3 MINS</h3>
+            <a href="https://88bamboo.co/pages/whisky-101">BEGINNER SERIES →</a> 
+          </div>
+          <div class="main-right-container">
+            {% assign blog_handles = 'explained-in-3-minutes' %}
+            {% assign blog_tag = 'Bourbon' %} <!--assign tag-->
+            {% assign counter = 0 %} <!-- Initialize a counter -->
+
+            
+            {% for handle in blog_handles %}
+               {% paginate blogs[handle].articles by 50 %} <!--paginate-->
+              {% for article in blogs[handle].articles | slice: 0, 1 %}
+              {% if article.tags contains blog_tag %} 
+                <div class="main-right-container--content d-flex justify-content-between">
+                  <a href="{{ article.url }}">
+                    <div class="main-right-container--image">
+                      {{ article.image | image_url: width: 300 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="main-right-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 115 }}
+                    </a>
+                  </div>
+                </div>
+               {% assign counter = counter | plus: 1 %} <!-- Increment counter -->
+                                {% if counter >= 1 %}
+                                    {% break %}
+                                {% endif %} <!-- end of increment counter -->
+                      {% endif %} <!--end of tag condition-->
+                
+              {% endfor %}
+                  {% if paginate.next %}
+                          {% continue %} <!-- Automatically fetch next page in the background -->
+                      {% endif %}
+              {% endpaginate %} <!--end of paginate-->
+            {% endfor %}
+          </div>
+          {% endcomment %}
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- REVIEWS SECTION -->
+<div class="container escapedes-main-container custom-top-margin">
+      <div class="d-flex flex-column h-100 no-psuedo-before-md">
+        <div class="d-flex justify-content-between align-items-center main--header">
+          <h3>SCOTCH REVIEWS</h3>
+          <a href="https://88bamboo.co/blogs/whisky-reviews/tagged/scotch">SEE ALL SCOTCH REVIEWS →</a>
+        </div>
+        <div class="escapades-container d-flex justify-content-center justify-content-sm-between flex-wrap">
+          {% assign blog_handles = 'whisky-reviews' %}
+          {% assign blog_tag = 'Scotch' %} <!--assign tag-->
+          {% assign counter = 0 %} <!-- Initialize a counter -->
+
+          
+          {% for handle in blog_handles %}
+            {% paginate blogs[handle].articles by 100 %} <!--paginate-->
+            {% for article in blogs[handle].articles | slice: 0, 6 %}
+              {% if article.tags contains blog_tag %} <!--add tag condition-->
+                {% assign counter = counter | plus: 1 %} <!-- Increment counter -->
+                 {% if counter > 1 and counter <= 7 %}
+                   
+              <div class="escapades-container--content">
+                <a href="{{ article.url }}">
+                  <div class="escapades-container--image">
+                    {{ article.image | image_url: width: 350 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                  </div>
+                </a>
+
+                <div class="escapades-container--header">
+                  <a href="{{ article.url }}">
+                    {{ article.title | strip_html | truncate: 75 }}
+                  </a>
+                </div>
+              </div>
+               {% endif %} 
+                                {% if counter >= 7 %}
+                                    {% break %}
+                                {% endif %} <!-- end of increment counter -->
+                      {% endif %} <!--end of tag condition-->
+            {% endfor %}
+               {% if paginate.next %}
+                          {% continue %} <!-- Automatically fetch next page in the background -->
+                      {% endif %}
+              {% endpaginate %} <!--end of paginate-->
+          {% endfor %}
+        </div>
+       
+      </div>
+    
+
+</div>
+
+<!-- YOU MAY ALSO LIKE SECTION -->
+<div class="container">
+  <div class="d-flex justify-content-between main--header custom-top-margin-big">
+    <h3>EXPLORE OTHER CATEGORIES</h3>
+  </div>
+  <!-- desktop tiles below-->
+  <div class="row mobile-view-hide">
+    <div class="col-xl-3 col-md-6">
+      
+      <div class="d-flex flex-column">
+      <!-- new tile below-->
+        <div class="review--pseudo-border  mt-3 custom-tile-mobile-mt"> 
+
+          <div class="review-container pb-0">
+            <!-- remove article stuff, put in editable container - copy code from drink like a movie star-->
+            {% section 'editable-tile-1' %}
+          </div>
+        </div>
+      <!-- ^new tile-->
+        
+        <div class="review--pseudo-border  mt-3 custom-tile-mobile-mt">
+          <div class="review-container pb-0">
+            {% section 'editable-tile-2' %}
+          </div>
+        </div>
+
+        <div class="review--pseudo-border no-after mt-3 custom-tile-mobile-mt">
+          <div class="review-container pb-0">
+            {% section 'editable-tile-2A' %}
+          </div>
+        </div>
+        
+      </div>
+      
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="d-flex flex-column">
+        
+        <div class="review--pseudo-border no-psuedo-before-xl mt-3">
+          <div class="review-container pb-0">
+            {% section 'editable-tile-3' %}
+          </div>
+        </div>
+
+        <div class="review--pseudo-border no-psuedo-before-xl mt-3">
+          <div class="review-container pb-0">
+            {% section 'editable-tile-4' %}
+          </div>
+        </div>
+
+        <div class="review--pseudo-border no-after no-psuedo-before-xl mt-3">
+          <div class="review-container pb-0">
+            {% section 'editable-tile-4A' %}
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="d-flex flex-column">
+        
+        <div class="review--pseudo-border mt-3">
+          <div class="review-container pb-0">
+            {% section 'editable-tile-5' %}
+          </div>
+        </div>
+
+        <div class="review--pseudo-border mt-3">
+          <div class="review-container pb-0">
+            {% section 'editable-tile-6' %}
+          </div>
+        </div>
+
+        <div class="review--pseudo-border no-after no-psuedo-after-xl mt-3">
+          <div class="review-container pb-0">
+            {% section 'editable-tile-6A' %}
+          </div>
+        </div>
+        
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="d-flex flex-column">
+        
+        <div class="review--pseudo-border no-before no-psuedo-before-xl mt-3">
+          <div class="review-container pb-0">
+            {% section 'editable-tile-7' %}
+          </div>
+        </div>
+
+        <div class="review--pseudo-border no-before no-psuedo-before-xl mt-3">
+          <div class="review-container pb-0">
+            {% section 'editable-tile-8' %}
+          </div>
+        </div>
+
+      <div class="review--pseudo-border no-after no-psuedo-after-xl  no-before no-psuedo-before-xl mt-3">
+          <div class="review-container pb-0">
+            {% section 'editable-tile-8A' %}
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <!-- desktop tiles above-->
+  
+  <!-- mobile tiles below-->
+  <div id="mobileCarouselTiles" class="row desktop-view-hide carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active col-xl-3 col-md-6">
+        <div class="d-flex flex-column">
+        <!-- new tile below-->
+          <div class="review--pseudo-border  mt-3 custom-tile-mobile-mt"> 
+  
+            <div class="review-container pb-0">
+              <!-- remove article stuff, put in editable container - copy code from drink like a movie star-->
+              {% section 'editable-tile-1' %}
+            </div>
+          </div>
+        <!-- ^new tile-->
+          
+          <div class="review--pseudo-border  mt-3 custom-tile-mobile-mt">
+            <div class="review-container pb-0">
+              {% section 'editable-tile-2' %}
+            </div>
+          </div>
+  
+          <div class="review--pseudo-border no-after mt-3 custom-tile-mobile-mt">
+            <div class="review-container pb-0">
+              {% section 'editable-tile-2A' %}
+            </div>
+          </div>
+          
+        </div>
+      </div>
+  
+      <div class="carousel-item col-xl-3 col-md-6">
+        <div class="d-flex flex-column">
+          
+          <div class="review--pseudo-border no-psuedo-before-xl mt-3 custom-tile-mobile-mt">
+            <div class="review-container pb-0">
+              {% section 'editable-tile-3' %}
+            </div>
+          </div>
+  
+          <div class="review--pseudo-border no-psuedo-before-xl mt-3 custom-tile-mobile-mt">
+            <div class="review-container pb-0">
+              {% section 'editable-tile-4' %}
+            </div>
+          </div>
+  
+          <div class="review--pseudo-border no-after no-psuedo-before-xl mt-3 custom-tile-mobile-mt">
+            <div class="review-container pb-0">
+              {% section 'editable-tile-4A' %}
+            </div>
+          </div>
+          
+        </div>
+      </div>
+  
+      <div class="carousel-item col-xl-3 col-md-6">
+        <div class="d-flex flex-column">
+          
+          <div class="review--pseudo-border mt-3 custom-tile-mobile-mt">
+            <div class="review-container pb-0">
+              {% section 'editable-tile-5' %}
+            </div>
+          </div>
+  
+          <div class="review--pseudo-border mt-3 custom-tile-mobile-mt">
+            <div class="review-container pb-0">
+              {% section 'editable-tile-6' %}
+            </div>
+          </div>
+  
+          <div class="review--pseudo-border no-after no-psuedo-after-xl mt-3 custom-tile-mobile-mt">
+            <div class="review-container pb-0">
+              {% section 'editable-tile-6A' %}
+            </div>
+          </div>
+          
+        </div>
+      </div>
+  
+      <div class="carousel-item col-xl-3 col-md-6">
+        <div class="d-flex flex-column">
+          
+          <div class="review--pseudo-border no-before no-psuedo-before-xl mt-3 custom-tile-mobile-mt">
+            <div class="review-container pb-0">
+              {% section 'editable-tile-7' %}
+            </div>
+          </div>
+  
+          <div class="review--pseudo-border no-before no-psuedo-before-xl mt-3 custom-tile-mobile-mt">
+            <div class="review-container pb-0">
+              {% section 'editable-tile-8' %}
+            </div>
+          </div>
+  
+        <div class="review--pseudo-border no-after no-psuedo-after-xl  no-before no-psuedo-before-xl mt-3 custom-tile-mobile-mt">
+            <div class="review-container pb-0">
+              {% section 'editable-tile-8A' %}
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-target="#mobileCarouselTiles" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-target="#mobileCarouselTiles" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+
+  </div>
+
+  </div>
+  
+<!--you may also have above-->
+
+<!-- IN CASE YOU MISSED IT SECTION -->
+<div class="container missed-main-container">
+  <div class="d-flex justify-content-between main--header custom-top-margin-big">
+    <h3>IN CASE YOU MISSED IT</h3>
+  </div>
+  <div class="row">
+    <div class="col-xl-3 col-md-6">
+      <div class="d-flex flex-column">
+        <div class="missed-container">
+          {% assign blog_handles = 'news' %}
+          {% for handle in blog_handles %}
+            {% for article in blogs[handle].articles %}
+              {% assign dateStart = article.published_at | date: '%s' %}
+              {% assign diffSeconds = nowTimestamp | minus: dateStart %}
+              {% if diffSeconds > 1209600 limit: 1 %}
+                <div class="missed-container--content d-flex">
+                  <a href="{{ article.url }}">
+                    <div class="missed-container--image">
+                      {{ article.image | image_url: width: 260 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="missed-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 78 }}
+                    </a>
+                  </div>
+                </div>
+                {% break %}}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="d-flex flex-column">
+        <div class="missed-container">
+          {% assign blog_handles = 'features' %}
+          {% for handle in blog_handles %}
+            {% for article in blogs[handle].articles %}
+              {% assign dateStart = article.published_at | date: '%s' %}
+              {% assign diffSeconds = nowTimestamp | minus: dateStart %}
+              {% if diffSeconds > 1209600 limit: 1 %}
+                <div class="missed-container--content d-flex">
+                  <a href="{{ article.url }}">
+                    <div class="missed-container--image">
+                      {{ article.image | image_url: width: 260 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="missed-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 78 }}
+                    </a>
+                  </div>
+                </div>
+                {% break %}}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="d-flex flex-column">
+        <div class="missed-container">
+          {% assign blog_handles = 'interviews' %}
+          {% for handle in blog_handles %}
+            {% for article in blogs[handle].articles %}
+              {% assign dateStart = article.published_at | date: '%s' %}
+              {% assign diffSeconds = nowTimestamp | minus: dateStart %}
+              {% if diffSeconds > 1209600 limit: 1 %}
+                <div class="missed-container--content d-flex">
+                  <a href="{{ article.url }}">
+                    <div class="missed-container--image">
+                      {{ article.image | image_url: width: 260 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="missed-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 78 }}
+                    </a>
+                  </div>
+                </div>
+                {% break %}}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="d-flex flex-column">
+        <div class="missed-container">
+          {% assign blog_handles = 'whisky-rum-gin-vodka-distillery-spotlight' %}
+          {% for handle in blog_handles %}
+            {% for article in blogs[handle].articles %}
+              {% assign dateStart = article.published_at | date: '%s' %}
+              {% assign diffSeconds = nowTimestamp | minus: dateStart %}
+              {% if diffSeconds > 1209600 limit: 1 %}
+                <div class="missed-container--content d-flex">
+                  <a href="{{ article.url }}">
+                    <div class="missed-container--image">
+                      {{ article.image | image_url: width: 260 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="missed-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 78 }}
+                    </a>
+                  </div>
+                </div>
+                {% break %}}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% comment %} 
+
+<!-- ESCAPES SECTION -->
+<div class="container escapedes-main-container">
+  <div class="row custom-top-margin-big">
+    <div class="col-md-8">
+      <div class="d-flex flex-column psuedo-right-border h-100 no-psuedo-before-md">
+        <div class="d-flex justify-content-between align-items-center main--header">
+          <h3>ESCAPADES</h3>
+          <a href="https://88bamboo.co/blogs/escapades">SEE ALL ESCAPADES →</a>
+        </div>
+        <div class="escapades-container d-flex justify-content-center justify-content-sm-between flex-wrap">
+          {% assign blog_handles = 'escapades' %}
+          {% for handle in blog_handles %}
+            {% for article in blogs[handle].articles limit: 4 %}
+              <div class="escapades-container--content">
+                <a href="{{ article.url }}">
+                  <div class="escapades-container--image">
+                    {{ article.image | image_url: width: 350 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                  </div>
+                </a>
+
+                <div class="escapades-container--header">
+                  <a href="{{ article.url }}">
+                    {{ article.title | strip_html | truncate: 75 }}
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+        <!-- WHATS HAPPENING SECTION -->
+        <div class="d-flex justify-content-between align-items-center main--header custom-top-margin-mid">
+          <h3>WHATS HAPPENING</h3>
+          <a href="https://88bamboo.co/blogs/whats-on">SEE ALL EVENTS →</a>
+        </div>
+        <div class="escapades-container d-flex justify-content-center justify-content-sm-between flex-wrap">
+          {% assign blog_handles = 'whats-on' %}
+          {% for handle in blog_handles %}
+            {% for article in blogs[handle].articles limit: 4 %}
+              <div class="escapades-container--content">
+                <a href="{{ article.url }}">
+                  <div class="escapades-container--image">
+                    {{ article.image | image_url: width: 350 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                  </div>
+                </a>
+
+                <div class="escapades-container--header">
+                  <a href="{{ article.url }}">
+                    {{ article.title | strip_html | truncate: 75 }}
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOM HTML FOR ZHE HAN TO UPDATE -->
+    <div class="col-md-4">
+      {% section 'editable-section' %}
+      {% section 'editable-section-1A' %}
+    </div>
+  </div>
+</div>
+
+<!-- custom full width banner section -->
+<div class="custom-top-margin-small">
+  <div class="container escapedes-main-container">
+    {% section 'editable-section-3' %}
+    {% section 'editable-section-3A' %}
+  </div>
+</div>  
+
+<!-- EMAIL SUBSCRIPTION SHIFTED DOWN HERE -->
+
+<div class="custom-top-margin-small">
+  <div class="container escapedes-main-container">
+    <div class="subscribe-container">
+      <p style="font-size:20px;">Subscribe to receive the latest recommendations, releases and exclusive offers.</p>
+      <div
+        class="
+          site-footer__newsletter
+          {% if section.blocks.size == 1 %} site-footer__single-block--centered{% endif %} custom-top-margin-small
+        "
+      >
+        {%- assign formId = 'ContactFooter' -%}
+        {% form 'customer', id: formId, novalidate: 'novalidate' %}
+          {%- if form.posted_successfully? -%}
+            <p class="form-message form-message--success" tabindex="-1" data-form-status>
+              {{ 'general.newsletter_form.confirmation' | t }}
+            </p>
+          {%- endif -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="input-group {% if form.errors %} input-group--error{% endif %}">
+            <input
+              type="email"
+              name="contact[email]"
+              id="{{ formId }}-email"
+              class="input-group__field newsletter__input{% if form.errors %} input--error{% endif %}"
+              value="{{ form.email }}"
+              placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"
+              aria-label="{{ 'general.newsletter_form.email_placeholder' | t }}"
+              aria-required="true"
+              required
+              autocorrect="off"
+              autocapitalize="off"
+              {% if form.errors %}
+                aria-invalid="true"
+                aria-describedby="{{ formId }}-email-error"
+                data-form-status
+              {% endif %}
+            >
+            <span class="input-group__btn">
+              <button type="submit" class="btn newsletter__submit" name="commit" id="Subscribe">
+                <span class="newsletter__submit-text--large">{{ 'general.newsletter_form.submit' | t }}</span>
+              </button>
+            </span>
+          </div>
+          {% if form.errors contains 'email' %}
+            <span id="{{ formId }}-email-error" class="input-error-message">
+              <span class="visually-hidden">{{ 'general.accessibility.error' | t }} </span>
+              {% include 'icon-error' %}
+              <span class="site-footer__newsletter-error">
+                {{- form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email }}.</span
+              >
+            </span>
+          {% endif %}
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="container" style="margin-bottom:-80px;">
+  <div class="row">
+    <div class="col-md-6 custom-top-margin-big">
+       <div class="d-flex flex-column psuedo-right-border  no-psuedo-before-md">
+          <div class="d-flex justify-content-between align-items-center main--header">
+            <h3>LATEST EVENTS HAPPENING IN ASIA'S BARS</h3>
+          </div>
+            <div class="escapades-container d-flex justify-content-center justify-content-sm-between flex-wrap">
+              <div class="cover-top-instagram">
+                          <div class="profile-instagram">
+                              <img src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/324707786_632536791978056_8535107591174561953_n.jpg?v=1694462937" class="profile-pic-instagram">
+                              <a href="https://www.instagram.com/barhopasia/" class="username-instagram" style="font-family: 'Arial', sans-serif;" >@barhopasia</a>
+                              <a class="follow-btn-instagram" href="https://www.instagram.com/barhopasia/" style="font-family: 'Arial', sans-serif;" >Follow</a>
+                          </div>
+              </div>
+              <!-- LightWidget WIDGET --><script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script><iframe src="https://cdn.lightwidget.com/widgets/34cb18d5a55752e6a9e9a6587db6832a.html" scrolling="no" allowtransparency="true" class="lightwidget-widget" style="width:100%;border:0;overflow:hidden;"></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 custom-top-margin-big">
+       <div class="d-flex flex-column  no-psuedo-before-md">
+          <div class="d-flex justify-content-between align-items-center main--header">
+            <h3>FEATURED VIDEOS</h3>
+          </div>
+            <div class="escapades-container d-flex justify-content-center justify-content-sm-between flex-wrap">
+                <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@88.bamboo" data-unique-id="88.bamboo" data-embed-type="creator" style="max-width: 780px; min-width: 288px; position: relative;" >
+                    <section> <a target="_blank" href="https://www.tiktok.com/@88.bamboo?refer=creator_embed">@88.bamboo</a> 
+                    </section> 
+                </blockquote> 
+                    <div class="cover-top-tiktok">
+                          <div class="profile-tiktok">
+                            <div style="margin-left:auto;margin-right:auto;">
+                              <img src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/477b51dc8580008665ce0f453cd215a5.jpg?v=1694638460" class="profile-pic-tiktok">
+                              <a href="https://www.tiktok.com/@88.bamboo" class="username-tiktok" style="font-family: 'Arial', sans-serif;" >@88.bamboo</a>
+                              <a class="follow-btn-tiktok" href="https://www.tiktok.com/@88.bamboo" style="font-family: 'Arial', sans-serif;" >Follow</a>
+                            </div>  
+                          </div>
+                    </div>
+                    <div class="cover-bottom-tiktok"><p style="text-align:right; transform:translate(-15px,-15px);"><a href="https://www.tiktok.com/@88.bamboo" aria-describedby="a11y-external-message"><img src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/ARROW_black_thin_arrow_160x160.png?v=1694689861" ></a></p><p style="text-align:right; transform:translate(-20px,-35px);"><a class="scroll-for-more" href="https://www.tiktok.com/@88.bamboo" aria-describedby="a11y-external-message"><strong>Slide for more!</strong></a></p></div>
+                    <!--<div class="cover-left-tiktok"></div>-->
+                    <!--<div class="cover-right-tiktok"></div>-->
+                <script async src="https://www.tiktok.com/embed.js"></script>
+            </div>
+        </div>
+    </div>
+  </div> 
+</div>  
+
+
+<!-- REVIEWS SECTION -->
+<div class="container">
+  <div class="d-flex justify-content-between main--header custom-top-margin-big">
+    <h3>REVIEWS</h3>
+  </div>
+  <div class="row">
+    <div class="col-xl-3 col-md-6">
+      <div class="d-flex flex-column">
+        <div class="review--pseudo-border">
+          <div class="d-flex justify-content-between review--header">
+            <h3>WHISKY</h3>
+            <a href="https://88bamboo.co/blogs/whisky-reviews">SEE ALL WHISKY →</a>
+          </div>
+          <div class="review-container">
+            {% assign blog_handles = 'whisky-reviews' %}
+            {% for handle in blog_handles %}
+              {% for article in blogs[handle].articles limit: 1 %}
+                <div class="review-container--content d-flex justify-content-start">
+                  <a href="{{ article.url }}">
+                    <div class="review-container--image">
+                      <!--
+                        <img
+                          src="{{ article.image | img_url: '240x' }}"
+                          alt="{{ article.image.alt | escape }}"
+                          class="img-fluid"
+                        >
+                      -->
+                      {{ article.image | image_url: width: 240 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="review-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 85 }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="review--pseudo-border no-after">
+          <div class="d-flex justify-content-between review--header">
+            <h3>SAKE</h3>
+            <a href="https://88bamboo.co/blogs/sake">SEE ALL SAKE →</a>
+          </div>
+          <div class="review-container">
+            {% assign blog_handles = 'sake' %}
+            {% for handle in blog_handles %}
+              {% for article in blogs[handle].articles limit: 1 %}
+                <div class="review-container--content d-flex justify-content-start">
+                  <a href="{{ article.url }}">
+                    <div class="review-container--image">
+                      {{ article.image | image_url: width: 240 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="review-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 85 }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="d-flex flex-column">
+        <div class="review--pseudo-border no-psuedo-before-xl">
+          <div class="d-flex justify-content-between review--header">
+            <h3>RUM</h3>
+            <a href="https://88bamboo.co/blogs/rum-reviews">SEE ALL RUM →</a>
+          </div>
+          <div class="review-container">
+            {% assign blog_handles = 'rum-reviews' %}
+            {% for handle in blog_handles %}
+              {% for article in blogs[handle].articles limit: 1 %}
+                <div class="review-container--content d-flex justify-content-start">
+                  <a href="{{ article.url }}">
+                    <div class="review-container--image">
+                      {{ article.image | image_url: width: 240 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="review-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 85 }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="review--pseudo-border no-after no-psuedo-before-xl">
+          <div class="d-flex justify-content-between review--header">
+            <h3>TEQUILA/MEZCAL</h3>
+            <a href="https://88bamboo.co/blogs/tequila-mezcal-reviews">SEE ALL TEQUILA →</a>
+          </div>
+          <div class="review-container">
+            {% assign blog_handles = 'tequila-mezcal-reviews' %}
+            {% for handle in blog_handles %}
+              {% for article in blogs[handle].articles limit: 1 %}
+                <div class="review-container--content d-flex justify-content-start">
+                  <a href="{{ article.url }}">
+                    <div class="review-container--image">
+                      {{ article.image | image_url: width: 240 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="review-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 85 }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="d-flex flex-column">
+        <div class="review--pseudo-border">
+          <div class="d-flex justify-content-between review--header">
+            <h3>BEER</h3>
+            <a href="https://88bamboo.co/blogs/craft-beer">SEE ALL BEER →</a>
+          </div>
+          <div class="review-container">
+            {% assign blog_handles = 'craft-beer' %}
+            {% for handle in blog_handles %}
+              {% for article in blogs[handle].articles limit: 1 %}
+                <div class="review-container--content d-flex justify-content-start">
+                  <a href="{{ article.url }}">
+                    <div class="review-container--image">
+                      {{ article.image | image_url: width: 240 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="review-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 85 }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="review--pseudo-border no-after no-psuedo-after-xl">
+          <div class="d-flex justify-content-between review--header">
+            <h3>WINE</h3>
+            <a href="https://88bamboo.co/blogs/wine-reviews">SEE ALL WINE →</a>
+          </div>
+          <div class="review-container">
+            {% assign blog_handles = 'wine-reviews' %}
+            {% for handle in blog_handles %}
+              {% for article in blogs[handle].articles limit: 1 %}
+                <div class="review-container--content d-flex justify-content-start">
+                  <a href="{{ article.url }}">
+                    <div class="review-container--image">
+                      {{ article.image | image_url: width: 240 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="review-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 85 }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="d-flex flex-column">
+        <div class="review--pseudo-border no-before no-psuedo-before-xl">
+          <div class="d-flex justify-content-between review--header">
+            <h3>GIN</h3>
+            <a href="https://88bamboo.co/blogs/gin">SEE ALL GIN →</a>
+          </div>
+          <div class="review-container">
+            {% assign blog_handles = 'gin' %}
+            {% for handle in blog_handles %}
+              {% for article in blogs[handle].articles limit: 1 %}
+                <div class="review-container--content d-flex justify-content-start">
+                  <a href="{{ article.url }}">
+                    <div class="review-container--image">
+                      {{ article.image | image_url: width: 240 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="review-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 92 }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+
+        <div>
+          <div class="d-flex justify-content-between review--header">
+            <h3>OTHERS</h3>
+            <a href="https://88bamboo.co/blogs/everything-nice">SEE ALL →</a>
+          </div>
+          <div class="review-container">
+            {% assign blog_handles = 'everything-nice' %}
+            {% for handle in blog_handles %}
+              {% for article in blogs[handle].articles limit: 1 %}
+                <div class="review-container--content d-flex justify-content-start">
+                  <a href="{{ article.url }}">
+                    <div class="review-container--image">
+                      {{ article.image | image_url: width: 240 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="review-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 92 }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center flex-wrap review--footer" style="background-color: #EFEDDC;">
+    <a href="https://88bamboo.co/blogs/88-bamboo-japan-88%E7%AB%B9%E6%97%A5%E6%9C%AC" style="color: #3d4246;">
+      88 Bamboo Japan
+    </a>
+    <a href="https://88bamboo.co/blogs/88-bamboo-korea-88-%EB%8C%80%EB%82%98%EB%AC%B4" style="color: #3d4246;">
+      88 Bamboo Korea
+    </a>
+    <a href="https://88bamboo.co/blogs/88-bamboo-hong-kong-88%E7%AB%B9%E9%A6%99%E6%B8%AF" style="color: #3d4246;">
+      88 Bamboo Hong Kong
+    </a>
+    <a href="https://88bamboo.co/blogs/88-bamboo-philippines-88-tagay" style="color: #3d4246;">
+      88 Bamboo Philippines
+    </a>
+    <a href="https://88bamboo.co/blogs/88-bamboo-indonesia-88-bambu" style="color: #3d4246;"> 88 Bamboo Indonesia </a>
+    <a href="https://88bamboo.co/blogs/88-bamboo-vietnam-88-cay-tre" style="color: #3d4246;"> 88 Bamboo Vietnam </a>
+    <a href="https://88bamboo.co/blogs/88-bamboo-thailand-88-%E0%B9%84%E0%B8%9C%E0%B9%88-1" style="color: #3d4246;">
+      88 Bamboo Thailand
+    </a>
+  </div>
+</div>
+
+<!-- WHAT'S BUZZING SECTION -->
+<div class="buzz-container--bg">
+  <div class="container">
+    <div class="buzz-container">
+      <div class="d-flex main--header">
+        <h3>WHAT'S BUZZING?</h3>
+      </div>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="d-flex justify-content-between align-items-center buzz--header">
+            <h3>TRENDING DISCUSSIONS</h3>
+            <a class="align-right-lg" href="https://forum.88bamboo.co"
+              >CONNECT WITH FELLOW DRINK LOVERS ON OUR FORUM →</a
+            >
+          </div>
+          <div class="buzz-container--content">
+            <div class="d-flex align-items-center buzz-container--inner">
+              <img
+                src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/What_s_buzzing_icons_for_Website_Alex.png?v=1671296211"
+                alt="What's Buzzing"
+              >
+              <a href="https://forum.88bamboo.co/c/whiskies/5">Whiskies >></a>
+            </div>
+            <a href="https://forum.88bamboo.co/t/heading-to-scotland-for-a-holiday-any-recommendations-for-distillery-tours/25"
+              >Heading to Scotland for a holiday, any recommendations for distillery tours?</a
+            >
+          </div>
+
+          <div class="buzz-container--content custom-top-margin">
+            <div class="d-flex align-items-center buzz-container--inner">
+              <img
+                src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/What_s_buzzing_icons_for_Website_Alex.png?v=1671296211"
+                alt="What's Buzzing"
+              >
+              <a href="https://forum.88bamboo.co/c/rum/6">Rum >></a>
+            </div>
+            <a href="https://forum.88bamboo.co/t/heres-the-rum-list-at-67-pall-mall-in-sg-which-rums-do-i-have-to-try/27"
+              >Here’s the rum list at 67 Pall Mall in SG. Which Rums do I have to try?</a
+            >
+          </div>
+
+          <div class="buzz-container--content custom-top-margin">
+            <div class="d-flex align-items-center buzz-container--inner">
+              <img
+                src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/What_s_buzzing_icons_for_Website_Alex.png?v=1671296211"
+                alt="What's Buzzing"
+              >
+              <a href="https://forum.88bamboo.co/c/craft-beers/7">Craft Beers >></a>
+            </div>
+            <a href="https://forum.88bamboo.co/t/whats-the-most-unique-beer-youve-ever-tried/28"
+              >What’s the most unique beer you’ve ever tried?</a
+            >
+          </div>
+
+          <div class="custom-top-margin subscribe-container mb-3 mb-md-0">
+            <p>Subscribe to receive the latest recommendations, releases and exclusive offers.</p>
+            <div
+              class="
+                site-footer__newsletter
+                {% if section.blocks.size == 1 %} site-footer__single-block--centered{% endif %} custom-top-margin-small
+              "
+            >
+              {%- assign formId = 'ContactFooter' -%}
+              {% form 'customer', id: formId, novalidate: 'novalidate' %}
+                {%- if form.posted_successfully? -%}
+                  <p class="form-message form-message--success" tabindex="-1" data-form-status>
+                    {{ 'general.newsletter_form.confirmation' | t }}
+                  </p>
+                {%- endif -%}
+                <input type="hidden" name="contact[tags]" value="newsletter">
+                <div class="input-group {% if form.errors %} input-group--error{% endif %}">
+                  <input
+                    type="email"
+                    name="contact[email]"
+                    id="{{ formId }}-email"
+                    class="input-group__field newsletter__input{% if form.errors %} input--error{% endif %}"
+                    value="{{ form.email }}"
+                    placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"
+                    aria-label="{{ 'general.newsletter_form.email_placeholder' | t }}"
+                    aria-required="true"
+                    required
+                    autocorrect="off"
+                    autocapitalize="off"
+                    {% if form.errors %}
+                      aria-invalid="true"
+                      aria-describedby="{{ formId }}-email-error"
+                      data-form-status
+                    {% endif %}
+                  >
+                  <span class="input-group__btn">
+                    <button type="submit" class="btn newsletter__submit" name="commit" id="Subscribe">
+                      <span class="newsletter__submit-text--large">{{ 'general.newsletter_form.submit' | t }}</span>
+                    </button>
+                  </span>
+                </div>
+                {% if form.errors contains 'email' %}
+                  <span id="{{ formId }}-email-error" class="input-error-message">
+                    <span class="visually-hidden">{{ 'general.accessibility.error' | t }} </span>
+                    {% include 'icon-error' %}
+                    <span class="site-footer__newsletter-error">
+                      {{- form.errors.translated_fields.email | capitalize }}
+                      {{ form.errors.messages.email }}.</span
+                    >
+                  </span>
+                {% endif %}
+              {% endform %}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex justify-content-between buzz--header">
+            <h3>COMMUNITY POLL</h3>
+          </div>
+          <div class="poll-container">
+            <form target="_blank" method="post" action="https://poll.pollcode.com/47155222">
+              <div style="background-color:#F6F6F6;border-radius: 5px;padding:2px;width:100%;font-family:Optima nova, sans-serif;font-size:small;-webkit-box-shadow: 0px 4px 8px 2px rgb(0 0 0 / 10%); -moz-box-shadow: 0px 4px 8px 2px rgba(0, 0, 0, 0.1); -ms-box-shadow: 0px 4px 8px 2px rgba(0, 0, 0, 0.1); -o-box-shadow: 0px 4px 8px 2px rgba(0, 0, 0, 0.1); box-shadow: 0px 4px 8px 2px rgb(0 0 0 / 10%);">
+                <div style="padding:2px 0px 4px 2px;color:#10311A;">
+                  <strong>What kind of content are you looking for? We want to serve you better! </strong>
+                </div>
+
+                <input type="radio" name="answer" value="1" id="answer471552221" style="float:left;"
+                ><label for="answer471552221" style="float:left;width:300px;font-weight:400;"
+                  >Buying recommendations</label
+                >
+                <div style="clear:both;height:2px;"></div>
+                <input type="radio" name="answer" value="2" id="answer471552222" style="float:left;"
+                ><label for="answer471552222" style="float:left;width:300px;font-weight:400;"
+                  >Fun stories from the world of drinks</label
+                >
+                <div style="clear:both;height:2px;"></div>
+                <input type="radio" name="answer" value="3" id="answer471552223" style="float:left;"
+                ><label for="answer471552223" style="float:left;width:300px;font-weight:400;"
+                  >Hot takes from guest contributors</label
+                >
+                <div style="clear:both;height:2px;"></div>
+                <input type="radio" name="answer" value="4" id="answer471552224" style="float:left;"
+                ><label for="answer471552224" style="float:left;width:300px;font-weight:400;"
+                  >Spotlights into different distilleries</label
+                >
+                <div style="clear:both;height:2px;"></div>
+                <input type="radio" name="answer" value="5" id="answer471552225" style="float:left;"
+                ><label for="answer471552225" style="float:left;width:300px;font-weight:400;"
+                  >Beginner-friendly 101s on different drinks</label
+                >
+                <div style="clear:both;height:2px;"></div>
+                <input type="radio" name="answer" value="6" id="answer471552226" style="float:left;"
+                ><label for="answer471552226" style="float:left;width:300px;font-weight:400;"
+                  >Where should my next bar trip be
+                </label>
+                <div style="clear:both;height:2px;"></div>
+                <div align="center" style="padding:3px;">
+                  <input type="submit" value=" Vote ">&nbsp;
+
+                  <input type="submit" name="view" value=" View ">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="d-flex justify-content-between buzz--header">
+            <h3>FOLLOW 88 BAMBOO</h3>
+          </div>
+          <p>
+            88 Bamboo is your one-stop drinking companion in Asia. We make spirits and spirits appreciation fun and
+            accessible to all.
+          </p>
+          <div class="custom-top-margin d-flex">
+            <div class="social-container">
+              <a href="instagram.com/88.bamboo">
+                <img
+                  src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/2_38aa2910-266a-44cf-8d32-f199cdcc263f.png?v=1671341476"
+                  alt="Instagram"
+                  loading="lazy"
+                >
+              </a>
+            </div>
+            <div class="social-container">
+              <a href="https://www.tiktok.com/@88.bamboo">
+                <img
+                  src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/5_fce3768b-6273-46a1-883a-8f40b1f7185e.png?v=1671341540"
+                  alt="Tik Tok"
+                  loading="lazy"
+                >
+              </a>
+            </div>
+            <div class="social-container">
+              <a href="https://www.facebook.com/groups/whiskyandspiritsclubasia/">
+                <img
+                  src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/3_25f7b1e8-b6d6-4e1f-bca1-fdf1438d8dc5.png?v=1671341582"
+                  alt="Facebook"
+                  loading="lazy"
+                >
+              </a>
+            </div>
+            <div class="social-container">
+              <a href="https://twitter.com/88bamboo1">
+                <img
+                  src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/What_s_buzzing_icons_for_Website_Alex_-_twitter.png?v=1671343629"
+                  alt="Twitter"
+                  loading="lazy"
+                >
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- COCKTAILS SECTION -->
+<div class="container">
+  <div class="row custom-top-margin-big">
+    <div class="col-md-8">
+      <div class="d-flex flex-column psuedo-right-border h-100 no-psuedo-before-md">
+        <div class="d-flex justify-content-between align-items-center main--header">
+          <h3>COCKTAILS</h3>
+          <a href="https://88bamboo.co/blogs/cocktail-recipes">MORE COCKTAILS →</a>
+        </div>
+        <div class="cocktails-container d-flex justify-content-center justify-content-sm-between flex-wrap">
+          {% assign cocktail_article = blogs['cocktail-recipes'].articles %}
+          {% assign itrydrinks_article = blogs.itrydrinks.articles %}
+          {% assign joined_article = cocktail_article | concat: itrydrinks_article %}
+          {% assign articles = joined_article | sort: 'published_at' | reverse %}
+
+          {% for article in articles limit: 4 %}
+            <div class="cocktails-container--content">
+              <a href="{{ article.url }}">
+                <div class="cocktails-container--image">
+                  {{ article.image | image_url: width: 350 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                </div>
+              </a>
+
+              <div class="cocktails-container--header">
+                <a href="{{ article.url }}">
+                  {{ article.title | strip_html | truncate: 44 }}
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="what-container">
+        <div class="what-container--content">
+          <h3 class="header-text">WHAT'S HAPPENING</h3>
+          {% assign blog_handles = 'whats-on' %}
+          {% for handle in blog_handles %}
+            {% for article in blogs[handle].articles limit: 3 %}
+              <a href="{{ article.url }}">
+                {{ article.title | strip_html | truncate: 112 }}
+              </a>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GUEST COLUMNS SECTION -->
+<div class="container">
+  <div class="row custom-top-margin-big">
+    <div class="col-md-8">
+      <div class="d-flex flex-column psuedo-right-border no-psuedo-before-md">
+        <div class="d-flex justify-content-between align-items-center main--header">
+          <h3>GUEST COLUMNS</h3>
+        </div>
+        <div class="guest-container d-flex justify-content-center justify-content-sm-between flex-wrap">
+          {% assign blog_handles = 'durhum' %}
+          {% for handle in blog_handles %}
+            {% for article in blogs[handle].articles limit: 2 %}
+              <div class="guest-container--content">
+                <a href="{{ article.url }}">
+                  <div class="guest-container--image">
+                    {{ article.image | image_url: width: 350 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                  </div>
+                </a>
+
+                <div class="guest-container--header">
+                  <a href="{{ article.url }}">
+                    {{ article.title | strip_html | truncate: 57 }}
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+          {% endfor %}
+          {% assign blog_handles = 'the-rhythm-and-booze-with-felipe-schrieberg' %}
+          {% for handle in blog_handles %}
+            {% for article in blogs[handle].articles limit: 2 %}
+              <div class="guest-container--content">
+                <a href="{{ article.url }}">
+                  <div class="guest-container--image">
+                    {{ article.image | image_url: width: 350 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                  </div>
+                </a>
+
+                <div class="guest-container--header">
+                  <a href="{{ article.url }}">
+                    {{ article.title | strip_html | truncate: 57 }}
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+
+        <div
+          class="d-flex flex-wrap guest--footer justify-content-center justify-content-md-start"
+          style="background-color: #EFEDDC;"
+        >
+          <a href="https://88bamboo.co/blogs/durhum" style="color: #3d4246;"
+            >DURHUM'S REVIEWS</a
+          >
+          <a href="https://88bamboo.co/blogs/the-rhythm-and-booze-with-felipe-schrieberg" style="color: #3d4246;"
+            >RHYTHM & BOOZE</a
+          >
+          <a href="https://88bamboo.co/blogs/japanese-whisky-dictionary" style="color: #3d4246;"
+            >JP WHISKY DICTIONARY</a
+          >
+          <a href="https://88bamboo.co/blogs/bottoms-up-with-joe-micallef" style="color: #3d4246;">BOTTOMS UP</a>
+          <a href="https://88bamboo.co/blogs/88-bamboo-philippines-88-tagay/tagged/whiskyph" style="color: #3d4246;"
+            >NOSTALGIC DRAMS</a
+          >
+          <a href="https://88bamboo.co/blogs/craft-beer" style="color: #3d4246;">BEER & TUNES</a>
+          <a href="https://88bamboo.co/blogs/skus-not-so-recent-drinks" style="color: #3d4246;">SKU'S DRINKS</a>
+          <a href="https://88bamboo.co/blogs/sg-alcohol-guy" style="color: #3d4246;">SG ALCOHOL GUY</a>
+          <a href="https://88bamboo.co/blogs/sicklehut" style="color: #3d4246;">SICKLEHUT</a>
+          <a href="https://88bamboo.co/blogs/little-ichilo" style="color: #3d4246;">LITTLE ICHILO</a>
+          <a href="https://88bamboo.co/blogs/itrydrinks" style="color: #3d4246;">I (SHANTY) TRY DRINKS</a>
+          <a href="https://88bamboo.co/blogs/cocktail-in-movies" style="color: #3d4246;">COCKTAILS IN MOVIES</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="guest-column-container">
+        <div class="guest-column-container--image">
+          <a href="https://88bamboo.co/pages/send-us">
+            <img
+              src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/Call_for_contributors.png?v=1678535803"
+              alt="Become A Contributor"
+              loading="lazy"
+            >
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIBRARY SECTION -->
+<div class="container library-main-container">
+  <div class="d-flex justify-content-between main--header custom-top-margin-big">
+    <h3>LIBRARY</h3>
+  </div>
+  <div class="row">
+    <div class="col-md-6 col-lg-4">
+      <div class="d-flex flex-column">
+        <div class="library--pseudo-border">
+          <div class="d-flex justify-content-between library--header">
+            <h3>VINTAGE PRINTS</h3>
+            <a href="https://88bamboo.co/blogs/prints">SEE ALL PRINTS →</a>
+          </div>
+          <div class="library-container">
+            {% assign blog_handles = 'prints' %}
+            {% for handle in blog_handles %}
+              {% for article in blogs[handle].articles limit: 2 %}
+                <div class="library-container--content d-flex">
+                  <a href="{{ article.url }}">
+                    <div class="library-container--image">
+                      {{ article.image | image_url: width: 260 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="library-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 90 }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="d-flex flex-column">
+        <div class="library--pseudo-border">
+          <div class="d-flex justify-content-between library--header">
+            <h3>VINTAGE BOOKS</h3>
+            <a href="https://88bamboo.co/pages/library">SEE ALL BOOKS →</a>
+          </div>
+          <div class="library-container">
+            <div class="library-container--content d-flex">
+              <a
+                href="https://88bamboo.co/blogs/panda-press/tagged/the-definitive-guide-to-buying-vintage-macallan"
+              >
+                <div class="library-container--image">
+                  <img
+                    src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/Book_Cover_-_Definitive_Guide_to_Macallan_540x_17e04477-e724-413e-a195-b7d127fad355.png?v=1646238737"
+                    alt="The Definitive Guide To Buying Vintage Macallan, First Edition"
+                    class="img-fluid"
+                    loading="lazy"
+                  >
+                </div>
+              </a>
+
+              <div class="library-container--header">
+                <a href="https://88bamboo.co/blogs/panda-press/tagged/the-definitive-guide-to-buying-vintage-macallan">
+                  The Definitive Guide To Buying Vintage Macallan, First Edition
+                </a>
+              </div>
+            </div>
+            <div class="library-container--content d-flex">
+              <a href="https://88bamboo.co/blogs/panda-press/tagged/whisky-eretico-silvano-s-samaroli">
+                <div class="library-container--image">
+                  <img
+                    src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/Book_Cover_-_Whisky_Samaroli_360x_ed8d910e-e0da-418e-9bff-39e550bbdd83.jpg?v=1646238931"
+                    alt="Whisky Eretico by Silvano Samaroli"
+                    class="img-fluid"
+                    loading="lazy"
+                  >
+                </div>
+              </a>
+
+              <div class="library-container--header">
+                <a href="https://88bamboo.co/blogs/panda-press/tagged/whisky-eretico-silvano-s-samaroli">
+                  Whisky Eretico by Silvano Samaroli
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="d-flex flex-column">
+        <div class="library--pseudo-border no-before">
+          <div class="d-flex justify-content-between library--header">
+            <h3>PANDA TV</h3>
+            <a href="https://88bamboo.co/blogs/tv">SEE ALL TV →</a>
+          </div>
+          <div class="library-container">
+            {% assign blog_handles = 'tv' %}
+            {% for handle in blog_handles %}
+              {% for article in blogs[handle].articles limit: 2 %}
+                <div class="library-container--content d-flex">
+                  <a href="{{ article.url }}">
+                    <div class="library-container--image">
+                      {{ article.image | image_url: width: 260 | image_tag: class: 'img-fluid', loading: 'lazy' }}
+                    </div>
+                  </a>
+
+                  <div class="library-container--header">
+                    <a href="{{ article.url }}">
+                      {{ article.title | strip_html | truncate: 90 }}
+                    </a>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endcomment %} 
+
+
+<style> 
+body * {
+  line-height: 1.25;
+} 
+
+.news-container .news-container--content {
+  padding:14px 0 !important;
+}
+
+.news-container--image {
+  width:155px !important;
+}
+
+  
+</style>
+
+
+<!--
+  note: see Custom HTML on home theme page
+
+
+  $(document).ready(function(){
+    	$("#instafeed").load("https://88bamboo.co/pages/alternate-home-page #sg-feed-cards2");
+-->
+
+

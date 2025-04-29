@@ -1,0 +1,38 @@
+<div class="editable-container p-0 desktop-view-hide">
+  <div class="editable-container--image">
+    <a href="{{ section.settings.custom_link }}">
+      <img src="{{ section.settings.custom_image | img_url: 'master' }}" loading="lazy">
+    </a>
+  </div>
+
+
+</div>
+
+{% schema %}
+{
+   "name":"Mobile Banner - 3A",
+   "settings":[
+      {
+         "id":"custom_text",
+         "type":"text",
+         "label":"Input content"
+      },
+      {
+         "id":"custom_link",
+         "type":"url",
+         "label":"Custom URL"
+      },
+      {
+         "id":"custom_image",
+         "type":"image_picker",
+         "label":"Image"
+      }
+   ]
+}
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

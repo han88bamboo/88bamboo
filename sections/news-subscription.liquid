@@ -1,0 +1,98 @@
+{%- if section.settings.show_sub -%}
+  <div class="escapedes-main-container">
+    <div class="subscribe-container">
+      <p style="font-size:16px;">Get the latest news, recommendations and exclusive offers, poured straight into your inbox! Subscribe here.</p>
+      <div
+        class="
+          site-footer__newsletter
+          {% if section.blocks.size == 1 %} site-footer__single-block--centered{% endif %} custom-top-margin-small
+        "
+      >
+        {%- assign formId = 'ContactFooter' -%}
+        {% form 'customer', id: formId, novalidate: 'novalidate' %}
+          {%- if form.posted_successfully? -%}
+            <p class="form-message form-message--success" tabindex="-1" data-form-status>
+              {{ 'general.newsletter_form.confirmation' | t }}
+            </p>
+          {%- endif -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="input-group {% if form.errors %} input-group--error{% endif %}">
+            <input
+              type="email"
+              name="contact[email]"
+              id="{{ formId }}-email"
+              class="input-group__field newsletter__input{% if form.errors %} input--error{% endif %}"
+              value="{{ form.email }}"
+              placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"
+              aria-label="{{ 'general.newsletter_form.email_placeholder' | t }}"
+              aria-required="true"
+              required
+              autocorrect="off"
+              autocapitalize="off"
+              {% if form.errors %}
+                aria-invalid="true"
+                aria-describedby="{{ formId }}-email-error"
+                data-form-status
+              {% endif %}
+            >
+            <span class="input-group__btn" style="margin: 8px 0 0 0 ;">
+              <button type="submit" class="btn newsletter__submit" name="commit" id="Subscribe">
+                <span class="newsletter__submit-text--large">{{ 'general.newsletter_form.submit' | t }}</span>
+              </button>
+            </span>
+          </div>
+          {% if form.errors contains 'email' %}
+            <span id="{{ formId }}-email-error" class="input-error-message">
+              <span class="visually-hidden">{{ 'general.accessibility.error' | t }} </span>
+              {% include 'icon-error' %}
+              <span class="site-footer__newsletter-error">
+                {{- form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email }}.</span
+              >
+            </span>
+          {% endif %}
+        {% endform %}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Subscription box",
+  "class": "subbox",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_sub",
+      "label": "show newsletter subscription",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+  /* during mobile usage hide it  */
+  .subbox {
+    display: block;
+    margin : 0rem 0rem 0rem 0rem;
+  }
+
+  @media only screen and (min-width: 600px) {
+    /* For tablets: */
+    .subbox {
+      margin : 2rem 1.5rem 0rem 1.5rem;
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    /* For desktop: */
+    .subbox {
+      margin : 2rem 1.5rem 0rem 1.5rem;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

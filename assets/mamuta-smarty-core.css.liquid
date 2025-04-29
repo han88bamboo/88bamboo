@@ -1,0 +1,310 @@
+/*================ Reset ================*/
+
+#tiers ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#tiers ul li {
+  list-style: none;
+  margin: 0;
+}
+
+.tierprice-cart-item-success-notes {
+}
+
+.tierprice-cart-item-upsell-notes{
+}
+
+/*================ Layout ================*/
+
+{% if settings.mamuta_product_box_position == 'none' %}
+    #tiers {
+       display: none;
+    }
+{% else %}
+    #tiers {
+      width: {{ settings.mamuta_product_box_width | append: '%' }};
+      margin-top: {{ settings.mamuta_product_box_margin_top | append: 'px' }};
+      margin-left: {{ settings.mamuta_product_box_margin_left | append: 'px' }};
+      padding: 0.65rem 0.5rem 0.65rem 0.5rem;
+    }
+{% endif %}
+
+#tiers .mamuta-smarty-camp-hidden {
+    visibility: hidden;
+}
+#tiers .mamuta-smarty-camp-descr {
+    text-align: {{ settings.mamuta_product_description_align }};
+    margin-bottom: 1rem;
+}
+#tiers .mamuta-smarty-camp-warning {
+    margin-bottom: 1rem;
+}
+#tiers li.mamuta-smarty-camp-breaks {
+    padding-top: 0.25rem;
+}
+#tiers div.mamuta-smarty-camp-breaks {
+    display: flex;
+    justify-content: space-evenly;
+}
+#tiers div.mamuta-smarty-camp-hidden-warning {
+    display: flex;
+    justify-content: center;
+}
+#tiers div.mamuta-smarty-camp-breaks-prefix {
+    margin-left: 1.25rem;
+}
+#tiers div.mamuta-smarty-camp-breaks-suffix {
+    margin-right: 1.25rem;
+}
+
+.tierprice-cart-item-success-notes {
+  width: 100%;
+}
+
+{% if settings.mamuta_plussign_invisible %}
+    #tiers .mamuta-plussuffix {
+        display: none;
+    }
+{% endif %}
+
+{% if settings.mamuta_cart_success_invisible %}
+    .tierprice-cart-item-success-notes {
+        display: none;
+    }
+{% endif %}
+.tierprice-cart-item-success-notes > span:first-child {
+  display: block;
+}
+
+{% if settings.mamuta_cart_upsell_invisible %}
+    .tierprice-cart-item-success-notes > div:first-child {
+      padding: 0.25rem 0 0.25rem 0.25rem;
+    }
+{% else %}
+    .tierprice-cart-item-success-notes > div:first-child {
+      padding: 0.25rem 0 0 0.25rem;
+    }
+{% endif %}
+
+.tierprice-cart-item-upsell-notes {
+  width: 100%;
+}
+{% if settings.mamuta_cart_upsell_invisible %}
+    .tierprice-cart-item-upsell-notes {
+        display: none;
+    }
+{% endif %}
+.tierprice-cart-item-upsell-notes > span:first-child {
+  display: block;
+}
+{% if settings.mamuta_cart_success_invisible %}
+    .tierprice-cart-item-upsell-notes > div:first-child {
+      padding: 0.25rem 0 0.25rem 0.25rem;
+    }
+{% else %}
+    .tierprice-cart-item-upsell-notes > div:first-child {
+       padding: 0 0 0.25rem 0.25rem;
+    }
+{% endif %}
+
+#tiers .mamuta-smarty-camp-row {
+ column-count: 3;
+ column-width: auto;
+ column-fill: balance;
+}
+
+#tiers .mamuta-smarty-camp-row2 {
+ column-count: 2;
+ column-width: auto;
+ column-fill: balance;
+}
+
+#tiers .mamuta-smarty-camp-column {
+ text-align: center;
+ max-width: 100%;
+ border: 1px solid rgba(0, 0, 0, 0.01);
+}
+
+#tiers .mamuta-smarty-camp-column span {
+ vertical-align: middle;
+}
+
+#tiers .mamuta-smarty-camp-row.mamuta-smarty-camp-some {
+  display: flex;
+  justify-content: center;
+}
+
+#tiers .mamuta-smarty-camp-row2.mamuta-smarty-camp-some {
+  display: flex;
+  justify-content: center;
+}
+
+/*================ Colors ================*/
+
+{% unless settings.mamuta_product_text_inherit %}
+    #tiers {
+        color: {{ settings.mamuta_product_text_color }};
+    }
+    #tiers li.mamuta-smarty-camp-breaks {
+         color: {{ settings.mamuta_first_line_text_color }};
+    }
+{% endunless %}
+{% unless settings.mamuta_product_backgound_inherit %}
+    #tiers {
+         background-color: {{ settings.mamuta_product_background_color }};
+    }
+{% endunless %}
+
+{% unless settings.mamuta_first_line_background_inherit %}
+    #tiers li.mamuta-smarty-camp-breaks {
+         background-color: {{ settings.mamuta_first_line_background_color }};
+    }
+{% endunless %}
+
+{% unless settings.mamuta_product_header_inherit %}
+    #tiers h4 {
+        color: {{ settings.mamuta_product_header_color }};
+    }
+{% endunless %}
+{% unless settings.mamuta_product_header_backgound_inherit %}
+    #tiers h4 {
+         background-color: {{ settings.mamuta_product_header_background_color }};
+    }
+{% endunless %}
+
+{% unless settings.mamuta_cart_success_inherit %}
+    .tierprice-cart-item-success-notes {
+        color: {{ settings.mamuta_cart_success_color }};
+    }
+{% endunless %}
+{% unless settings.mamuta_cart_success_backgound_inherit %}
+    .tierprice-cart-item-success-notes {
+        background-color: {{ settings.mamuta_cart_success_background_color }};
+    }
+{% endunless %}
+
+{% unless settings.mamuta_cart_upsell_inherit %}
+    .tierprice-cart-item-upsell-notes {
+        color: {{ settings.mamuta_cart_upsell_color }};
+    }
+{% endunless %}
+{% unless settings.mamuta_cart_upsell_backgound_inherit %}
+    .tierprice-cart-item-upsell-notes {
+        background-color: {{ settings.mamuta_cart_upsell_background_color }};
+    }
+{% endunless %}
+
+{% unless settings.mamuta_product_text_inherit %}
+    #tiers .mamuta-smarty-camp-row:first-child, #tiers .mamuta-smarty-camp-row2:first-child {
+         color: {{ settings.mamuta_first_line_text_color }};
+    }
+{% endunless %}
+{% unless settings.mamuta_first_line_background_inherit %}
+    #tiers .mamuta-smarty-camp-row:first-child, #tiers .mamuta-smarty-camp-row2:first-child {
+         background-color: {{ settings.mamuta_first_line_background_color }};
+    }
+{% endunless %}
+
+/*================ Typography ================*/
+
+{% unless settings.mamuta_product_font_inherit %}
+  {% assign product_font = settings.mamuta_product_text_font %}
+
+  {{ product_font | font_face }}
+
+  #tiers {
+    font-family: {{ product_font.family }}, {{ product_font.fallback_families }};
+    font-style: {{ product_font.style }};
+    font-weight: {{ settings.mamuta_product_text_weight | default: product_font.weight }};
+    font-size: {{ settings.mamuta_product_text_size | append: 'px' }};
+  }
+  #tiers h4 {
+    font-weight: {{ settings.mamuta_product_header_weight  | default: product_font.weight}};
+    font-size: {{ settings.mamuta_product_header_size | append: 'px' }};
+  }
+{% endunless %}
+
+#tiers .mamuta-smarty-camp-breaks-value-bump  {
+    font-size: 100%;
+}
+
+{% unless settings.mamuta_cart_font_inherit %}
+  {% assign cart_font = settings.mamuta_cart_text_font %}
+
+  {{ cart_font | font_face }}
+
+  .tierprice-cart-item-success-notes,
+  .tierprice-cart-item-upsell-notes {
+    font-family: {{ cart_font.family }}, {{ cart_font.fallback_families }};
+    font-style: {{ cart_font.style }};
+    font-weight: {{ settings.mamuta_cart_text_weight | default: cart_font.weight }};
+    font-size: {{ settings.mamuta_cart_text_size | append: 'px' }};
+  }
+{% endunless %}
+
+/*================ List ================*/
+
+#tiers ul li {
+  padding-bottom: 0.25rem;
+  padding-top: 0.25rem;
+}
+
+/*================ Borders ================*/
+
+#tiers ul {
+}
+{% unless settings.mamuta_product_border_disable %}
+#tiers ul {
+    border-color: {{ settings.mamuta_product_border_color }};
+}
+#tiers ul li {
+    border-bottom: 1px solid;
+    border-color: inherit;
+}
+{% endunless %}
+#tiers ul li:first-child {
+  border-top: 1px solid;
+  border-top-color: {{ settings.mamuta_product_border_color }};
+}
+#tiers ul li:last-child {
+  border-bottom: 1px solid;
+  border-bottom-color: {{ settings.mamuta_product_border_color }};
+}
+
+{% unless settings.mamuta_product_side_border_disable %}
+#tiers ul li {
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-color: {{ settings.mamuta_product_border_color }};
+}
+{% endunless %}
+
+#tiers .mamuta-smarty-camp-row:first-child, #tiers .mamuta-smarty-camp-row2:first-child {
+  border-top: 1px solid;
+  border-color: {{ settings.mamuta_product_border_color }};
+}
+
+#tiers .mamuta-smarty-camp-row:last-child, #tiers .mamuta-smarty-camp-row2:last-child {
+  border-bottom: 1px solid;
+  border-color: {{ settings.mamuta_product_border_color }};
+}
+
+{% unless settings.mamuta_product_border_disable %}
+ #tiers .mamuta-smarty-camp-row, #tiers .mamuta-smarty-camp-row2 {
+   border-top: 1px solid;
+   border-color: {{ settings.mamuta_product_border_color }};
+ }
+{% endunless %}
+
+{% unless settings.mamuta_product_side_border_disable %}
+ #tiers .mamuta-smarty-camp-row, #tiers .mamuta-smarty-camp-row2 {
+   border-left: 1px solid;
+   border-right: 1px solid;
+   border-color: {{ settings.mamuta_product_border_color }};
+   column-rule: 1px solid;
+   column-rule-color: {{ settings.mamuta_product_border_color }};
+ }
+{% endunless %}

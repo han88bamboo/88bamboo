@@ -1,0 +1,83 @@
+{%- if section.settings['display-ad'] -%}
+  <div class="advert-banner-top">
+    <a href="{{ section.settings.custom-link }}">
+      <img
+        class="banner-img"
+        src="{{ section.settings.banner-image | img_url: 'master' }}"
+        loading="lazy"
+        decoding="async"
+      >
+    </a>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Top banner",
+  "class": "container",
+  "settings": [
+    {
+      "id": "display-ad",
+      "type": "checkbox",
+      "label": "display ad?",
+      "default": false
+    },
+    {
+      "id":"banner-image",
+      "type":"image_picker",
+      "label":"Image"
+    },
+    {
+      "id": "custom-link",
+      "type": "url",
+      "label": "Link to ad"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+  .advert-banner-top {
+    display: block;
+    margin: 0rem 0rem 1.5rem 0rem;
+  }
+
+  .banner-img {
+    display:block !important;
+    width: 100% ;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  @media only screen and (min-width: 600px) {
+    /* For tablets: */
+    .advert-banner-top {
+      margin : 0rem 0rem 3.4rem 0rem;
+    }
+
+    .banner-img {
+      width: 65% !important;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    /* For desktop: */
+    .advert-banner-top {
+      margin : 0rem 0rem 3.4rem 0rem;
+    }
+
+    .banner-img {
+      width: 65% !important;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+
+  
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

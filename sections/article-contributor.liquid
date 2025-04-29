@@ -1,0 +1,65 @@
+{% comment %}
+  <div class="articles-side-column-container">
+    <div class="d-flex justify-content-between new--header">
+      <h2>Call for Contributor</h2>
+    </div>
+
+    <span>
+      Whether you're a rum diarist in Singapore, a malt reviewer in Philippines, a bar hopper in Tokyo or a gin lover in
+      Hong Kong, we're always introducing new voices to our vibrant editorial.
+      <a href="https://88bamboo.co/pages/send-us">Reach out here!</a>
+    </span>
+  </div>
+{% endcomment %}
+
+<div class="contributor-container-title">
+  <h3>Call for Contributors</h3>
+</div>
+
+<span>
+  Whether you're a rum diarist in Singapore, a malt reviewer in Philippines, a bar hopper in Tokyo or a gin lover in
+  Hong Kong, we're always introducing new voices to our vibrant editorial.
+  <a href="https://88bamboo.co/pages/send-us"><b>Reach out here!</b></a>
+</span>
+
+{% schema %}
+{
+  "name": "Recruit contributor",
+  "class": "contributers-note-content",
+  "settings": []
+}
+{% endschema %}
+
+{% stylesheet %}
+    /* during mobile usage hide it  */
+    .contributers-note-content {
+      display : none;
+      margin : 0px 0px;
+    }
+
+    .contributor-container-title {
+      border-bottom: 1px solid #707070;
+      font-size: 16px;
+      font-weight: normal;
+      margin-bottom: 5px;
+    }
+
+  @media only screen and (min-width: 600px) {
+    /* For tablets: */
+    .contributers-note-content {
+      display : block;
+      margin : 8px 0px
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    /* For desktop: */
+    .contributers-note-content {
+      display : block;
+      margin : 8px 0px
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

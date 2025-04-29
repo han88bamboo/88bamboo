@@ -1,0 +1,67 @@
+<!-- below is Google display ad -->
+<ins class="adsbygoogle"
+     style="display:block; text-align: center;"
+     data-ad-client="ca-pub-6273752259116373"
+     data-ad-slot="8401306957"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- above is Google display ad-->
+
+{% assign url_path = request.path %}
+
+<div class="section_links">
+  {% if url_path contains '/blogs/whisky-reviews'
+    or url_path contains '/blogs/rum-reviews'
+    or url_path contains '/blogs/craft-beer'
+    or url_path contains '/blogs/gin'
+    or url_path contains '/blogs/sake'
+    or url_path contains '/blogs/tequila-mezcal-reviews'
+    or url_path contains '/blogs/baijiu'
+    or url_path contains '/blogs/everything-nice'
+  %}
+    <!-- Render content specific to all pages under /blog -->
+    <div style="background-color:#EFEDDC; width: auto; height: auto; margin-top: 20px;">
+      <h2 style="text-align: center; padding: 5px;">
+        <em>Read more reviews<br> </em>
+          <a href="/blogs/whisky-reviews" style="border-bottom:none !important; color: #1A6132;">Whisky</a> |
+          <a href="/blogs/rum-reviews" style="border-bottom:none !important; color: #1A6132;">Rum</a> |
+          <a href="/blogs/craft-beer" style="border-bottom:none !important; color: #1A6132;">Beer</a> |
+          <a href="/blogs/gin" style="border-bottom:none !important; color: #1A6132;">Gin</a> |
+          <a href="/blogs/sake" style="border-bottom:none !important; color: #1A6132;">Sake</a> |
+          <a href="/blogs/tequila-mezcal-reviews" style="border-bottom:none !important; color: #1A6132;">Tequila</a> |
+          <a href="/blogs/baijiu" style="border-bottom:none !important; color: #1A6132;">Baijiu</a> |
+          <a href="/blogs/everything-nice" style="border-bottom:none !important; color: #1A6132;">Liqueurs & Others</a>
+      </h2>
+    </div>
+    <br>
+  {% else %}
+    <!-- Render content for all other pages -->
+    <div style="background-color:#EFEDDC; width: auto;height:auto; margin-top: 20px;">
+      <h2 style="text-align: center; padding: 5px;">
+        <em>Discover More on The Bamboo Post<br></em>
+          <a href="/blogs/news" style="border-bottom:none !important; color: #1A6132;">News & Releases </a> |
+          <a href="/blogs/features" style="border-bottom:none !important; color: #1A6132;">Features & Commentary</a> |
+          <a href="/blogs/interviews" style="border-bottom:none !important; color: #1A6132;">Interviews</a> |
+          <a href="/blogs/whisky-rum-gin-vodka-distillery-spotlight" style="border-bottom:none !important; color: #1A6132;"
+            >Distiller & Brewery Deep Dives</a
+          >
+      </h2>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Section links",
+  "settings": []
+}
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

@@ -1,0 +1,1910 @@
+<!-- Change log 12 Mar 2023
+Updated homepage to 
+-create new blog preview section for Whats Happening
+-added new section to insert picture and link on the right hand side
+-adjust styling of mini nav bars within several sections
+
+Other stuff
+-fixed blog pagination to align to middle
+-adjusted proportions for Shop All page (removing white space for right and left side bars)
+-inserted new $smallprime to deal with sticky bar ad issue on desktop
+-->
+
+<!-- Change log 1 April 2023
+-Created new pages for Sake 101 and Mezcal 101
+-resized craft beer 101 (since we no longer have side bars)
+-created new collection list for dram sets
+-->
+
+<!-- Change log 6 April 2023
+-added strip under reviews for different review sections
+-added strip under other sections for different editorial sections
+-adjusted homepage and changed colours and size of belts etc
+-craft beer -> beer
+
+-->
+
+<!-- Change log 7 April 2023
+-edited custom-collection-list.liquid so that the products are randomized on homepage (find original code in April 6 Theme)
+-stylistic adjustments for belt with shop categories
+-made Big Read applicable also to whats-on
+-->
+<!-- Change log 10 April 2023
+-added skimlinks affiliate program js on Theme.liquid file
+-->
+
+<!--- Change log 9 May 2023  - most changes made by Ming Sheng
+-revamped article.liquid structure - many segments are broken off and shifted to different .liquid files like article-advertising-top-banner.liquid 
+-added right side bar for ads 
+-added top bar for ads
+-added email subscription box
+--->
+<!--- Change log 10 May 2023 
+-cleaned up bugs - "More on bamboo post / reviews" did not render properly previously
+-edited styling of the right side bar 
+-used javascript to render the HTML of email subscription box in the middle of an article - to check if this works properly
+--->
+
+<!--- Change log 11 May 2023 
+-shifted article title to above the text and made text (and all H1) bigger
+-inserted blog category above each article's title
+-adjusted Advertise with us info
+-email subscription box shifted to article side bar
+--->
+
+<!--- Change log August 2023 
+-added promotional banners on homepage and top and bottom of article  
+--->
+
+<!--- Change log September 2023 
+-added 'Review Of The Week' feature on homepage
+-embedded IG and Tiktok on homepage
+--->
+
+<!--- Change log Oct 2023 
+-added JS in theme.liquid to automatically insert Patreon banner
+--->
+
+<!--- change log 4 jul 2024
+-added <style> tags in Index.liquid to shrink line spacing to 1.25 in homepage
+-added "hide" classes to cart and 'person' icon on 88b
+--->
+
+<!--- change log late jul 2024
+-added custom editable banner sections 3 and 3A for rum contributors' banners
+-adjusted contributor's content rail on homepage so that rum contributor's content shows
+--->
+
+<!--- change log 14 April 2025
+-updated index.liquid blog handle for Spotlights from older handle to "brand-spotlights"
+--->
+<!-- the code here is inserted into the custom html sections of the home page-->
+
+
+<!---below added by Zhe Han to insert tabs - JS in index.liquid--->
+<ul class="nav nav-tabs h5">
+  <li class="active"><a data-toggle="tab" href="#tabmenu1">News &amp; New Releases</a></li>
+  <li><a data-toggle="tab" href="#tabmenu2">Reviews</a></li>
+  <li><a data-toggle="tab" href="#tabmenu3">Features</a></li>
+  <li><a data-toggle="tab" href="#tabmenu4">WhiskyDex</a></li>
+  <li><a data-toggle="tab" href="#tabmenu5">Malternatives</a></li>
+<!--  <li><a data-toggle="tab" href="#tabmenu6">Bar Escapades</a></li> -->
+  <li><a data-toggle="tab" href="#tabmenu7">Rhythm &amp; Booze</a></li>
+
+</ul>
+
+<div class="tab-content">
+
+  <div id="tabmenu1" class="tab-pane fade in active">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+
+  <div id="tabmenu2" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+
+  <div id="tabmenu3" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+  
+  <div id="tabmenu4" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div> 
+
+  <div id="tabmenu5" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+  </div>
+
+<!---  <div id="tabmenu6" class="tab-pane fade">
+    Zhe Han - essentially all the code for one row of features    
+    
+  </div> 
+--->
+  <div id="tabmenu7" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+  </div>
+  
+</div> 
+
+<!---above added by Zhe Han to insert tabs --->
+
+
+
+
+
+
+
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#tabmenu6">Latest Bar Escapades</a></li>
+  <li><a data-toggle="tab" href="#tabmenu7">Panda Press</a></li>
+</ul>
+
+<div class="tab-content">
+
+  <div id="tabmenu6" class="tab-pane fade in active">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+
+  <div id="tabmenu7" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+
+</div>
+
+
+<!---above added by Zhe Han to insert tabs-->
+
+
+
+
+
+<!-- code below for left column -->
+
+
+<div class="left-column">
+  <div class="grid">
+    <div class="grid__item medium-up--two-sixths medium-up--push-one-twelfth">
+      <div>
+        <p> test </p>        <!-- Google ad -->
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+
+.left-column {
+  max-width: 200px;
+  float: left;
+  background-color: mint;
+  @include media-query($small){display: none;}
+}
+  
+</style>  
+
+<!-- code above for left column -->
+
+<!-- below to add breadcrumb list for product liquid -->
+
+<nav aria-label="Home" class="breadcrumb">
+<a class="Breadcrumbs" href="/pages/shop">Home</a> /
+<a class="Breadcrumbs" href="/collections/{{ product.type | handleize}}"> {{ product.type }} </a> /
+<span class="breadcrumb__link" aria-current="page" style="font-weight:bold;"> {{ product.title}}</span>
+</nav>
+
+<!-- above to add breadcrumb list zhe han -->
+
+<!-- below to make side bar load depending on media query -->
+
+
+<script>       
+      $(document).ready(function(){
+            $("#tabmenu1").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog2");
+        	$("#tabmenu2").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog3");
+        	$("#tabmenu3").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog5");
+        	$("#tabmenu4").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog6");
+            $("#tabmenu5").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog7");
+        	$("#tabmenu6").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog4");
+        	$("#tabmenu7").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog9");
+        });              
+
+
+
+function myFunction(x) {
+  if (x.matches) { // If media query matches
+    document.body.style.backgroundColor = "yellow";
+  } else {
+    document.body.style.backgroundColor = "pink";
+  }
+}
+
+var x = window.matchMedia("(max-width: 700px)")
+myFunction(x) // Call listener function at run time
+x.addListener(myFunction) // Attach listener function on state changes
+
+  
+  
+  735px
+  
+if (window.innerWidth > 735) {  
+
+} else {
+}  
+</script>
+
+
+
+
+
+
+	<script>       
+      $(document).ready(function(){
+            $("#tabmenu1").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog2");
+        	$("#tabmenu2").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog3");
+        	$("#tabmenu3").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog5");
+        	$("#tabmenu4").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog6");
+            $("#tabmenu5").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog7");
+        	
+        	
+        	$("#tabmenu8").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog10");
+        	$("#tabmenu9").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog11");	
+        	$("#tabmenu10").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog12");
+        	$("#tabmenu11").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog13");
+        	$("#tabmenu12").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog17");
+        	$("#tabmenu13").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog9");
+        	$("#tabmenu14").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog14");
+        	$("#tabmenu15").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog15");
+        	$("#tabmenu16").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog16");
+	        $("#tabmenu17").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog18");
+        });              
+    </script>
+
+
+
+<!---below added by Zhe Han to insert primary tabs - JS in index.liquid--->
+<ul class="nav nav-tabs h5">
+  <li class="active"><a data-toggle="tab" href="#tabmenu1">News &amp; New Releases</a></li>
+<!--  <li><a data-toggle="tab" href="#tabmenu2">Reviews</a></li>-->
+  <li><a data-toggle="tab" href="#tabmenu3">Features</a></li>
+  <li><a data-toggle="tab" href="#tabmenu4">WhiskyDex</a></li>
+  <li><a data-toggle="tab" href="#tabmenu8">Meet The People</a></li>
+<!--    <li><a data-toggle="tab" href="#tabmenu5">Malternatives</a></li>-->
+<!--  <li><a data-toggle="tab" href="#tabmenu6">Bar Escapades</a></li> -->
+<!--  <li><a data-toggle="tab" href="#tabmenu7">Rhythm &amp; Booze</a></li>-->
+
+</ul>
+
+<div class="tab-content">
+
+  <div id="tabmenu1" class="tab-pane fade in active">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+
+<!---  <div id="tabmenu2" class="tab-pane fade">
+    Zhe Han - essentially all the code for one row of features
+    
+  </div> -->
+
+  <div id="tabmenu3" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+  
+  <div id="tabmenu4" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div> 
+
+  <div id="tabmenu8" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+  </div>
+
+<!---  <div id="tabmenu6" class="tab-pane fade">
+    Zhe Han - essentially all the code for one row of features    
+    
+  </div> 
+--->
+<!---  <div id="tabmenu7" class="tab-pane fade">
+    Zhe Han - essentially all the code for one row of features
+  </div>--->
+  
+</div> 
+
+<!---above added by Zhe Han to insert tabs --->
+
+
+
+	<div class="section-header text-center">
+      <h1>Read Our Reviews</h1>
+    </div>
+
+
+<!---below added by Zhe Han to insert secondary tabs - JS in index.liquid--->
+<ul class="nav nav-tabs h5">
+  <li class="active"><a data-toggle="tab" href="#tabmenu2">Whisky</a></li>
+  <li><a data-toggle="tab" href="#tabmenu5">Rum</a></li>
+  <li><a data-toggle="tab" href="#tabmenu9">Sake</a></li>
+  <li><a data-toggle="tab" href="#tabmenu10">Craft Beer</a></li>
+  <li><a data-toggle="tab" href="#tabmenu11">&amp; Everything Nice</a></li>
+
+</ul>
+
+<div class="tab-content">
+
+  <div id="tabmenu2" class="tab-pane fade in active">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+
+  <div id="tabmenu5" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+
+  <div id="tabmenu9" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+  
+  <div id="tabmenu10" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div> 
+
+  <div id="tabmenu11" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+  </div>
+  
+</div> 
+
+<!---above added by Zhe Han to insert tabs --->
+
+
+
+	<div class="section-header text-center">
+      <h1>Follow Our Columnists</h1>
+    </div>
+
+
+<!---below added by Zhe Han to insert tertiary tabs - JS in index.liquid--->
+<ul class="nav nav-tabs h5">
+  <li class="active"><a data-toggle="tab" href="#tabmenu17">Vintage Prints</a></li>
+  <li><a data-toggle="tab" href="#tabmenu13">Rhythm &amp; Booze</a></li>
+  <li><a data-toggle="tab" href="#tabmenu14">Bottoms Up</a></li>
+  <li><a data-toggle="tab" href="#tabmenu16">Japanese Whisky Dictionary</a></li>
+  <li><a data-toggle="tab" href="#tabmenu12">Sku's Drinks</a></li>
+
+</ul>
+
+<div class="tab-content">
+
+  <div id="tabmenu17" class="tab-pane fade in active">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+
+  <div id="tabmenu13" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+
+  <div id="tabmenu14" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+  
+  <div id="tabmenu16" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div> 
+
+  <div id="tabmenu12" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+  </div>
+  
+</div> 
+
+<!---above added by Zhe Han to insert tabs --->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--Backup of original primary tabs-->
+
+
+<!---below added by Zhe Han to insert primary tabs - JS in index.liquid--->
+<ul class="nav nav-tabs h5">
+  <li class="active"><a data-toggle="tab" href="#tabmenu1">News &amp; New Releases</a></li>
+  <li><a data-toggle="tab" href="#tabmenu2">Reviews</a></li>
+  <li><a data-toggle="tab" href="#tabmenu3">Features</a></li>
+  <li><a data-toggle="tab" href="#tabmenu4">WhiskyDex</a></li>
+  <li><a data-toggle="tab" href="#tabmenu5">Malternatives</a></li>
+<!--  <li><a data-toggle="tab" href="#tabmenu6">Bar Escapades</a></li> -->
+  <li><a data-toggle="tab" href="#tabmenu7">Rhythm &amp; Booze</a></li>
+
+</ul>
+
+<div class="tab-content">
+
+  <div id="tabmenu1" class="tab-pane fade in active">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+
+  <div id="tabmenu2" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+
+  <div id="tabmenu3" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+  
+  <div id="tabmenu4" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div> 
+
+  <div id="tabmenu5" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+  </div>
+
+<!---  <div id="tabmenu6" class="tab-pane fade">
+    Zhe Han - essentially all the code for one row of features    
+    
+  </div> 
+--->
+  <div id="tabmenu7" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+  </div>
+  
+</div> 
+
+<!---above added by Zhe Han to insert tabs --->
+
+
+
+
+<!--Backup of original JS in index-->	
+	<script>       
+      $(document).ready(function(){
+            $("#tabmenu1").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog2");
+        	$("#tabmenu2").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog3");
+        	$("#tabmenu3").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog5");
+        	$("#tabmenu4").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog6");
+            $("#tabmenu5").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog7");
+        	
+        	$("#tabmenu7").load("https://88bamboo.co/pages/alternate-home-page #shopify-section-featured-blog9");
+        });              
+    </script>
+
+
+
+<div id="shop-all-button" class="grid grid--uniform grid--flush-bottom"><!-- ZHE HAN changed max height from 345 to 250  back to 345 -->    
+  <div class="grid__item medium-up--one-third text-center"></div>
+  	<div class="grid__item medium-up--one-third text-center">
+       <a href="/pages/shop" class="btn btn--primary btn--large" aria-label="Shop All: Shop">Shop All</a>        
+    </div>
+  <div class="grid__item medium-up--one-third text-center"></div>
+</div>
+        
+       
+
+<!--mobile nav menu-->
+
+
+<nav class="mobile-nav-wrapper medium-up--hide js-menu--is-open" role="navigation" style="transform: translateY(66px); height: 659px;">
+      <ul id="MobileNav" class="mobile-nav">
+        
+<li class="mobile-nav__item border-bottom">
+            
+              <a href="/" class="mobile-nav__link">
+                <span class="mobile-nav__label">Home</span>
+              </a>
+            
+          </li>
+        
+<!--<li class="mobile-nav__item border-bottom">
+            
+              
+              <button type="button" class="btn--link js-toggle-submenu mobile-nav__link" data-target="about-2" data-level="1" aria-expanded="false">
+                <span class="mobile-nav__label">About</span>
+                <div class="mobile-nav__icon">
+                  <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                </div>
+              </button>
+              <ul class="mobile-nav__dropdown is-closing" data-parent="about-2" data-level="2" tabindex="-1">
+                <li class="visually-hidden" tabindex="-1" data-menu-title="2">About Menu</li>
+                <li class="mobile-nav__item border-bottom">
+                  <div class="mobile-nav__table">
+                    <div class="mobile-nav__table-cell mobile-nav__return">
+                      <button class="btn--link js-toggle-submenu mobile-nav__return-btn" type="button" aria-expanded="true" aria-label="About">
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                      </button>
+                    </div>
+                    <span class="mobile-nav__sublist-link mobile-nav__sublist-header mobile-nav__sublist-header--main-nav-parent">
+                      <span class="mobile-nav__label">About</span>
+                    </span>
+                  </div>
+                </li>
+
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/pages/about-us" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">What is 88 Bamboo?</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/pages/the-story" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">The Story</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/pages/about-the-authors" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">The Usual Suspects</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item">
+                    
+                      <a href="/pages/contact-us" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Contact Us</span>
+                      </a>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li> -->
+        
+<li class="mobile-nav__item border-bottom">
+            
+              <a href="/pages/whisky-101" class="mobile-nav__link">
+                <span class="mobile-nav__label">New to Whisky?</span>
+              </a>
+            
+          </li>
+        
+<li class="mobile-nav__item border-bottom">
+            
+              
+              <button type="button" class="btn--link js-toggle-submenu mobile-nav__link mobile-nav__link--active" data-target="the-bamboo-post-4" data-level="1" aria-expanded="false">
+                <span class="mobile-nav__label">The Bamboo Post</span>
+                <div class="mobile-nav__icon">
+                  <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                </div>
+              </button>
+              <ul class="mobile-nav__dropdown" data-parent="the-bamboo-post-4" data-level="2">
+                <li class="visually-hidden" tabindex="-1" data-menu-title="2">The Bamboo Post Menu</li>
+                <li class="mobile-nav__item border-bottom">
+                  <div class="mobile-nav__table">
+                    <div class="mobile-nav__table-cell mobile-nav__return">
+                      <button class="btn--link js-toggle-submenu mobile-nav__return-btn" type="button" aria-expanded="true" aria-label="The Bamboo Post">
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                      </button>
+                    </div>
+                    <span class="mobile-nav__sublist-link mobile-nav__sublist-header mobile-nav__sublist-header--main-nav-parent">
+                      <span class="mobile-nav__label">The Bamboo Post</span>
+                    </span>
+                  </div>
+                </li>
+
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/news" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">News &amp; New Releases</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/escapades" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Escapades</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/features" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Special Features</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/meet-the-people" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Meet the People</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item">
+                    
+                      <a href="/blogs/whiskydex" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">WhiskyDex</span>
+                      </a>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+<li class="mobile-nav__item border-bottom">
+            
+              
+              <button type="button" class="btn--link js-toggle-submenu mobile-nav__link" data-target="reviews-5" data-level="1" aria-expanded="false">
+                <span class="mobile-nav__label">Reviews</span>
+                <div class="mobile-nav__icon">
+                  <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                </div>
+              </button>
+              <ul class="mobile-nav__dropdown" data-parent="reviews-5" data-level="2">
+                <li class="visually-hidden" tabindex="-1" data-menu-title="2">Reviews Menu</li>
+                <li class="mobile-nav__item border-bottom">
+                  <div class="mobile-nav__table">
+                    <div class="mobile-nav__table-cell mobile-nav__return">
+                      <button class="btn--link js-toggle-submenu mobile-nav__return-btn" type="button" aria-expanded="true" aria-label="Reviews">
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                      </button>
+                    </div>
+                    <span class="mobile-nav__sublist-link mobile-nav__sublist-header mobile-nav__sublist-header--main-nav-parent">
+                      <span class="mobile-nav__label">Reviews</span>
+                    </span>
+                  </div>
+                </li>
+
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/pages/all-our-reviews" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">All Reviews</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/whisky-reviews" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Whisky</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/rum-reviews" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Rum</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/sake" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Sake</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/craft-beer" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Craft Beer</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item">
+                    
+                      <a href="/blogs/everything-nice" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">And Everything Nice</span>
+                      </a>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+<li class="mobile-nav__item border-bottom">
+            
+              
+              <button type="button" class="btn--link js-toggle-submenu mobile-nav__link" data-target="columns-6" data-level="1" aria-expanded="false">
+                <span class="mobile-nav__label">Columns</span>
+                <div class="mobile-nav__icon">
+                  <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                </div>
+              </button>
+              <ul class="mobile-nav__dropdown" data-parent="columns-6" data-level="2">
+                <li class="visually-hidden" tabindex="-1" data-menu-title="2">Columns Menu</li>
+                <li class="mobile-nav__item border-bottom">
+                  <div class="mobile-nav__table">
+                    <div class="mobile-nav__table-cell mobile-nav__return">
+                      <button class="btn--link js-toggle-submenu mobile-nav__return-btn" type="button" aria-expanded="true" aria-label="Columns">
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                      </button>
+                    </div>
+                    <span class="mobile-nav__sublist-link mobile-nav__sublist-header mobile-nav__sublist-header--main-nav-parent">
+                      <span class="mobile-nav__label">Columns</span>
+                    </span>
+                  </div>
+                </li>
+
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/the-rhythm-and-booze-with-felipe-schrieberg" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Rhythm &amp; Booze</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/bottoms-up-with-joe-micallef" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Bottoms Up with Joe</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="https://88bamboo.co/blogs/88-bamboo-philippines-88-tagay/tagged/whiskyph" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Nostalgic Drams</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/japanese-whisky-dictionary" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Japanese Whisky Dictionary</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/craft-beer" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Trooper Beers and Tunes</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item">
+                    
+                      <a href="/blogs/skus-not-so-recent-drinks" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Sku's (Not So) Recent Drinks</span>
+                      </a>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+<li class="mobile-nav__item border-bottom">
+            
+              
+              <button type="button" class="btn--link js-toggle-submenu mobile-nav__link" data-target="community-7" data-level="1" aria-expanded="false">
+                <span class="mobile-nav__label">Community</span>
+                <div class="mobile-nav__icon">
+                  <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                </div>
+              </button>
+              <ul class="mobile-nav__dropdown" data-parent="community-7" data-level="2">
+                <li class="visually-hidden" tabindex="-1" data-menu-title="2">Community Menu</li>
+                <li class="mobile-nav__item border-bottom">
+                  <div class="mobile-nav__table">
+                    <div class="mobile-nav__table-cell mobile-nav__return">
+                      <button class="btn--link js-toggle-submenu mobile-nav__return-btn" type="button" aria-expanded="true" aria-label="Community">
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                      </button>
+                    </div>
+                    <span class="mobile-nav__sublist-link mobile-nav__sublist-header mobile-nav__sublist-header--main-nav-parent">
+                      <span class="mobile-nav__label">Community</span>
+                    </span>
+                  </div>
+                </li>
+
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="https://www.facebook.com/groups/whiskyclubasia" class="mobile-nav__sublist-link" aria-describedby="a11y-external-message">
+                        <span class="mobile-nav__label">Whisky Club Asia Facebook Group</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/88-bamboo-japan-88%E7%AB%B9%E6%97%A5%E6%9C%AC" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">88 Bamboo Japan (88竹日本)</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/88-bamboo-hong-kong-88%E7%AB%B9%E9%A6%99%E6%B8%AF" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">88 Bamboo Hong Kong (88竹香港)</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item">
+                    
+                      <a href="/blogs/88-bamboo-philippines-88-tagay" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">88 Bamboo Philippines (88 Tagay)</span>
+                      </a>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+<li class="mobile-nav__item border-bottom">
+            
+              
+              <button type="button" class="btn--link js-toggle-submenu mobile-nav__link" data-target="library-8" data-level="1" aria-expanded="false">
+                <span class="mobile-nav__label">Library</span>
+                <div class="mobile-nav__icon">
+                  <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                </div>
+              </button>
+              <ul class="mobile-nav__dropdown" data-parent="library-8" data-level="2">
+                <li class="visually-hidden" tabindex="-1" data-menu-title="2">Library Menu</li>
+                <li class="mobile-nav__item border-bottom">
+                  <div class="mobile-nav__table">
+                    <div class="mobile-nav__table-cell mobile-nav__return">
+                      <button class="btn--link js-toggle-submenu mobile-nav__return-btn" type="button" aria-expanded="true" aria-label="Library">
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                      </button>
+                    </div>
+                    <span class="mobile-nav__sublist-link mobile-nav__sublist-header mobile-nav__sublist-header--main-nav-parent">
+                      <span class="mobile-nav__label">Library</span>
+                    </span>
+                  </div>
+                </li>
+
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/blogs/prints" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Prints</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="https://88bamboo.co/pages/library" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Books</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item">
+                    
+                      <a href="/blogs/tv" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">TV</span>
+                      </a>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+<li class="mobile-nav__item border-bottom">
+            
+              <a href="/blogs/explained-in-3-minutes" class="mobile-nav__link">
+                <span class="mobile-nav__label">Explained in 3 Mins</span>
+              </a>
+            
+          </li>
+        
+<li class="mobile-nav__item border-bottom">
+            
+              
+              <button type="button" class="btn--link js-toggle-submenu mobile-nav__link" data-target="our-friends-10" data-level="1" aria-expanded="false">
+                <span class="mobile-nav__label">Our Friends</span>
+                <div class="mobile-nav__icon">
+                  <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                </div>
+              </button>
+              <ul class="mobile-nav__dropdown" data-parent="our-friends-10" data-level="2">
+                <li class="visually-hidden" tabindex="-1" data-menu-title="2">Our Friends Menu</li>
+                <li class="mobile-nav__item border-bottom">
+                  <div class="mobile-nav__table">
+                    <div class="mobile-nav__table-cell mobile-nav__return">
+                      <button class="btn--link js-toggle-submenu mobile-nav__return-btn" type="button" aria-expanded="true" aria-label="Our Friends">
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                      </button>
+                    </div>
+                    <span class="mobile-nav__sublist-link mobile-nav__sublist-header mobile-nav__sublist-header--main-nav-parent">
+                      <span class="mobile-nav__label">Our Friends</span>
+                    </span>
+                  </div>
+                </li>
+
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/pages/friends-of-88-bamboo" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Friends of 88 Bamboo</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/pages/become-friends-with-us" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Become Friends With Us</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item">
+                    
+                      <a href="/blogs/our-contributions" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Find Us Also At...</span>
+                      </a>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+<li class="mobile-nav__item border-bottom">
+            
+              <a href="https://www.stories.88bamboo.co" class="mobile-nav__link" aria-describedby="a11y-external-message">
+                <span class="mobile-nav__label">Members Club Login</span>
+              </a>
+            
+          </li>
+        
+<li class="mobile-nav__item">
+            
+              
+              <button type="button" class="btn--link js-toggle-submenu mobile-nav__link" data-target="shop-12" data-level="1" aria-expanded="false">
+                <span class="mobile-nav__label">Shop</span>
+                <div class="mobile-nav__icon">
+                  <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                </div>
+              </button>
+              <ul class="mobile-nav__dropdown" data-parent="shop-12" data-level="2">
+                <li class="visually-hidden" tabindex="-1" data-menu-title="2">Shop Menu</li>
+                <li class="mobile-nav__item border-bottom">
+                  <div class="mobile-nav__table">
+                    <div class="mobile-nav__table-cell mobile-nav__return">
+                      <button class="btn--link js-toggle-submenu mobile-nav__return-btn" type="button" aria-expanded="true" aria-label="Shop">
+                        <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                      </button>
+                    </div>
+                    <span class="mobile-nav__sublist-link mobile-nav__sublist-header mobile-nav__sublist-header--main-nav-parent">
+                      <span class="mobile-nav__label">Shop</span>
+                    </span>
+                  </div>
+                </li>
+
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/pages/shop" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Shop All</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      
+                      <button type="button" class="btn--link js-toggle-submenu mobile-nav__link mobile-nav__sublist-link" data-target="bottle-shop-12-2" aria-expanded="false">
+                        <span class="mobile-nav__label">Bottle Shop</span>
+                        <div class="mobile-nav__icon">
+                          <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                        </div>
+                      </button>
+                      <ul class="mobile-nav__dropdown" data-parent="bottle-shop-12-2" data-level="3">
+                        <li class="visually-hidden" tabindex="-1" data-menu-title="3">Bottle Shop Menu</li>
+                        <li class="mobile-nav__item border-bottom">
+                          <div class="mobile-nav__table">
+                            <div class="mobile-nav__table-cell mobile-nav__return">
+                              <button type="button" class="btn--link js-toggle-submenu mobile-nav__return-btn" data-target="shop-12" aria-expanded="true" aria-label="Bottle Shop">
+                                <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                              </button>
+                            </div>
+                            <a href="/collections/bottle-shop" class="mobile-nav__sublist-link mobile-nav__sublist-header">
+                              <span class="mobile-nav__label">Bottle Shop</span>
+                            </a>
+                          </div>
+                        </li>
+                        
+                          <li class="mobile-nav__item border-bottom">
+                            <a href="/collections/whisky" class="mobile-nav__sublist-link">
+                              <span class="mobile-nav__label">Whisky</span>
+                            </a>
+                          </li>
+                        
+                          <li class="mobile-nav__item border-bottom">
+                            <a href="/collections/rum" class="mobile-nav__sublist-link">
+                              <span class="mobile-nav__label">Rum</span>
+                            </a>
+                          </li>
+                        
+                          <li class="mobile-nav__item border-bottom">
+                            <a href="/collections/gin" class="mobile-nav__sublist-link">
+                              <span class="mobile-nav__label">Gin</span>
+                            </a>
+                          </li>
+                        
+                          <li class="mobile-nav__item border-bottom">
+                            <a href="/collections/craft-beer" class="mobile-nav__sublist-link">
+                              <span class="mobile-nav__label">Craft Beer</span>
+                            </a>
+                          </li>
+                        
+                          <li class="mobile-nav__item">
+                            <a href="/collections/other-booze" class="mobile-nav__sublist-link">
+                              <span class="mobile-nav__label">Other Booze</span>
+                            </a>
+                          </li>
+                        
+                      </ul>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      
+                      <button type="button" class="btn--link js-toggle-submenu mobile-nav__link mobile-nav__sublist-link" data-target="by-dram-12-3" aria-expanded="false">
+                        <span class="mobile-nav__label">By Dram</span>
+                        <div class="mobile-nav__icon">
+                          <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                        </div>
+                      </button>
+                      <ul class="mobile-nav__dropdown" data-parent="by-dram-12-3" data-level="3">
+                        <li class="visually-hidden" tabindex="-1" data-menu-title="3">By Dram Menu</li>
+                        <li class="mobile-nav__item border-bottom">
+                          <div class="mobile-nav__table">
+                            <div class="mobile-nav__table-cell mobile-nav__return">
+                              <button type="button" class="btn--link js-toggle-submenu mobile-nav__return-btn" data-target="shop-12" aria-expanded="true" aria-label="By Dram">
+                                <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                              </button>
+                            </div>
+                            <a href="/pages/shop" class="mobile-nav__sublist-link mobile-nav__sublist-header">
+                              <span class="mobile-nav__label">By Dram</span>
+                            </a>
+                          </div>
+                        </li>
+                        
+                          <li class="mobile-nav__item border-bottom">
+                            <a href="/collections/themed-tasting-sets" class="mobile-nav__sublist-link">
+                              <span class="mobile-nav__label">Tasting Sets</span>
+                            </a>
+                          </li>
+                        
+                          <li class="mobile-nav__item">
+                            <a href="/collections/build-your-own-set" class="mobile-nav__sublist-link">
+                              <span class="mobile-nav__label">Build Your Tasting Set</span>
+                            </a>
+                          </li>
+                        
+                      </ul>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/collections/apparel-accessories" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Apparel &amp; Accessories</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item border-bottom">
+                    
+                      <a href="/collections/magazine" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Magazine</span>
+                      </a>
+                    
+                  </li>
+                
+                  <li class="mobile-nav__item">
+                    
+                      <a href="/pages/wholesale-and-concierge" class="mobile-nav__sublist-link">
+                        <span class="mobile-nav__label">Off Menu</span>
+                      </a>
+                    
+                  </li>
+                
+              </ul>
+            
+          </li>
+        
+      </ul>
+    </nav>
+
+
+
+<ul id="MobileNav" class="mobile-nav">
+
+    <li class="mobile-nav__item border-bottom">
+
+
+                  <button type="button" class="btn--link js-toggle-submenu mobile-nav__link" data-target="the-bamboo-post-3" data-level="1" aria-expanded="false">
+                    <span class="mobile-nav__label">The Bamboo Post</span>
+                    <div class="mobile-nav__icon">
+                      <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                    </div>
+                  </button>
+                  <ul class="mobile-nav__dropdown" data-parent="the-bamboo-post-3" data-level="2">
+                    <li class="visually-hidden" tabindex="-1" data-menu-title="2">The Bamboo Post Menu</li>
+                    <li class="mobile-nav__item border-bottom">
+                      <div class="mobile-nav__table">
+                        <div class="mobile-nav__table-cell mobile-nav__return">
+                          <button class="btn--link js-toggle-submenu mobile-nav__return-btn" type="button" aria-expanded="true" aria-label="The Bamboo Post">
+                            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                          </button>
+                        </div>
+                        <span class="mobile-nav__sublist-link mobile-nav__sublist-header mobile-nav__sublist-header--main-nav-parent">
+                          <span class="mobile-nav__label">The Bamboo Post</span>
+                        </span>
+                      </div>
+                    </li>
+
+
+                      <li class="mobile-nav__item border-bottom">
+
+
+                          <button type="button" class="btn--link js-toggle-submenu mobile-nav__link mobile-nav__sublist-link" data-target="the-bamboo-post-3-1" aria-expanded="false">
+                            <span class="mobile-nav__label">The Bamboo Post</span>
+                            <div class="mobile-nav__icon">
+                              <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                            </div>
+                          </button>
+                          <ul class="mobile-nav__dropdown" data-parent="the-bamboo-post-3-1" data-level="3">
+                            <li class="visually-hidden" tabindex="-1" data-menu-title="3">The Bamboo Post Menu</li>
+                            <li class="mobile-nav__item border-bottom">
+                              <div class="mobile-nav__table">
+                                <div class="mobile-nav__table-cell mobile-nav__return">
+                                  <button type="button" class="btn--link js-toggle-submenu mobile-nav__return-btn" data-target="the-bamboo-post-3" aria-expanded="true" aria-label="The Bamboo Post">
+                                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                                  </button>
+                                </div>
+                                <a href="/blogs/news" class="mobile-nav__sublist-link mobile-nav__sublist-header">
+                                  <span class="mobile-nav__label">The Bamboo Post</span>
+                                </a>
+                              </div>
+                            </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/news" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">News &amp; New Releases</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/escapades" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Escapades</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/features" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Special Features</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/meet-the-people" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Meet the People</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item">
+                                <a href="/blogs/whiskydex" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Distiller DeepDive</span>
+                                </a>
+                              </li>
+
+                          </ul>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+
+                          <button type="button" class="btn--link js-toggle-submenu mobile-nav__link mobile-nav__sublist-link" data-target="reviews-3-2" aria-expanded="false">
+                            <span class="mobile-nav__label">Reviews</span>
+                            <div class="mobile-nav__icon">
+                              <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                            </div>
+                          </button>
+                          <ul class="mobile-nav__dropdown" data-parent="reviews-3-2" data-level="3">
+                            <li class="visually-hidden" tabindex="-1" data-menu-title="3">Reviews Menu</li>
+                            <li class="mobile-nav__item border-bottom">
+                              <div class="mobile-nav__table">
+                                <div class="mobile-nav__table-cell mobile-nav__return">
+                                  <button type="button" class="btn--link js-toggle-submenu mobile-nav__return-btn" data-target="the-bamboo-post-3" aria-expanded="true" aria-label="Reviews">
+                                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                                  </button>
+                                </div>
+                                <a href="/blogs/whisky-reviews" class="mobile-nav__sublist-link mobile-nav__sublist-header">
+                                  <span class="mobile-nav__label">Reviews</span>
+                                </a>
+                              </div>
+                            </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/pages/all-our-reviews" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">All Reviews</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/whisky-reviews" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Whisky</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/rum-reviews" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Rum</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/sake" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Sake</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/craft-beer" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Craft Beer</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/features/the-distillery-that-put-singapore-on-the-world-map-tanglin-gin" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Gin</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item">
+                                <a href="/blogs/everything-nice" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">And Everything Else</span>
+                                </a>
+                              </li>
+
+                          </ul>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+
+                          <button type="button" class="btn--link js-toggle-submenu mobile-nav__link mobile-nav__sublist-link" data-target="columns-3-3" aria-expanded="false">
+                            <span class="mobile-nav__label">Columns</span>
+                            <div class="mobile-nav__icon">
+                              <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                            </div>
+                          </button>
+                          <ul class="mobile-nav__dropdown" data-parent="columns-3-3" data-level="3">
+                            <li class="visually-hidden" tabindex="-1" data-menu-title="3">Columns Menu</li>
+                            <li class="mobile-nav__item border-bottom">
+                              <div class="mobile-nav__table">
+                                <div class="mobile-nav__table-cell mobile-nav__return">
+                                  <button type="button" class="btn--link js-toggle-submenu mobile-nav__return-btn" data-target="the-bamboo-post-3" aria-expanded="true" aria-label="Columns">
+                                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                                  </button>
+                                </div>
+                                <a href="/blogs/the-rhythm-and-booze-with-felipe-schrieberg" class="mobile-nav__sublist-link mobile-nav__sublist-header">
+                                  <span class="mobile-nav__label">Columns</span>
+                                </a>
+                              </div>
+                            </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/the-rhythm-and-booze-with-felipe-schrieberg" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Rhythm &amp; Booze</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/bottoms-up-with-joe-micallef" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Bottoms Up with Joe</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="https://88bamboo.co/blogs/88-bamboo-philippines-88-tagay/tagged/whiskyph" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Nostalgic Drams</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/japanese-whisky-dictionary" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Japanese Whisky Dictionary</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/craft-beer" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Trooper Beers and Tunes</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item">
+                                <a href="/blogs/skus-not-so-recent-drinks" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Sku's (Not So) Recent Drinks</span>
+                                </a>
+                              </li>
+
+                          </ul>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+
+                          <button type="button" class="btn--link js-toggle-submenu mobile-nav__link mobile-nav__sublist-link" data-target="library-3-4" aria-expanded="false">
+                            <span class="mobile-nav__label">Library</span>
+                            <div class="mobile-nav__icon">
+                              <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                            </div>
+                          </button>
+                          <ul class="mobile-nav__dropdown" data-parent="library-3-4" data-level="3">
+                            <li class="visually-hidden" tabindex="-1" data-menu-title="3">Library Menu</li>
+                            <li class="mobile-nav__item border-bottom">
+                              <div class="mobile-nav__table">
+                                <div class="mobile-nav__table-cell mobile-nav__return">
+                                  <button type="button" class="btn--link js-toggle-submenu mobile-nav__return-btn" data-target="the-bamboo-post-3" aria-expanded="true" aria-label="Library">
+                                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                                  </button>
+                                </div>
+                                <a href="/blogs/prints" class="mobile-nav__sublist-link mobile-nav__sublist-header">
+                                  <span class="mobile-nav__label">Library</span>
+                                </a>
+                              </div>
+                            </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/blogs/prints" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Prints</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="https://88bamboo.co/pages/library" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Books</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item">
+                                <a href="/blogs/tv" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">TV</span>
+                                </a>
+                              </li>
+
+                          </ul>
+
+                      </li>
+
+                      <li class="mobile-nav__item">
+
+
+                          <button type="button" class="btn--link js-toggle-submenu mobile-nav__link mobile-nav__sublist-link" data-target="beginner-series-3-5" aria-expanded="false">
+                            <span class="mobile-nav__label">Beginner Series</span>
+                            <div class="mobile-nav__icon">
+                              <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                            </div>
+                          </button>
+                          <ul class="mobile-nav__dropdown" data-parent="beginner-series-3-5" data-level="3">
+                            <li class="visually-hidden" tabindex="-1" data-menu-title="3">Beginner Series Menu</li>
+                            <li class="mobile-nav__item border-bottom">
+                              <div class="mobile-nav__table">
+                                <div class="mobile-nav__table-cell mobile-nav__return">
+                                  <button type="button" class="btn--link js-toggle-submenu mobile-nav__return-btn" data-target="the-bamboo-post-3" aria-expanded="true" aria-label="Beginner Series">
+                                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                                  </button>
+                                </div>
+                                <a href="/pages/whisky-101" class="mobile-nav__sublist-link mobile-nav__sublist-header">
+                                  <span class="mobile-nav__label">Beginner Series</span>
+                                </a>
+                              </div>
+                            </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/pages/whisky-101" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">New to Whisky?</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item">
+                                <a href="/blogs/explained-in-3-minutes" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Explained in 3 Mins</span>
+                                </a>
+                              </li>
+
+                          </ul>
+
+                      </li>
+
+                  </ul>
+
+              </li>
+
+    <li class="mobile-nav__item border-bottom">
+
+
+                  <button type="button" class="btn--link js-toggle-submenu mobile-nav__link" data-target="reviews-4" data-level="1" aria-expanded="false">
+                    <span class="mobile-nav__label">Reviews</span>
+                    <div class="mobile-nav__icon">
+                      <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                    </div>
+                  </button>
+                  <ul class="mobile-nav__dropdown" data-parent="reviews-4" data-level="2">
+                    <li class="visually-hidden" tabindex="-1" data-menu-title="2">Reviews Menu</li>
+                    <li class="mobile-nav__item border-bottom">
+                      <div class="mobile-nav__table">
+                        <div class="mobile-nav__table-cell mobile-nav__return">
+                          <button class="btn--link js-toggle-submenu mobile-nav__return-btn" type="button" aria-expanded="true" aria-label="Reviews">
+                            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                          </button>
+                        </div>
+                        <span class="mobile-nav__sublist-link mobile-nav__sublist-header mobile-nav__sublist-header--main-nav-parent">
+                          <span class="mobile-nav__label">Reviews</span>
+                        </span>
+                      </div>
+                    </li>
+
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="/pages/all-our-reviews" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">All Reviews</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="/blogs/whisky-reviews" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">Whisky</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="/blogs/rum-reviews" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">Rum</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="/blogs/sake" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">Saké</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="/blogs/craft-beer" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">Craft Beer</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="/blogs/features/the-distillery-that-put-singapore-on-the-world-map-tanglin-gin" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">Gin</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item">
+
+                          <a href="/blogs/everything-nice" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">And Everything Else</span>
+                          </a>
+
+                      </li>
+
+                  </ul>
+
+              </li>
+
+    <li class="mobile-nav__item border-bottom">
+
+
+                  <button type="button" class="btn--link js-toggle-submenu mobile-nav__link" data-target="community-5" data-level="1" aria-expanded="false">
+                    <span class="mobile-nav__label">Community</span>
+                    <div class="mobile-nav__icon">
+                      <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                    </div>
+                  </button>
+                  <ul class="mobile-nav__dropdown" data-parent="community-5" data-level="2">
+                    <li class="visually-hidden" tabindex="-1" data-menu-title="2">Community Menu</li>
+                    <li class="mobile-nav__item border-bottom">
+                      <div class="mobile-nav__table">
+                        <div class="mobile-nav__table-cell mobile-nav__return">
+                          <button class="btn--link js-toggle-submenu mobile-nav__return-btn" type="button" aria-expanded="true" aria-label="Community">
+                            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                          </button>
+                        </div>
+                        <span class="mobile-nav__sublist-link mobile-nav__sublist-header mobile-nav__sublist-header--main-nav-parent">
+                          <span class="mobile-nav__label">Community</span>
+                        </span>
+                      </div>
+                    </li>
+
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="https://www.facebook.com/groups/whiskyclubasia" class="mobile-nav__sublist-link" aria-describedby="a11y-external-message">
+                            <span class="mobile-nav__label">Whisky Club Asia Facebook Group</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="/blogs/88-bamboo-japan-88%E7%AB%B9%E6%97%A5%E6%9C%AC" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">88 Bamboo Japan (88竹日本)</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="/blogs/88-bamboo-hong-kong-88%E7%AB%B9%E9%A6%99%E6%B8%AF" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">88 Bamboo Hong Kong (88竹香港)</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item">
+
+                          <a href="/blogs/88-bamboo-philippines-88-tagay" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">88 Bamboo Philippines (88 Tagay)</span>
+                          </a>
+
+                      </li>
+
+                  </ul>
+
+              </li>
+
+    <li class="mobile-nav__item border-bottom">
+
+                  <a href="https://www.stories.88bamboo.co" class="mobile-nav__link" aria-describedby="a11y-external-message">
+                    <span class="mobile-nav__label">Members Club Login</span>
+                  </a>
+
+              </li>
+
+    <li class="mobile-nav__item border-bottom">
+
+
+                  <button type="button" class="btn--link js-toggle-submenu mobile-nav__link" data-target="our-friends-7" data-level="1" aria-expanded="false">
+                    <span class="mobile-nav__label">Our Friends</span>
+                    <div class="mobile-nav__icon">
+                      <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                    </div>
+                  </button>
+                  <ul class="mobile-nav__dropdown" data-parent="our-friends-7" data-level="2">
+                    <li class="visually-hidden" tabindex="-1" data-menu-title="2">Our Friends Menu</li>
+                    <li class="mobile-nav__item border-bottom">
+                      <div class="mobile-nav__table">
+                        <div class="mobile-nav__table-cell mobile-nav__return">
+                          <button class="btn--link js-toggle-submenu mobile-nav__return-btn" type="button" aria-expanded="true" aria-label="Our Friends">
+                            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                          </button>
+                        </div>
+                        <span class="mobile-nav__sublist-link mobile-nav__sublist-header mobile-nav__sublist-header--main-nav-parent">
+                          <span class="mobile-nav__label">Our Friends</span>
+                        </span>
+                      </div>
+                    </li>
+
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="/pages/friends-of-88-bamboo" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">Friends of 88 Bamboo</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="/pages/become-friends-with-us" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">Become Friends With Us</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item">
+
+                          <a href="/blogs/our-contributions" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">Find Us Also At...</span>
+                          </a>
+
+                      </li>
+
+                  </ul>
+
+              </li>
+
+    <li class="mobile-nav__item">
+
+
+                  <button type="button" class="btn--link js-toggle-submenu mobile-nav__link" data-target="shop-8" data-level="1" aria-expanded="false">
+                    <span class="mobile-nav__label">Shop</span>
+                    <div class="mobile-nav__icon">
+                      <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                    </div>
+                  </button>
+                  <ul class="mobile-nav__dropdown" data-parent="shop-8" data-level="2">
+                    <li class="visually-hidden" tabindex="-1" data-menu-title="2">Shop Menu</li>
+                    <li class="mobile-nav__item border-bottom">
+                      <div class="mobile-nav__table">
+                        <div class="mobile-nav__table-cell mobile-nav__return">
+                          <button class="btn--link js-toggle-submenu mobile-nav__return-btn" type="button" aria-expanded="true" aria-label="Shop">
+                            <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                          </button>
+                        </div>
+                        <span class="mobile-nav__sublist-link mobile-nav__sublist-header mobile-nav__sublist-header--main-nav-parent">
+                          <span class="mobile-nav__label">Shop</span>
+                        </span>
+                      </div>
+                    </li>
+
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="/pages/shop" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">Shop All</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+
+                          <button type="button" class="btn--link js-toggle-submenu mobile-nav__link mobile-nav__sublist-link" data-target="bottle-shop-8-2" aria-expanded="false">
+                            <span class="mobile-nav__label">Bottle Shop</span>
+                            <div class="mobile-nav__icon">
+                              <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                            </div>
+                          </button>
+                          <ul class="mobile-nav__dropdown" data-parent="bottle-shop-8-2" data-level="3">
+                            <li class="visually-hidden" tabindex="-1" data-menu-title="3">Bottle Shop Menu</li>
+                            <li class="mobile-nav__item border-bottom">
+                              <div class="mobile-nav__table">
+                                <div class="mobile-nav__table-cell mobile-nav__return">
+                                  <button type="button" class="btn--link js-toggle-submenu mobile-nav__return-btn" data-target="shop-8" aria-expanded="true" aria-label="Bottle Shop">
+                                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                                  </button>
+                                </div>
+                                <a href="/collections/bottle-shop" class="mobile-nav__sublist-link mobile-nav__sublist-header">
+                                  <span class="mobile-nav__label">Bottle Shop</span>
+                                </a>
+                              </div>
+                            </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/collections/whisky" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Whisky</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/collections/rum" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Rum</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/collections/gin" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Gin</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/collections/craft-beer" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Craft Beer</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item">
+                                <a href="/collections/other-booze" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Other Booze</span>
+                                </a>
+                              </li>
+
+                          </ul>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+
+                          <button type="button" class="btn--link js-toggle-submenu mobile-nav__link mobile-nav__sublist-link" data-target="by-dram-8-3" aria-expanded="false">
+                            <span class="mobile-nav__label">By Dram</span>
+                            <div class="mobile-nav__icon">
+                              <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-right" viewBox="0 0 14 14"><path d="M3.871.604c.44-.439 1.152-.439 1.591 0l5.515 5.515s-.049-.049.003.004l.082.08c.439.44.44 1.153 0 1.592l-5.6 5.6a1.125 1.125 0 0 1-1.59-1.59L8.675 7 3.87 2.195a1.125 1.125 0 0 1 0-1.59z" fill="#fff"></path></svg>
+                            </div>
+                          </button>
+                          <ul class="mobile-nav__dropdown" data-parent="by-dram-8-3" data-level="3">
+                            <li class="visually-hidden" tabindex="-1" data-menu-title="3">By Dram Menu</li>
+                            <li class="mobile-nav__item border-bottom">
+                              <div class="mobile-nav__table">
+                                <div class="mobile-nav__table-cell mobile-nav__return">
+                                  <button type="button" class="btn--link js-toggle-submenu mobile-nav__return-btn" data-target="shop-8" aria-expanded="true" aria-label="By Dram">
+                                    <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-chevron-left" viewBox="0 0 14 14"><path d="M10.129.604a1.125 1.125 0 0 0-1.591 0L3.023 6.12s.049-.049-.003.004l-.082.08c-.439.44-.44 1.153 0 1.592l5.6 5.6a1.125 1.125 0 0 0 1.59-1.59L5.325 7l4.805-4.805c.44-.439.44-1.151 0-1.59z" fill="#fff"></path></svg>
+                                  </button>
+                                </div>
+                                <a href="/pages/shop" class="mobile-nav__sublist-link mobile-nav__sublist-header">
+                                  <span class="mobile-nav__label">By Dram</span>
+                                </a>
+                              </div>
+                            </li>
+
+                              <li class="mobile-nav__item border-bottom">
+                                <a href="/collections/themed-tasting-sets" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Tasting Sets</span>
+                                </a>
+                              </li>
+
+                              <li class="mobile-nav__item">
+                                <a href="/collections/build-your-own-set" class="mobile-nav__sublist-link">
+                                  <span class="mobile-nav__label">Build Your Tasting Set</span>
+                                </a>
+                              </li>
+
+                          </ul>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="/collections/apparel-accessories" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">Apparel &amp; Accessories</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item border-bottom">
+
+                          <a href="/collections/magazine" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">Magazine</span>
+                          </a>
+
+                      </li>
+
+                      <li class="mobile-nav__item">
+
+                          <a href="/pages/wholesale-and-concierge" class="mobile-nav__sublist-link">
+                            <span class="mobile-nav__label">Off Menu</span>
+                          </a>
+
+                      </li>
+
+                  </ul>
+
+              </li>
+
+</ul>
+
+
+
+
+				<a href="/pages/shop">
+                <img class="opacity lazyautosizes lazyloaded" src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/Left_column_-_shop.png?v=1653491478">   			          
+          		<h1 class="mega-title text-over-image">Check Out Our Shop!</h1>
+                </a>
+
+
+
+
+
+
+<div class="section-header text-center">
+      <h1>Read Our Reviews</h1>
+    </div>
+
+
+<!---below added by Zhe Han to insert secondary tabs - JS in index.liquid--->
+<ul class="nav nav-tabs h5">
+  <li class="active"><a data-toggle="tab" href="#tabmenu2">Whisky</a></li>
+  <li><a data-toggle="tab" href="#tabmenu5">Rum</a></li>
+  <li><a data-toggle="tab" href="#tabmenu9">Sake</a></li>
+  <li><a data-toggle="tab" href="#tabmenu10">Craft Beer</a></li>
+  <li><a data-toggle="tab" href="#tabmenu18">Gin</a></li>
+  <li><a data-toggle="tab" href="#tabmenu11">&amp; Everything Else</a></li>
+
+</ul>
+
+<div class="tab-content">
+
+  <div id="tabmenu2" class="tab-pane fade in active">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+
+  <div id="tabmenu5" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+
+  <div id="tabmenu9" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div>
+  
+  <div id="tabmenu10" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+    
+  </div> 
+
+  <div id="tabmenu18" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+  </div>  
+  
+  <div id="tabmenu11" class="tab-pane fade">
+    <!---Zhe Han - essentially all the code for one row of features--->
+  </div>
+  
+</div> 
+
+<!---above added by Zhe Han to insert tabs --->
+
+
+

@@ -1,0 +1,98 @@
+<div class="container">
+  <!-- title section -->
+  <div class="section-header text-center">
+    <p style="margin-bottom:10px;" ><a href="{{ blog.url }}"><em><span class="category">{{ blog.title }}</span></em></a></p>
+    <h1 class="article__title">{{ article.title }}</h1>
+
+        <style>
+          @media (min-width: 750px) {
+              /* Styles for 750px and above */
+              .article__title {
+                font-size:200%;
+              }
+            }
+
+            @media (max-width: 749px) {
+              /* Styles for below 750px */
+              .article_title {
+                font-size:150%;
+              }
+            }
+        </style>
+    
+    
+    {% if section.settings.blog_show_author %}
+      <span class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+    {% endif %}
+
+    {% if section.settings.blog_show_date %}
+      <span class="article__date">
+        {{ article.published_at | time_tag: format: 'date' }}
+      </span>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "article title",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "blog_show_author",
+      "label": {
+        "da": "Vis forfatter",
+        "de": "Autor anzeigen",
+        "en": "Show author",
+        "es": "Mostrar autor",
+        "fi": "Näytä tekijä",
+        "fr": "Afficher l'auteur",
+        "hi": "लेखक दिखाएं",
+        "it": "Mostra autore",
+        "ja": "執筆者を表示する",
+        "ko": "작성자 표시",
+        "nb": "Vis forfatter",
+        "nl": "Auteur weergeven",
+        "pt-BR": "Exibir autor",
+        "pt-PT": "Mostrar autor",
+        "sv": "Visa författare",
+        "th": "แสดงผู้เขียน",
+        "zh-CN": "显示作者",
+        "zh-TW": "顯示作者"
+      },
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "blog_show_date",
+      "label": {
+        "da": "Vis dato",
+        "de": "Datum anzeigen",
+        "en": "Show date",
+        "es": "Mostrar fecha",
+        "fi": "Näytä päivämäärä",
+        "fr": "Afficher la date",
+        "hi": "दिनांक दिखाएं",
+        "it": "Mostra data",
+        "ja": "日付を表示する",
+        "ko": "날짜 표시",
+        "nb": "Vis dato",
+        "nl": "Datum weergeven",
+        "pt-BR": "Exibir data",
+        "pt-PT": "Mostrar data",
+        "sv": "Visa datum",
+        "th": "แสดงวันที่",
+        "zh-CN": "显示日期",
+        "zh-TW": "顯示日期"
+      },
+      "default": true
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
