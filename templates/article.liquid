@@ -457,10 +457,8 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 //for bookmark button to Use localStorage to save/remove bookmarks, Gives visual feedback when clicked (fills the icon green when bookmarked)
-
 document.addEventListener('DOMContentLoaded', function() {
   const bookmarkButton = document.getElementById('bookmarkButton');
-  const bookmarkIcon = bookmarkButton.querySelector('svg');
   
   // Check if article is already bookmarked
   function isBookmarked() {
@@ -471,12 +469,15 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Update button appearance based on bookmark status
   function updateBookmarkButton() {
+    const bookmarkIcon = bookmarkButton.querySelector('svg');
     if (isBookmarked()) {
       bookmarkIcon.setAttribute('fill', '#4CAF50');
       bookmarkButton.setAttribute('title', 'Remove bookmark');
+      bookmarkButton.setAttribute('data-bookmarked', 'true');
     } else {
       bookmarkIcon.setAttribute('fill', 'none');
       bookmarkButton.setAttribute('title', 'Bookmark this article');
+      bookmarkButton.setAttribute('data-bookmarked', 'false');
     }
   }
   
@@ -509,14 +510,14 @@ document.addEventListener('DOMContentLoaded', function() {
       `;
     }
     
-    // Reset button after 2 seconds
+    // Reset button after 2 seconds but maintain correct state
     setTimeout(() => {
       bookmarkButton.classList.remove('feedback');
+      const isCurrentlyBookmarked = isBookmarked();
       bookmarkButton.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bookmark-icon"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="${isCurrentlyBookmarked ? '#4CAF50' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bookmark-icon"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
         Bookmark
       `;
-      updateBookmarkButton();
     }, 2000);
   });
   
