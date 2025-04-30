@@ -28,10 +28,11 @@
             
               <div class="article-featured-image-container">
                 <img 
-                  src="{{ article.image.src | image_url: width: 1600, height: 900, crop: 'center' }}" 
+                  src="{{ article.image }}" 
                   alt="{{ article.title | escape }}"
                   class="article-featured-image"
                   loading="lazy"
+                  style="aspect-ratio: 16/9; object-fit: cover;"
                 >
               </div>
              
