@@ -28,7 +28,7 @@
             
               <div class="article-featured-image-container">
                 <img 
-                  src="{{ article.image | img_url: '1600x900', crop: '16:9' }}" 
+                  src="{{ article.image.src | image_url: width: 1600, height: 900, crop: 'center' }}" 
                   alt="{{ article.title | escape }}"
                   class="article-featured-image"
                   loading="lazy"
