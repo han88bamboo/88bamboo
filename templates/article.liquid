@@ -760,22 +760,21 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Fetch current like count from server
   function fetchLikeCount() {
-    fetch(`${likeServerUrl}/likes/count/${articleId}`)
-      console.log("Fetching from URL:", `${likeServerUrl}/likes/count/${articleId}`);
-      fetch(`${likeServerUrl}/likes/count/${articleId}`)
-        .then(response => {
-        console.log("Server response status:", response.status);
-        return response.json();
-      })
-      .then(data => {
-        console.log("Received data:", data);
-        likeCount.textContent = data.count;
-        updateLikeButtonState();
-      })
-      .catch(error => {
-        console.error('Error fetching like count:', error);
-      });
-  }
+  console.log("Fetching from URL:", `${likeServerUrl}/likes/count/${articleId}`);
+  fetch(`${likeServerUrl}/likes/count/${articleId}`)
+    .then(response => {
+      console.log("Server response status:", response.status);
+      return response.json();
+    })
+    .then(data => {
+      console.log("Received data:", data);
+      likeCount.textContent = data.count;
+      updateLikeButtonState();
+    })
+    .catch(error => {
+      console.error('Error fetching like count:', error);
+    });
+}
   
   // Submit a like
   function submitLike() {
