@@ -25,7 +25,7 @@
         {% section 'article-title' %}
 
             <!-- Featured Image -->
-            {% if article.image %}
+            
               <div class="article-featured-image-container">
                 <img 
                   src="{{ article.image | img_url: '1600x900', crop: '16:9' }}" 
@@ -34,7 +34,7 @@
                   loading="lazy"
                 >
               </div>
-            {% endif %} 
+             
           <!-- Content for main section -->
           {% section 'article-content' %}
           <br>
