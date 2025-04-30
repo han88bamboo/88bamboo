@@ -1,0 +1,162 @@
+<div class="page-width">
+  <h1>My Bookmarks on 88 Bamboo</h1>
+  
+  <div id="bookmarks-container">
+    <p class="loading-message">Loading your bookmarks...</p>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const bookmarksContainer = document.getElementById('bookmarks-container');
+      const bookmarks = JSON.parse(localStorage.getItem('article_bookmarks') || '[]');
+      
+      if (bookmarks.length === 0) {
+        bookmarksContainer.innerHTML = '<p>You have no bookmarked articles yet. Browse articles and click the bookmark button to save them for later.</p>';
+        return;
+      }
+      
+      // Clear loading message
+      bookmarksContainer.innerHTML = '';
+      
+      // Create a list to hold all bookmarks
+      const bookmarksList = document.createElement('ul');
+      bookmarksList.className = 'bookmarks-list';
+      
+      // Track how many bookmarks we've processed
+      let loadedCount = 0;
+      
+      // Process each bookmark URL
+      bookmarks.forEach(url => {
+        // Create a fetch request to get the page title
+        fetch(url)
+          .then(response => response.text())
+          .then(html => {
+            // Extract title from HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const title = doc.querySelector('title').textContent;
+            
+            // Create bookmark item
+            const listItem = document.createElement('li');
+            listItem.className = 'bookmark-item';
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.textContent = title || url;
+            
+            const removeButton = document.createElement('button');
+            removeButton.className = 'remove-bookmark';
+            removeButton.innerHTML = '×';
+            removeButton.setAttribute('data-url', url);
+            removeButton.addEventListener('click', function(e) {
+              e.preventDefault();
+              removeBookmark(url, listItem);
+            });
+            
+            listItem.appendChild(link);
+            listItem.appendChild(removeButton);
+            bookmarksList.appendChild(listItem);
+            
+            // Update loaded count
+            loadedCount++;
+            if (loadedCount === bookmarks.length) {
+              // All bookmarks are loaded
+              bookmarksContainer.appendChild(bookmarksList);
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching bookmark:', error);
+            loadedCount++;
+            
+            // Create a simple entry for failed fetches
+            const listItem = document.createElement('li');
+            listItem.className = 'bookmark-item';
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.textContent = 'Bookmarked article';
+            
+            const removeButton = document.createElement('button');
+            removeButton.className = 'remove-bookmark';
+            removeButton.innerHTML = '×';
+            removeButton.setAttribute('data-url', url);
+            removeButton.addEventListener('click', function(e) {
+              e.preventDefault();
+              removeBookmark(url, listItem);
+            });
+            
+            listItem.appendChild(link);
+            listItem.appendChild(removeButton);
+            bookmarksList.appendChild(listItem);
+            
+            if (loadedCount === bookmarks.length) {
+              // All bookmarks are loaded
+              bookmarksContainer.appendChild(bookmarksList);
+            }
+          });
+      });
+      
+      // Function to remove a bookmark
+      function removeBookmark(url, listItem) {
+        const bookmarks = JSON.parse(localStorage.getItem('article_bookmarks') || '[]');
+        const updatedBookmarks = bookmarks.filter(bookmark => bookmark !== url);
+        localStorage.setItem('article_bookmarks', JSON.stringify(updatedBookmarks));
+        
+        // Remove the item from the list with animation
+        listItem.style.opacity = '0';
+        setTimeout(() => {
+          listItem.remove();
+          
+          // If no more bookmarks, show empty state
+          if (updatedBookmarks.length === 0) {
+            bookmarksContainer.innerHTML = '<p>You have no bookmarked articles yet. Browse articles and click the bookmark button to save them for later.</p>';
+          }
+        }, 300);
+      }
+    });
+  </script>
+  
+  <style>
+    .bookmarks-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+    
+    .bookmark-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      margin-bottom: 8px;
+      background-color: #f8f8f8;
+      border-radius: 6px;
+      transition: opacity 0.3s ease;
+    }
+    
+    .bookmark-item a {
+      text-decoration: none;
+      color: #333;
+      flex-grow: 1;
+    }
+    
+    .remove-bookmark {
+      background: none;
+      border: none;
+      color: #999;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0 8px;
+    }
+    
+    .remove-bookmark:hover {
+      color: #e53935;
+    }
+    
+    .loading-message {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+  </style>
+</div>
