@@ -39,7 +39,7 @@
             {% endcomment %}
              <!-- Social Sharing and bookmarking Buttons -->
               <div class="article-share-container">
-                <button id="likeButton" class="like-button">
+                <button id="likeButton" class="like-button" data-article-id="{{ article.id }}">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="like-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                   <span class="like-count">0</span>
                 </button>
@@ -722,7 +722,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (!likeButton) return;
   
   const likeCount = likeButton.querySelector('.like-count');
-  const articleId = '{{ article.id }}'; // Get current article ID
+  const articleId = likeButton.getAttribute('data-article-id'); // Get article ID from data attribute
+  console.log("Article ID:", articleId); // Add debug log to verify
   const likeServerUrl = 'https://likes.88bamboo.co'; // Update with your server URL - TZH to take note
   
   // Check if user has liked this article before
@@ -760,8 +761,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // Fetch current like count from server
   function fetchLikeCount() {
     fetch(`${likeServerUrl}/likes/count/${articleId}`)
-      .then(response => response.json())
+      console.log("Fetching from URL:", `${likeServerUrl}/likes/count/${articleId}`);
+      fetch(`${likeServerUrl}/likes/count/${articleId}`)
+        .then(response => {
+        console.log("Server response status:", response.status);
+        return response.json();
+      })
       .then(data => {
+        console.log("Received data:", data);
         likeCount.textContent = data.count;
         updateLikeButtonState();
       })
@@ -797,6 +804,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize
   updateLikeButtonState();
+  console.log("About to fetch like count for article ID:", articleId);
+  console.log("Using server URL:", likeServerUrl);
   fetchLikeCount();
   
   // Handle click events
