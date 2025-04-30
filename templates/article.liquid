@@ -23,6 +23,18 @@
         <div class="grid__item medium-up--seven-tenths" id="anchorforjavascripttoinsertnews-subscription">
         <!-- Title -->
         {% section 'article-title' %}
+
+            <!-- Featured Image -->
+            {% if article.image %}
+              <div class="article-featured-image-container">
+                <img 
+                  src="{{ article.image | img_url: '1600x900', crop: '16:9' }}" 
+                  alt="{{ article.title | escape }}"
+                  class="article-featured-image"
+                  loading="lazy"
+                >
+              </div>
+            {% endif %} 
           <!-- Content for main section -->
           {% section 'article-content' %}
           <br>
@@ -148,3 +160,17 @@ if (paragraphs.length >= 26) {
 
 
 
+<style>
+.article-featured-image-container {
+  width: 100%;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.article-featured-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+</style>
