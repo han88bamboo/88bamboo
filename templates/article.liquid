@@ -328,7 +328,8 @@ if (paragraphs.length >= 26) {
 
 /* styles for the in-article share container */
 .article-share-container.in-article {
-    margin: 30px 0;
+    margin-top: 30px;
+    margin-bottom: 0px;
     padding: 15px;
     background-color: #FBCC85;
     border-radius: 8px;
@@ -589,14 +590,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Clone the share and bookmark buttons
     const originalShareContainer = document.querySelector('.article-share-container');
     if (originalShareContainer) {
-      // Create a deep clone of the original buttons
+      // Create a deep clone of like and bookmark buttons
       const likeButton = document.getElementById('likeButton').cloneNode(true);
-      const shareButton = document.getElementById('shareButton').cloneNode(true);
       const bookmarkButton = document.getElementById('bookmarkButton').cloneNode(true);
 
-      // Give them unique IDs to avoid conflicts
-      likeButton.id = 'imageAfterLikeButton';
+      // Create share button directly with HTML
+      const shareButton = document.createElement('button');
       shareButton.id = 'imageAfterShareButton';
+      shareButton.className = 'share-button';
+      shareButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="share-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        Share
+      `;
+
+      // Give unique IDs to the cloned buttons
+      likeButton.id = 'imageAfterLikeButton';
       bookmarkButton.id = 'imageAfterBookmarkButton';
       
       // Make sure we keep the data attribute for the article ID
@@ -615,38 +623,7 @@ document.addEventListener('DOMContentLoaded', function() {
       spacer.style.height = '20px';
       buttonContainer.insertAdjacentElement('afterend', spacer);
       
-      // Super aggressive empty paragraph remover
-      let elementsToCheck = 5; // Check up to 5 elements after the buttons
-      let currentElement = spacer.nextElementSibling;
-
-      while (currentElement && elementsToCheck > 0) {
-        elementsToCheck--;
-        const nextElement = currentElement.nextElementSibling; // Save reference before possibly removing
-        
-        // If it's a paragraph, BR tag, or div with no meaningful content
-        if (currentElement.tagName === 'P' || currentElement.tagName === 'BR' || 
-            (currentElement.tagName === 'DIV' && !currentElement.classList.contains('article-share-container'))) {
-            
-          // Get the HTML content
-          const htmlContent = currentElement.innerHTML;
-          
-          // Check if it's completely empty or just contains non-visible elements
-          if (!htmlContent || 
-              htmlContent.trim() === '' ||
-              htmlContent === '&nbsp;' ||
-              htmlContent === '<br>' ||
-              htmlContent === '<br/>' ||
-              htmlContent === '<br />' ||
-              /^(\s|&nbsp;|<br\s*\/?>)*$/i.test(htmlContent)) {
-            
-            console.log("Removing empty element:", currentElement.outerHTML);
-            currentElement.parentNode.removeChild(currentElement);
-          }
-        }
-        
-        // Move to the next element
-        currentElement = nextElement;
-      }
+      
 
       // Initialize the buttons
       initImageButtons();
