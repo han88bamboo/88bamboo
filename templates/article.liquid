@@ -813,6 +813,11 @@ function initInArticleLikeButton() {
   }
   
   function updateLikeButtonState() {
+    //  defensive check
+    if (!inArticleLikeCount || !inArticleLikeCount.textContent) {
+      inArticleLikeCount.textContent = "0";
+    }
+    // rest of function
     if (hasLiked()) {
       inArticleLikeButton.classList.add('liked');
       inArticleLikeButton.innerHTML = `
@@ -922,6 +927,11 @@ function initInArticleLikeButton() {
   
   // Update button appearance
   function updateLikeButtonState() {
+    //  defensive check
+    if (!inArticleLikeCount || !inArticleLikeCount.textContent) {
+      inArticleLikeCount.textContent = "0";
+    }
+    // rest of function
     if (hasLiked()) {
       likeButton.classList.add('liked');
       likeButton.innerHTML = `
@@ -947,6 +957,10 @@ function initInArticleLikeButton() {
     })
     .then(data => {
       console.log("Received data:", data);
+      if (!data || data.count === null) {
+        console.log("Fixing null count data");
+        data = {count: 0};
+      }
       likeCount.textContent = data.count;
       updateLikeButtonState();
     })
