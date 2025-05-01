@@ -395,30 +395,34 @@ if (paragraphs.length >= 26) {
 }
 
 /* Default icon colors */
-.like-icon {
-  stroke: #ff5555;
-}
+
 
 .share-button svg {
-  stroke: #2F628E;
+  stroke: #ffffff;
 }
 
 .bookmark-icon {
-  stroke: rgb(76, 175, 80);
+  stroke: #ffffff;
 }
 
 /* Active states with mint background */
 .like-button.liked {
   background-color: #f0f9f0;
+  color: #000000;
 }
 
-.like-button.liked .like-icon {
+.like-icon{
+  stroke: #ffffff;
+}
+
+.like-button.liked  {
   fill: #ff5555;
   stroke: #ff5555;
 }
 
 .bookmark-button[data-bookmarked="true"] {
   background-color: #f0f9f0;
+  color: #000000;
 }
 
 .bookmark-button[data-bookmarked="true"] .bookmark-icon {
