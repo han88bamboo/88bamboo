@@ -415,7 +415,7 @@ if (paragraphs.length >= 26) {
   stroke: #ffffff;
 }
 
-.like-button.liked  {
+.like-button.liked .like-icon {
   fill: #ff5555;
   stroke: #ff5555;
 }
@@ -427,10 +427,22 @@ if (paragraphs.length >= 26) {
 
 .bookmark-button[data-bookmarked="true"] .bookmark-icon {
   fill: #4CAF50;
+  stroke: #4CAF50;
 }
 
 .like-count {
   font-weight: 500;
+}
+
+.bookmark-button.feedback {
+  background-color: #f0f9f0;
+  color: #000000;  /* Makes the "Saved" text black */
+}
+
+/* Also add this to make sure the in-article version works too */
+#inArticleBookmarkButton.feedback {
+  background-color: #f0f9f0;
+  color: #000000;
 }
 </style>
 
