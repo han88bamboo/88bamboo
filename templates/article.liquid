@@ -448,6 +448,20 @@ if (paragraphs.length >= 26) {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  console.log("DOM loaded - checking for article ID issues");
+  console.log("Current URL:", window.location.href);
+  console.log("Article path parts:", window.location.pathname.split('/'));
+  console.log("Like button exists:", !!document.getElementById('likeButton'));
+  
+  const likeButtonElement = document.getElementById('likeButton');
+  if (likeButtonElement) {
+    console.log("Button HTML:", likeButtonElement.outerHTML);
+    console.log("Has article-id attribute:", likeButtonElement.hasAttribute('data-article-id'));
+    console.log("Article ID value:", likeButtonElement.getAttribute('data-article-id'));
+  } else {
+    console.log("Like button NOT FOUND in DOM");
+    console.log("Article container exists:", !!document.querySelector('.article-share-container'));
+  }
   const shareButton = document.getElementById('shareButton');
   const shareDropdown = document.getElementById('shareDropdown');
   const copyLinkButton = document.getElementById('copyLink');
@@ -886,14 +900,6 @@ function initInArticleLikeButton() {
 
   const likeButton = document.getElementById('likeButton');
   if (!likeButton) return;
-  // INSERT THE DIAGNOSTIC CODE RIGHT HERE, AFTER THE ABOVE LINES
-  console.log("Article button exists:", !!likeButton);
-  console.log("Button HTML:", likeButton.outerHTML);
-  console.log("Has article-id attribute:", likeButton.hasAttribute('data-article-id'));
-  console.log("Article ID value:", likeButton.getAttribute('data-article-id'));
-  console.log("Article URL path:", window.location.pathname);
-  console.log("Article collection:", window.location.pathname.split('/')[2]);
-
   const likeCount = likeButton.querySelector('.like-count');
   const articleId = likeButton.getAttribute('data-article-id'); // Get article ID from data attribute
   console.log("Article ID:", articleId); // Add debug log to verify
