@@ -813,20 +813,6 @@ function initInArticleLikeButton() {
       `;
     }
   }
-
-  function fetchInArticleLikeCount() {
-    fetch(`${likeServerUrl}/likes/count/${articleId}`)
-      .then(response => response.json())
-      .then(data => {
-        if (inArticleLikeCount) {
-          inArticleLikeCount.textContent = data.count;
-          updateLikeButtonState();
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching in-article like count:', error);
-      });
-  }
   
   inArticleLikeButton.addEventListener('click', function() {
     if (hasLiked()) return; // Already liked
@@ -877,8 +863,7 @@ function initInArticleLikeButton() {
       console.error('Error submitting like:', error);
     });
   });
-  // Fetch initial count from server
-  fetchInArticleLikeCount();
+  
   // Initialize button state
   updateLikeButtonState();
 }
@@ -936,6 +921,13 @@ function initInArticleLikeButton() {
     .then(data => {
       console.log("Received data:", data);
       likeCount.textContent = data.count;
+
+      const inArticleLikeButton = document.getElementById('inArticleLikeButton');
+      if (inArticleLikeButton) {
+        const inArticleLikeCount = inArticleLikeButton.querySelector('.like-count');
+        if (inArticleLikeCount) inArticleLikeCount.textContent = data.count;
+      }
+
       updateLikeButtonState();
     })
     .catch(error => {
