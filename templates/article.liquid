@@ -615,32 +615,38 @@ document.addEventListener('DOMContentLoaded', function() {
       spacer.style.height = '20px';
       buttonContainer.insertAdjacentElement('afterend', spacer);
       
-      // More thorough check for empty paragraphs or spacing elements
-        function isVisuallyEmpty(element) {
-          // Check if it's empty or just contains whitespace
-          if (!element.textContent.trim()) return true;
-          
-          // If it has BR tags but no other content
-          if (element.innerHTML.trim().match(/^(<br\s*\/?>)+$/i)) return true;
-          
-          // If it has non-visible elements but no text
-          const visibleText = element.innerText.trim();
-          if (!visibleText) return true;
-          
-          return false;
-        }
+      // Super aggressive empty paragraph remover
+      let elementsToCheck = 5; // Check up to 5 elements after the buttons
+      let currentElement = spacer.nextElementSibling;
 
-        // Check the next few elements
-        let currentElement = spacer.nextElementSibling;
-        while (currentElement && 
-              (currentElement.tagName === 'P' || currentElement.tagName === 'BR' || 
-                currentElement.classList.contains('spacer')) && 
-              isVisuallyEmpty(currentElement)) {
-          const elementToRemove = currentElement;
-          currentElement = currentElement.nextElementSibling;
-          console.log("Removing empty element:", elementToRemove);
-          elementToRemove.parentNode.removeChild(elementToRemove);
+      while (currentElement && elementsToCheck > 0) {
+        elementsToCheck--;
+        const nextElement = currentElement.nextElementSibling; // Save reference before possibly removing
+        
+        // If it's a paragraph, BR tag, or div with no meaningful content
+        if (currentElement.tagName === 'P' || currentElement.tagName === 'BR' || 
+            (currentElement.tagName === 'DIV' && !currentElement.classList.contains('article-share-container'))) {
+            
+          // Get the HTML content
+          const htmlContent = currentElement.innerHTML;
+          
+          // Check if it's completely empty or just contains non-visible elements
+          if (!htmlContent || 
+              htmlContent.trim() === '' ||
+              htmlContent === '&nbsp;' ||
+              htmlContent === '<br>' ||
+              htmlContent === '<br/>' ||
+              htmlContent === '<br />' ||
+              /^(\s|&nbsp;|<br\s*\/?>)*$/i.test(htmlContent)) {
+            
+            console.log("Removing empty element:", currentElement.outerHTML);
+            currentElement.parentNode.removeChild(currentElement);
+          }
         }
+        
+        // Move to the next element
+        currentElement = nextElement;
+      }
 
       // Initialize the buttons
       initImageButtons();
@@ -701,12 +707,25 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
     
+    // Replace the existing click handler for imageAfterShareButton in initImageButtons function
     if (imageAfterShareButton) {
       // Add click handler for share button
       imageAfterShareButton.addEventListener('click', function(event) {
         event.preventDefault();
-        // Open the existing share dropdown
-        document.getElementById('shareButton').click();
+        event.stopPropagation(); // Stop event bubbling
+        
+        // Get the share dropdown
+        const shareDropdown = document.getElementById('shareDropdown');
+        
+        // Position the dropdown below this button
+        shareDropdown.style.position = 'absolute';
+        const rect = this.getBoundingClientRect();
+        shareDropdown.style.top = (rect.bottom + window.scrollY) + 'px';
+        shareDropdown.style.left = (rect.left + window.scrollX) + 'px';
+        shareDropdown.style.transform = 'none'; // Remove default transform
+        
+        // Show the dropdown
+        shareDropdown.classList.toggle('active');
       });
     }
     
@@ -759,41 +778,9 @@ document.addEventListener('DOMContentLoaded', function() {
   setTimeout(addButtonsAfterFirstImage, 1000);
 
 
-// Fix for share dropdown positioning from cloned buttons
-function setupShareButtonPositioning() {
-  const imageAfterShareButton = document.getElementById('imageAfterShareButton');
-  const inArticleShareButton = document.getElementById('inArticleShareButton');
-  const shareDropdown = document.getElementById('shareDropdown');
-  
-  if (imageAfterShareButton) {
-    imageAfterShareButton.addEventListener('click', function(event) {
-      event.preventDefault();
-      shareDropdown.style.position = 'fixed';
-      const rect = this.getBoundingClientRect();
-      shareDropdown.style.top = rect.bottom + 'px';
-      shareDropdown.style.left = rect.left + 'px';
-      shareDropdown.classList.toggle('active');
-      event.stopPropagation();
-    });
-  }
-  
-  if (inArticleShareButton) {
-    inArticleShareButton.addEventListener('click', function(event) {
-      event.preventDefault();
-      shareDropdown.style.position = 'fixed';
-      const rect = this.getBoundingClientRect();
-      shareDropdown.style.top = rect.bottom + 'px';
-      shareDropdown.style.left = rect.left + 'px';
-      shareDropdown.classList.toggle('active');
-      event.stopPropagation();
-    });
-  }
-}
 
 });
 
-// Call after a delay to ensure buttons are loaded
-setTimeout(setupShareButtonPositioning, 1000);
 
 //for bookmark button to Use localStorage to save/remove bookmarks, Gives visual feedback when clicked (fills the icon green when bookmarked)
 document.addEventListener('DOMContentLoaded', function() {
