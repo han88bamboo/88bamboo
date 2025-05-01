@@ -864,20 +864,22 @@ function initInArticleLikeButton() {
     });
   });
   
-  // IMPORTANT: Add this code to synchronize counts
-  // Get count from main button which already works
-  const mainLikeButton = document.getElementById('likeButton');
-  if (mainLikeButton) {
-    const mainCount = mainLikeButton.querySelector('.like-count');
-    if (mainCount && inArticleLikeCount) {
-      // Copy the count value from main button to in-article button
-      inArticleLikeCount.textContent = mainCount.textContent;
-      console.log("Synced count:", mainCount.textContent);
+  // IMPORTANT: Add this code to synchronize counts with a 1-second delay
+  setTimeout(() => {
+    // Get count from main button which already works
+    const mainLikeButton = document.getElementById('likeButton');
+    if (mainLikeButton) {
+      const mainCount = mainLikeButton.querySelector('.like-count');
+      if (mainCount && inArticleLikeCount) {
+        // Copy the count value from main button to in-article button
+        inArticleLikeCount.textContent = mainCount.textContent;
+        console.log("Synced count after delay:", mainCount.textContent);
+      }
     }
-  }
-
-  // Initialize button state
-  updateLikeButtonState();
+    
+    // Initialize button state after getting the count
+    updateLikeButtonState();
+  }, 1000); // 1 second delay
 }
 
 // Like button functionality
