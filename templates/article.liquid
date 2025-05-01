@@ -572,6 +572,165 @@ document.addEventListener('DOMContentLoaded', function() {
       shareDropdown.classList.remove('active');
     }, 2000);
   });
+
+  // Add buttons after first image in article content
+  function addButtonsAfterFirstImage() {
+    // Find the first image in article content
+    const firstImage = document.querySelector('#shopify-section-article-content img');
+    
+    if (!firstImage) return; // Exit if no image found
+    
+    console.log('Found first image in article content:', firstImage);
+    
+    // Create a container for our buttons
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'article-share-container in-article';
+    
+    // Clone the share and bookmark buttons
+    const originalShareContainer = document.querySelector('.article-share-container');
+    if (originalShareContainer) {
+      // Create a deep clone of the original buttons
+      const likeButton = document.getElementById('likeButton').cloneNode(true);
+      const shareButton = document.getElementById('shareButton').cloneNode(true);
+      const bookmarkButton = document.getElementById('bookmarkButton').cloneNode(true);
+
+      // Give them unique IDs to avoid conflicts
+      likeButton.id = 'imageAfterLikeButton';
+      shareButton.id = 'imageAfterShareButton';
+      bookmarkButton.id = 'imageAfterBookmarkButton';
+      
+      // Make sure we keep the data attribute for the article ID
+      likeButton.setAttribute('data-article-id', document.getElementById('likeButton').getAttribute('data-article-id'));
+      
+      // Add the buttons to the container
+      buttonContainer.appendChild(likeButton);
+      buttonContainer.appendChild(shareButton);
+      buttonContainer.appendChild(bookmarkButton);
+
+      // Insert our new container after the image
+      firstImage.insertAdjacentElement('afterend', buttonContainer);
+      
+      // Apply some spacing
+      const spacer = document.createElement('div');
+      spacer.style.height = '20px';
+      buttonContainer.insertAdjacentElement('afterend', spacer);
+      
+      // Initialize the buttons
+      initImageButtons();
+    }
+  }
+
+  // Initialize the buttons that were added after the image
+  function initImageButtons() {
+    const imageAfterLikeButton = document.getElementById('imageAfterLikeButton');
+    const imageAfterShareButton = document.getElementById('imageAfterShareButton');
+    const imageAfterBookmarkButton = document.getElementById('imageAfterBookmarkButton');
+    
+    if (imageAfterLikeButton) {
+      // Copy like count from main button
+      const mainCount = document.querySelector('#likeButton .like-count');
+      const imageCount = imageAfterLikeButton.querySelector('.like-count');
+      if (mainCount && imageCount) {
+        imageCount.textContent = mainCount.textContent;
+      }
+      
+      // Update state based on existing like state
+      function hasLiked() {
+        const likes = JSON.parse(localStorage.getItem('article_likes') || '[]');
+        const articleId = imageAfterLikeButton.getAttribute('data-article-id');
+        return likes.includes(articleId);
+      }
+      
+      if (hasLiked()) {
+        imageAfterLikeButton.classList.add('liked');
+        imageAfterLikeButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff5555" stroke="#ff5555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="like-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          <span class="like-count">${imageCount.textContent}</span>
+        `;
+      }
+      
+      // Add click handler
+      imageAfterLikeButton.addEventListener('click', function() {
+        // Trigger a click on the main like button
+        document.getElementById('likeButton').click();
+        
+        // Copy the updated count
+        setTimeout(() => {
+          const mainCount = document.querySelector('#likeButton .like-count');
+          const imageCount = imageAfterLikeButton.querySelector('.like-count');
+          if (mainCount && imageCount) {
+            imageCount.textContent = mainCount.textContent;
+          }
+          
+          // Update state
+          if (hasLiked()) {
+            imageAfterLikeButton.classList.add('liked');
+            imageAfterLikeButton.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff5555" stroke="#ff5555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="like-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              <span class="like-count">${imageCount.textContent}</span>
+            `;
+          }
+        }, 300);
+      });
+    }
+    
+    if (imageAfterShareButton) {
+      // Add click handler for share button
+      imageAfterShareButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        // Open the existing share dropdown
+        document.getElementById('shareButton').click();
+      });
+    }
+    
+    if (imageAfterBookmarkButton) {
+      // Sync with main bookmark button
+      const isBookmarked = document.getElementById('bookmarkButton').getAttribute('data-bookmarked') === 'true';
+      
+      if (isBookmarked) {
+        imageAfterBookmarkButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#4CAF50" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bookmark-icon"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+          Bookmarked
+        `;
+        imageAfterBookmarkButton.setAttribute('data-bookmarked', 'true');
+      } else {
+        imageAfterBookmarkButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bookmark-icon"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+          Bookmark
+        `;
+        imageAfterBookmarkButton.setAttribute('data-bookmarked', 'false');
+      }
+      
+      // Add click handler
+      imageAfterBookmarkButton.addEventListener('click', function() {
+        // Trigger a click on the main bookmark button
+        document.getElementById('bookmarkButton').click();
+        
+        // Update state after a short delay
+        setTimeout(() => {
+          const isBookmarked = document.getElementById('bookmarkButton').getAttribute('data-bookmarked') === 'true';
+          
+          if (isBookmarked) {
+            imageAfterBookmarkButton.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#4CAF50" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bookmark-icon"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+              Bookmarked
+            `;
+            imageAfterBookmarkButton.setAttribute('data-bookmarked', 'true');
+          } else {
+            imageAfterBookmarkButton.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bookmark-icon"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+              Bookmark
+            `;
+            imageAfterBookmarkButton.setAttribute('data-bookmarked', 'false');
+          }
+        }, 300);
+      });
+    }
+  }
+
+  // Call the function to add buttons after the first image
+  setTimeout(addButtonsAfterFirstImage, 1000);
+
 });
 //for bookmark button to Use localStorage to save/remove bookmarks, Gives visual feedback when clicked (fills the icon green when bookmarked)
 document.addEventListener('DOMContentLoaded', function() {
@@ -636,7 +795,7 @@ function updateBookmarkButton() {
     setTimeout(() => {
       bookmarkButton.classList.remove('feedback');
       updateBookmarkButton(); // This will set the correct text and icon
-    }, 2000);
+    }, 1000);
   });
   
   // Initialize button state
@@ -655,9 +814,9 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Check if we have at least 3 paragraphs
-  if (paragraphs.length >= 5) {
+  if (paragraphs.length >= 6) {
     // Get the third paragraph
-    const thirdParagraph = paragraphs[4];
+    const thirdParagraph = paragraphs[5];
     
     // Create a container for our buttons
     const buttonContainer = document.createElement('div');
