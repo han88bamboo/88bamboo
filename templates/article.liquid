@@ -600,7 +600,8 @@ document.addEventListener('DOMContentLoaded', function() {
       // Extract the buttons we need
       const shareButton = clonedContainer.querySelector('#shareButton');
       const bookmarkButton = clonedContainer.querySelector('#bookmarkButton');
-      
+      const likeButton = clonedContainer.querySelector('#likeButton');
+
       // Give them unique IDs to avoid conflicts
       if (shareButton) {
         shareButton.id = 'inArticleShareButton';
@@ -610,6 +611,12 @@ document.addEventListener('DOMContentLoaded', function() {
       if (bookmarkButton) {
         bookmarkButton.id = 'inArticleBookmarkButton';
         buttonContainer.appendChild(bookmarkButton);
+      }
+      if (likeButton) {
+        likeButton.id = 'inArticleLikeButton';
+        // Make sure we keep the data attribute for the article ID
+        likeButton.setAttribute('data-article-id', document.getElementById('likeButton').getAttribute('data-article-id'));
+        buttonContainer.appendChild(likeButton);
       }
       
       // Insert our new container after the third paragraph
@@ -622,6 +629,8 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Initialize the cloned bookmark button
       initInArticleBookmarkButton();
+      // Initialize the cloned like button
+      initInArticleLikeButton();
     }
   }
   
@@ -715,6 +724,90 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize button state
     updateBookmarkButton();
   }
+
+  // Initialize the in-article like button
+function initInArticleLikeButton() {
+  const inArticleLikeButton = document.getElementById('inArticleLikeButton');
+  if (!inArticleLikeButton) return;
+  
+  const inArticleLikeCount = inArticleLikeButton.querySelector('.like-count');
+  const articleId = inArticleLikeButton.getAttribute('data-article-id');
+  const likeServerUrl = 'https://likes.88bamboo.co';
+  
+  function hasLiked() {
+    const likes = JSON.parse(localStorage.getItem('article_likes') || '[]');
+    return likes.includes(articleId);
+  }
+  
+  function updateLikeButtonState() {
+    if (hasLiked()) {
+      inArticleLikeButton.classList.add('liked');
+      inArticleLikeButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff5555" stroke="#ff5555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="like-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        <span class="like-count">${inArticleLikeCount.textContent}</span>
+      `;
+    } else {
+      inArticleLikeButton.classList.remove('liked');
+      inArticleLikeButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="like-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        <span class="like-count">${inArticleLikeCount.textContent}</span>
+      `;
+    }
+  }
+  
+  inArticleLikeButton.addEventListener('click', function() {
+    if (hasLiked()) return; // Already liked
+    
+    fetch(`${likeServerUrl}/likes/add/${articleId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Update local storage
+        let likes = JSON.parse(localStorage.getItem('article_likes') || '[]');
+        if (!likes.includes(articleId)) {
+          likes.push(articleId);
+          localStorage.setItem('article_likes', JSON.stringify(likes));
+        }
+        
+        // Update both like buttons
+        inArticleLikeCount.textContent = data.newCount;
+        updateLikeButtonState();
+        
+        // Update the main like button too
+        const mainLikeButton = document.getElementById('likeButton');
+        if (mainLikeButton) {
+          const mainLikeCount = mainLikeButton.querySelector('.like-count');
+          if (mainLikeCount) mainLikeCount.textContent = data.newCount;
+          if (typeof updateLikeButtonState === 'function') {
+            const mainLikeButton = document.getElementById('likeButton');
+            const mainLikeCount = mainLikeButton.querySelector('.like-count');
+            if (mainLikeCount) mainLikeCount.textContent = data.newCount;
+            if (mainLikeButton) {
+              if (hasLiked()) {
+                mainLikeButton.classList.add('liked');
+                mainLikeButton.innerHTML = `
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff5555" stroke="#ff5555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="like-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  <span class="like-count">${data.newCount}</span>
+                `;
+              }
+            }
+          }
+        }
+      }
+    })
+    .catch(error => {
+      console.error('Error submitting like:', error);
+    });
+  });
+  
+  // Initialize button state
+  updateLikeButtonState();
+}
 
 // Like button functionality
 
