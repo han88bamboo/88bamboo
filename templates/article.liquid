@@ -864,18 +864,6 @@ function initInArticleLikeButton() {
     });
   });
   
-    // IMPORTANT: Add this code to synchronize counts
-    // Get count from main button which already works
-    const mainLikeButton = document.getElementById('likeButton');
-    if (mainLikeButton) {
-      const mainCount = mainLikeButton.querySelector('.like-count');
-      if (mainCount && inArticleLikeCount) {
-        // Copy the count value from main button to in-article button
-        inArticleLikeCount.textContent = mainCount.textContent;
-        console.log("Synced count:", mainCount.textContent);
-      }
-    }
-
   // Initialize button state
   updateLikeButtonState();
 }
