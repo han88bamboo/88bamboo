@@ -879,14 +879,21 @@ function initInArticleLikeButton() {
     
     // Initialize button state after getting the count
     updateLikeButtonState();
-  }, 1000); // 1 second delay
+  }, 1500); // 1.5 second delay
 }
 
 // Like button functionality
 
   const likeButton = document.getElementById('likeButton');
   if (!likeButton) return;
-  
+  // INSERT THE DIAGNOSTIC CODE RIGHT HERE, AFTER THE ABOVE LINES
+  console.log("Article button exists:", !!likeButton);
+  console.log("Button HTML:", likeButton.outerHTML);
+  console.log("Has article-id attribute:", likeButton.hasAttribute('data-article-id'));
+  console.log("Article ID value:", likeButton.getAttribute('data-article-id'));
+  console.log("Article URL path:", window.location.pathname);
+  console.log("Article collection:", window.location.pathname.split('/')[2]);
+
   const likeCount = likeButton.querySelector('.like-count');
   const articleId = likeButton.getAttribute('data-article-id'); // Get article ID from data attribute
   console.log("Article ID:", articleId); // Add debug log to verify
