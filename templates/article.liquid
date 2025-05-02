@@ -243,7 +243,6 @@ if (paragraphs.length >= 26) {
 .article-share-container {
   position: relative;
   display: flex;
-  flex-direction: row;
   justify-content: center;
   margin: 20px auto;
   z-index: 100;
@@ -1040,12 +1039,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create a container for our buttons
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'article-share-container in-article';
-    // Create a container for our buttons
-    const buttonContainer = document.createElement('div');
-    buttonContainer.className = 'article-share-container in-article';
-    buttonContainer.style.display = 'flex';           // ADD THIS LINE
-    buttonContainer.style.flexDirection = 'column';   // ADD THIS LINE 
-    buttonContainer.style.alignItems = 'center';      // ADD THIS LINE
     // Create a single heading for all buttons
     const actionHeading = document.createElement('div');
     actionHeading.textContent = 'Like, Share & Bookmark this article:';
