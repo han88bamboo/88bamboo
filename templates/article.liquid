@@ -1036,6 +1036,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create a container for our buttons
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'article-share-container in-article';
+    // Create a single heading for all buttons
+    const actionHeading = document.createElement('div');
+    actionHeading.textContent = 'Like, Share & Bookmark this article:';
+    actionHeading.style.fontSize = '15px';
+    actionHeading.style.marginBottom = '10px';
+    actionHeading.style.textAlign = 'center';
+    buttonContainer.appendChild(actionHeading);
     
     // Clone the share and bookmark buttons
     const originalShareContainer = document.querySelector('.article-share-container');
@@ -1127,13 +1134,7 @@ document.addEventListener('DOMContentLoaded', function() {
     shareButtonContainer.appendChild(shareDropdown);
     buttonContainer.appendChild(shareButtonContainer);
 
-    // Create a single heading for all buttons
-    const actionHeading = document.createElement('div');
-    actionHeading.textContent = 'Like, Share & Bookmark this article:';
-    actionHeading.style.fontSize = '15px';
-    actionHeading.style.marginBottom = '10px';
-    actionHeading.style.textAlign = 'center';
-    buttonContainer.appendChild(actionHeading);
+
     // Create text label for bookmark button
     // const bookmarkText = document.createElement('span');
     // bookmarkText.textContent = 'Bookmark this article: ';
