@@ -1046,7 +1046,9 @@ document.addEventListener('DOMContentLoaded', function() {
       // Create text label for like button
     const likeText = document.createElement('span');
     likeText.textContent = 'Like this article: ';
-    likeText.style.marginRight = '5px';
+    likeText.style.marginRight = '0px';
+    likeText.style.font-size = '15px';
+
     buttonContainer.appendChild(likeText);
       // Keep the like button as is
     const likeButton = clonedContainer.querySelector('#likeButton');
@@ -1060,8 +1062,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create text label for share button
     const shareText = document.createElement('span');
     shareText.textContent = 'Share this article: ';
-    shareText.style.marginRight = '5px';
-    shareText.style.marginLeft = '15px';
+    shareText.style.marginRight = '0px';
+    shareText.style.marginLeft = '10px';
+    shareText.style.font-size = '15px';
     buttonContainer.appendChild(shareText);
 
     // Create a new share button with its own dropdown (similar to imageAfterShareButton)
@@ -1126,8 +1129,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create text label for bookmark button
     const bookmarkText = document.createElement('span');
     bookmarkText.textContent = 'Bookmark this article: ';
-    bookmarkText.style.marginRight = '5px';
-    bookmarkText.style.marginLeft = '15px';
+    bookmarkText.style.marginRight = '0px';
+    bookmarkText.style.marginLeft = '10px';
+    bookmarkText.style.font-size = '15px';
     buttonContainer.appendChild(bookmarkText);
 
     // Keep the bookmark button as is
