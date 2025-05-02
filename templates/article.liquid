@@ -329,7 +329,9 @@ if (paragraphs.length >= 26) {
 /* styles for the in-article share container */
 .article-share-container.in-article {
     display: flex;
-    flex-direction: column;
+    flex-direction: column;    
+    align-items: stretch !important; /* Override the align-items from base class */
+    justify-content: flex-start !important; /* Reset justify-content */
     margin-top: 30px;
     margin-bottom: 0px;
     padding: 15px;
