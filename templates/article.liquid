@@ -445,6 +445,39 @@ if (paragraphs.length >= 26) {
   opacity: 1;
   pointer-events: auto;
 }
+
+/* Styles for the dedicated dropdowns */
+.share-button-container {
+  position: relative;
+  display: inline-block;
+}
+
+#imageAfterShareDropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  width: 250px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  z-index: 1000;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  opacity: 0;
+  visibility: hidden;
+  margin-top: 8px;
+}
+
+#imageAfterShareDropdown.active {
+  max-height: 350px;
+  padding: 10px;
+  opacity: 1;
+  visibility: visible;
+}
 </style>
 
 <script>
@@ -594,7 +627,13 @@ document.addEventListener('DOMContentLoaded', function() {
       const likeButton = document.getElementById('likeButton').cloneNode(true);
       const bookmarkButton = document.getElementById('bookmarkButton').cloneNode(true);
 
-      // Create share button directly with HTML
+      
+      // Create share button WITH ITS OWN dropdown
+      const shareButtonContainer = document.createElement('div');
+      shareButtonContainer.className = 'share-button-container';
+      shareButtonContainer.style.position = 'relative';
+
+      // Create the button
       const shareButton = document.createElement('button');
       shareButton.id = 'imageAfterShareButton';
       shareButton.className = 'share-button';
@@ -602,6 +641,51 @@ document.addEventListener('DOMContentLoaded', function() {
         <svg xmlns="http://www.w3.org/2000/svg" class="share-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
         Share
       `;
+
+      // Create the dropdown with all share options
+      const shareDropdown = document.createElement('div');
+      shareDropdown.className = 'share-dropdown';
+      shareDropdown.id = 'imageAfterShareDropdown';
+      shareDropdown.innerHTML = `
+        <a href="#" class="share-item copy-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#333333"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+          Copy Link
+        </a>
+        <a href="#" class="share-item" data-platform="facebook">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#3b5998"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+          Facebook
+        </a>
+        <a href="#" class="share-item" data-platform="whatsapp">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M17.498 14.382c-.301-.15-1.767-.867-2.04-.966-.273-.101-.473-.15-.673.15-.197.295-.771.964-.944 1.162-.175.195-.349.21-.646.075-.3-.15-1.263-.465-2.403-1.485-.888-.795-1.484-1.77-1.66-2.07-.174-.3-.019-.465.13-.615.136-.135.301-.345.451-.523.146-.181.194-.301.297-.496.1-.21.049-.375-.025-.524-.075-.15-.672-1.62-.922-2.206-.24-.584-.487-.51-.672-.51-.172-.015-.371-.015-.571-.015-.2 0-.523.074-.797.359-.273.3-1.045 1.02-1.045 2.475s1.07 2.865 1.219 3.075c.149.195 2.105 3.195 5.1 4.485.714.3 1.27.48 1.704.629.714.227 1.365.195 1.88.121.574-.091 1.767-.721 2.016-1.426.255-.705.255-1.29.18-1.425-.074-.135-.27-.21-.57-.345m-5.446 7.443h-.016c-1.77 0-3.524-.48-5.055-1.38l-.36-.214-3.75.975 1.005-3.645-.239-.375c-.99-1.576-1.516-3.391-1.516-5.26 0-5.445 4.455-9.885 9.942-9.885 2.654 0 5.145 1.035 7.021 2.91 1.875 1.859 2.909 4.35 2.909 6.99-.004 5.444-4.46 9.885-9.935 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652c1.746.943 3.71 1.444 5.71 1.447h.006c6.585 0 11.946-5.336 11.949-11.896 0-3.176-1.24-6.165-3.495-8.411"></path></svg>
+          WhatsApp
+        </a>
+        <a href="#" class="share-item" data-platform="twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#1DA1F2"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
+          Twitter/X
+        </a>
+        <a href="#" class="share-item" data-platform="reddit">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#FF4500"><path d="M12 22c-5.52 0-10-4.48-10-10S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10zm-3.97-8.05a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm7.94 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm-.38 3.78C14.35 18.85 13.23 19.4 12 19.4c-1.23 0-2.35-.55-3.59-1.67-.3-.27-.33-.73-.07-1.03.26-.31.72-.33 1.03-.08.9.81 1.69 1.18 2.63 1.18.94 0 1.73-.37 2.63-1.18.3-.25.76-.23 1.03.08.26.3.23.76-.07 1.03z"></path></svg>
+          Reddit
+        </a>
+        <a href="#" class="share-item" data-platform="pinterest">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#E60023"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.236 2.636 7.855 6.356 9.312-.088-.791-.167-2.005.035-2.868.182-.78 1.172-4.97 1.172-4.97s-.299-.6-.299-1.486c0-1.39.806-2.428 1.81-2.428.852 0 1.264.64 1.264 1.408 0 .858-.546 2.14-.828 3.33-.236.995.5 1.807 1.48 1.807 1.778 0 3.144-1.874 3.144-4.58 0-2.393-1.72-4.068-4.177-4.068-2.845 0-4.515 2.135-4.515 4.34 0 .859.331 1.781.745 2.281.083.1.094.188.071.292-.07.301-.244.955-.277 1.08-.044.183-.145.223-.335.134-1.258-.58-2.046-2.42-2.046-3.894 0-3.15 2.287-6.045 6.612-6.045 3.459 0 6.152 2.454 6.152 5.732 0 3.42-2.157 6.158-5.17 6.158-1.01 0-1.96-.525-2.29-1.146 0 0-.502 1.894-.622 2.354-.227.875-.833 1.958-1.24 2.625A10 10 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"></path></svg>
+          Pinterest
+        </a>
+        <a href="#" class="share-item" data-platform="linkedin">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#0077B5"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          LinkedIn
+        </a>
+        <a href="#" class="share-item" data-platform="email">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#333333"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          Email
+        </a>
+      `;
+
+      // Add button to container
+      shareButtonContainer.appendChild(shareButton);
+      shareButtonContainer.appendChild(shareDropdown);
+
+
 
       // Give unique IDs to the cloned buttons
       likeButton.id = 'imageAfterLikeButton';
@@ -612,7 +696,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Add the buttons to the container
       buttonContainer.appendChild(likeButton);
-      buttonContainer.appendChild(shareButton);
+      buttonContainer.appendChild(shareButtonContainer);
       buttonContainer.appendChild(bookmarkButton);
 
       // Insert our new container after the image
@@ -684,29 +768,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
     
-    // Replace the existing click handler for imageAfterShareButton in initImageButtons function
-    if (imageAfterShareButton) {
-      // Add click handler for share button
-      imageAfterShareButton.addEventListener('click', function(event) {
-        event.preventDefault();
-        event.stopPropagation(); // Stop event bubbling
-        
-        // Get the share dropdown
-        const shareDropdown = document.getElementById('shareDropdown');
-        
-        // Position the dropdown below this button
-        shareDropdown.style.position = 'absolute';
-        const rect = this.getBoundingClientRect();
-        shareDropdown.style.top = (rect.bottom + window.scrollY) + 'px';
-        shareDropdown.style.left = (rect.left + window.scrollX) + 'px';
-        shareDropdown.style.transform = 'none'; // Remove default transform
-        // Position the dropdown below this button
-        shareDropdown.style.position = 'absolute';
-        shareDropdown.style.zIndex = '2000'; // Add this line to ensure visibility
-        // Show the dropdown
-        shareDropdown.classList.toggle('active');
-      });
-    }
+    
     
     if (imageAfterBookmarkButton) {
       // Sync with main bookmark button
@@ -751,6 +813,107 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300);
       });
     }
+      // Add handler for dedicated share button and dropdown
+      if (imageAfterShareButton) {
+        const dropdown = document.getElementById('imageAfterShareDropdown');
+        
+        // Toggle dropdown visibility
+        imageAfterShareButton.addEventListener('click', function(event) {
+          event.preventDefault();
+          dropdown.classList.toggle('active');
+          
+          // Close on outside click
+          function closeOnOutsideClick(e) {
+            if (!e.target.closest('#imageAfterShareDropdown') && 
+                !e.target.closest('#imageAfterShareButton')) {
+              dropdown.classList.remove('active');
+              document.removeEventListener('click', closeOnOutsideClick);
+            }
+          }
+          
+          // Add outside click handler with slight delay
+          setTimeout(() => {
+            document.addEventListener('click', closeOnOutsideClick);
+          }, 10);
+        });
+        
+        // Handle copy link functionality
+        const copyLinkButton = dropdown.querySelector('.copy-link');
+        if (copyLinkButton) {
+          copyLinkButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            // Copy current URL
+            const url = window.location.href;
+            const tempInput = document.createElement('input');
+            tempInput.value = url;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            
+            // Visual feedback
+            const originalHTML = this.innerHTML;
+            this.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#4CAF50"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path></svg>
+              Copied!
+            `;
+            
+            setTimeout(() => {
+              this.innerHTML = originalHTML;
+              dropdown.classList.remove('active');
+            }, 2000);
+          });
+        }
+        
+        // Handle all share platform links
+        const sharePlatformLinks = dropdown.querySelectorAll('[data-platform]');
+        sharePlatformLinks.forEach(function(link) {
+          link.addEventListener('click', function(event) {
+            event.preventDefault();
+            
+            const platform = this.getAttribute('data-platform');
+            const title = document.title;
+            const url = window.location.href;
+            let shareUrl = '';
+            
+            switch(platform) {
+              case 'facebook':
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                break;
+              case 'twitter':
+                shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+                break;
+              case 'whatsapp':
+                shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}`;
+                break;
+              case 'email':
+                shareUrl = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`;
+                break;
+              case 'reddit':
+                shareUrl = `https://reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
+                break;
+              case 'pinterest':
+                let media = '';
+                const images = document.querySelectorAll('.article-featured-image');
+                if (images.length > 0) {
+                  media = images[0].src;
+                }
+                shareUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&media=${encodeURIComponent(media)}&description=${encodeURIComponent(title)}`;
+                break;
+              case 'linkedin':
+                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+                break;
+            }
+            
+            if (shareUrl) {
+              window.open(shareUrl, '_blank', 'width=600,height=500');
+              dropdown.classList.remove('active');
+            }
+          });
+        });
+      }
+
   }
 
   // Call the function to add buttons after the first image
