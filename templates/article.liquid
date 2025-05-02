@@ -1043,13 +1043,14 @@ document.addEventListener('DOMContentLoaded', function() {
       // Create a deep clone of the original buttons
       const clonedContainer = originalShareContainer.cloneNode(true);
     
-      // Create text label for like button
-    const likeText = document.createElement('span');
-    likeText.textContent = 'Like this article: ';
-    likeText.style.marginRight = '0px';
-    likeText.style.fontSize = '15px';
+    //   // Create text label for like button
+    // const likeText = document.createElement('span');
+    // likeText.textContent = 'Like this article: ';
+    // likeText.style.marginRight = '0px';
+    // likeText.style.fontSize = '15px';
 
-    buttonContainer.appendChild(likeText);
+    // buttonContainer.appendChild(likeText);
+
       // Keep the like button as is
     const likeButton = clonedContainer.querySelector('#likeButton');
     if (likeButton) {
@@ -1060,12 +1061,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Create text label for share button
-    const shareText = document.createElement('span');
-    shareText.textContent = 'Share this article: ';
-    shareText.style.marginRight = '0px';
-    shareText.style.marginLeft = '10px';
-    shareText.style.fontSize = '15px';
-    buttonContainer.appendChild(shareText);
+    // const shareText = document.createElement('span');
+    // shareText.textContent = 'Share this article: ';
+    // shareText.style.marginRight = '0px';
+    // shareText.style.marginLeft = '10px';
+    // shareText.style.fontSize = '15px';
+    // buttonContainer.appendChild(shareText);
 
     // Create a new share button with its own dropdown (similar to imageAfterShareButton)
     const shareButtonContainer = document.createElement('div');
@@ -1126,13 +1127,20 @@ document.addEventListener('DOMContentLoaded', function() {
     shareButtonContainer.appendChild(shareDropdown);
     buttonContainer.appendChild(shareButtonContainer);
 
+    // Create a single heading for all buttons
+    const actionHeading = document.createElement('div');
+    actionHeading.textContent = 'Like, Share & Bookmark this article:';
+    actionHeading.style.fontSize = '15px';
+    actionHeading.style.marginBottom = '10px';
+    actionHeading.style.textAlign = 'center';
+    buttonContainer.appendChild(actionHeading);
     // Create text label for bookmark button
-    const bookmarkText = document.createElement('span');
-    bookmarkText.textContent = 'Bookmark this article: ';
-    bookmarkText.style.marginRight = '0px';
-    bookmarkText.style.marginLeft = '10px';
-    bookmarkText.style.fontSize = '15px';
-    buttonContainer.appendChild(bookmarkText);
+    // const bookmarkText = document.createElement('span');
+    // bookmarkText.textContent = 'Bookmark this article: ';
+    // bookmarkText.style.marginRight = '0px';
+    // bookmarkText.style.marginLeft = '10px';
+    // bookmarkText.style.fontSize = '15px';
+    // buttonContainer.appendChild(bookmarkText);
 
     // Keep the bookmark button as is
     const bookmarkButton = clonedContainer.querySelector('#bookmarkButton');
