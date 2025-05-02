@@ -1055,8 +1055,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const buttonsWrapper = document.createElement('div');
     buttonsWrapper.className = 'd-flex flex-row justify-content-center';
     buttonsWrapper.style.gap = '10px'; // Space between buttons
+    buttonsWrapper.style.alignItems = 'center'; // Prevent buttons from stretching
+    buttonsWrapper.style.alignSelf = 'center'; // Center the row itself
     buttonContainer.appendChild(buttonsWrapper);
-
+    
     // Clone the share and bookmark buttons
     const originalShareContainer = document.querySelector('.article-share-container');
     if (originalShareContainer) {
