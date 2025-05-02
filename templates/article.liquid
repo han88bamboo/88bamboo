@@ -700,7 +700,9 @@ document.addEventListener('DOMContentLoaded', function() {
         shareDropdown.style.top = (rect.bottom + window.scrollY) + 'px';
         shareDropdown.style.left = (rect.left + window.scrollX) + 'px';
         shareDropdown.style.transform = 'none'; // Remove default transform
-        
+        // Position the dropdown below this button
+        shareDropdown.style.position = 'absolute';
+        shareDropdown.style.zIndex = '2000'; // Add this line to ensure visibility
         // Show the dropdown
         shareDropdown.classList.toggle('active');
       });
