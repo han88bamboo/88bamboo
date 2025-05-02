@@ -1045,6 +1045,12 @@ document.addEventListener('DOMContentLoaded', function() {
     actionHeading.style.textAlign = 'center';
     buttonContainer.appendChild(actionHeading);
 
+    // Create a wrapper for buttons to stack them vertically
+    const buttonsWrapper = document.createElement('div');
+    buttonsWrapper.className = 'd-flex flex-column align-items-center';
+    buttonsWrapper.style.gap = '10px'; // Space between buttons
+    buttonContainer.appendChild(buttonsWrapper);
+
     // Clone the share and bookmark buttons
     const originalShareContainer = document.querySelector('.article-share-container');
     if (originalShareContainer) {
@@ -1059,13 +1065,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // buttonContainer.appendChild(likeText);
 
-      // Keep the like button as is
+    // Keep the like button as is
     const likeButton = clonedContainer.querySelector('#likeButton');
     if (likeButton) {
       likeButton.id = 'inArticleLikeButton';
       // Make sure we keep the data attribute for the article ID
       likeButton.setAttribute('data-article-id', document.getElementById('likeButton').getAttribute('data-article-id'));
-      buttonContainer.appendChild(likeButton);
+      // Add to wrapper instead of buttonContainer
+      buttonsWrapper.appendChild(likeButton);
     }
 
     // Create text label for share button
@@ -1133,7 +1140,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add button to container
     shareButtonContainer.appendChild(shareButton);
     shareButtonContainer.appendChild(shareDropdown);
-    buttonContainer.appendChild(shareButtonContainer);
+    // Add to wrapper instead of buttonContainer
+    buttonsWrapper.appendChild(shareButtonContainer);
 
 
     // Create text label for bookmark button
@@ -1148,7 +1156,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const bookmarkButton = clonedContainer.querySelector('#bookmarkButton');
     if (bookmarkButton) {
       bookmarkButton.id = 'inArticleBookmarkButton';
-      buttonContainer.appendChild(bookmarkButton);
+      // Add to wrapper instead of buttonContainer
+      buttonsWrapper.appendChild(bookmarkButton);
     }
 
       
