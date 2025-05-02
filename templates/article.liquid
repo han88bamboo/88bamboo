@@ -1121,6 +1121,10 @@ document.addEventListener('DOMContentLoaded', function() {
       // Insert our new container after the third paragraph
       thirdParagraph.insertAdjacentElement('afterend', buttonContainer);
       
+      // Apply some spacing
+      const spacer = document.createElement('div');
+      spacer.style.height = '20px';
+      buttonContainer.insertAdjacentElement('afterend', spacer);
       
       // Initialize the cloned bookmark button
       initInArticleBookmarkButton();
