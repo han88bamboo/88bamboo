@@ -663,6 +663,13 @@ document.addEventListener('DOMContentLoaded', function() {
       const shareButtonContainer = document.createElement('div');
       shareButtonContainer.className = 'share-button-container';
       shareButtonContainer.style.position = 'relative';
+      shareButtonContainer.style.display = 'inline-block';
+      shareButtonContainer.style.flexGrow = '0'; // Add this line
+      shareButtonContainer.style.flexShrink = '0'; // Add this line
+      shareButtonContainer.style.width = 'auto'; // Add this line
+      
+      // Add to wrapper instead of buttonContainer
+      buttonsWrapper.appendChild(shareButtonContainer);
 
       // Create the button
       const shareButton = document.createElement('button');
@@ -1057,8 +1064,13 @@ document.addEventListener('DOMContentLoaded', function() {
     buttonsWrapper.style.gap = '10px'; // Space between buttons
     buttonsWrapper.style.alignItems = 'center'; // Prevent buttons from stretching
     buttonsWrapper.style.alignSelf = 'center'; // Center the row itself
+    buttonsWrapper.style.display = 'flex'; // Ensure flex display
+    buttonsWrapper.style.width = 'auto'; // Don't stretch to full width
+    buttonsWrapper.style.maxWidth = '100%'; // But don't overflow container
+    buttonsWrapper.style.marginLeft = 'auto'; // Center horizontally
+    buttonsWrapper.style.marginRight = 'auto'; // Center horizontally
     buttonContainer.appendChild(buttonsWrapper);
-    
+
     // Clone the share and bookmark buttons
     const originalShareContainer = document.querySelector('.article-share-container');
     if (originalShareContainer) {
@@ -1079,6 +1091,10 @@ document.addEventListener('DOMContentLoaded', function() {
       likeButton.id = 'inArticleLikeButton';
       // Make sure we keep the data attribute for the article ID
       likeButton.setAttribute('data-article-id', document.getElementById('likeButton').getAttribute('data-article-id'));
+      // Add these lines to prevent horizontal stretching
+      likeButton.style.flexGrow = '0';
+      likeButton.style.flexShrink = '0'; 
+      likeButton.style.width = 'auto';
       // Add to wrapper instead of buttonContainer
       buttonsWrapper.appendChild(likeButton);
     }
@@ -1164,6 +1180,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const bookmarkButton = clonedContainer.querySelector('#bookmarkButton');
     if (bookmarkButton) {
       bookmarkButton.id = 'inArticleBookmarkButton';
+      // Add these lines to prevent horizontal stretching  
+      bookmarkButton.style.flexGrow = '0';
+      bookmarkButton.style.flexShrink = '0';
+      bookmarkButton.style.width = 'auto'; 
       // Add to wrapper instead of buttonContainer
       buttonsWrapper.appendChild(bookmarkButton);
     }
