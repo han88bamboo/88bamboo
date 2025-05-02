@@ -1073,9 +1073,9 @@ function updateBookmarkButton() {
   updateBookmarkButton();
 });
 
-// document.addEventListener('DOMContentLoaded', function() {
-//   // Find the article content container - adjust the selector as needed
-//   const articleContent = document.querySelector('#shopify-section-article-content');
+document.addEventListener('DOMContentLoaded', function() {
+  // Find the article content container - adjust the selector as needed
+  // const articleContent = document.querySelector('#shopify-section-article-content');
   
 //   if (!articleContent) return;
   
@@ -1546,102 +1546,135 @@ function updateBookmarkButton() {
 //   });
 // }
 
-// // Like button functionality
+// Like button functionality
 
-//   const likeButton = document.getElementById('likeButton');
-//   if (!likeButton) return;
-//   const likeCount = likeButton.querySelector('.like-count');
-//   const articleId = likeButton.getAttribute('data-article-id'); // Get article ID from data attribute
-//   console.log("Article ID:", articleId); // Add debug log to verify
-//   const likeServerUrl = 'https://likes.88bamboo.co'; // Update with your server URL - TZH to take note
+  const likeButton = document.getElementById('likeButton');
+  if (!likeButton) return;
+  const likeCount = likeButton.querySelector('.like-count');
+  const articleId = likeButton.getAttribute('data-article-id'); // Get article ID from data attribute
+  console.log("Article ID:", articleId); // Add debug log to verify
+  const likeServerUrl = 'https://likes.88bamboo.co'; // Update with your server URL - TZH to take note
   
-//   // Check if user has liked this article before
-//   function hasLiked() {
-//     const likes = JSON.parse(localStorage.getItem('article_likes') || '[]');
-//     return likes.includes(articleId);
-//   }
+  // Check if user has liked this article before
+  function hasLiked() {
+    const likes = JSON.parse(localStorage.getItem('article_likes') || '[]');
+    return likes.includes(articleId);
+  }
   
-//   // Mark as liked in local storage
-//   function markAsLiked() {
-//     let likes = JSON.parse(localStorage.getItem('article_likes') || '[]');
-//     if (!likes.includes(articleId)) {
-//       likes.push(articleId);
-//       localStorage.setItem('article_likes', JSON.stringify(likes));
-//     }
-//   }
+  // Mark as liked in local storage
+  function markAsLiked() {
+    let likes = JSON.parse(localStorage.getItem('article_likes') || '[]');
+    if (!likes.includes(articleId)) {
+      likes.push(articleId);
+      localStorage.setItem('article_likes', JSON.stringify(likes));
+    }
+  }
   
-//   // Update button appearance
-//   function updateLikeButtonState() {
-//     if (hasLiked()) {
-//       likeButton.classList.add('liked');
-//       likeButton.innerHTML = `
-//         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff5555" stroke="#ff5555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="like-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-//         <span class="like-count">${likeCount.textContent}</span>
-//       `;
-//     } else {
-//       likeButton.classList.remove('liked');
-//       likeButton.innerHTML = `
-//         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="like-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-//         <span class="like-count">${likeCount.textContent}</span>
-//       `;
-//     }
-//   }
+  // Update button appearance
+  function updateLikeButtonState() {
+    if (hasLiked()) {
+      likeButton.classList.add('liked');
+      likeButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff5555" stroke="#ff5555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="like-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        <span class="like-count">${likeCount.textContent}</span>
+      `;
+    } else {
+      likeButton.classList.remove('liked');
+      likeButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="like-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        <span class="like-count">${likeCount.textContent}</span>
+      `;
+    }
+  }
   
-//   // Fetch current like count from server
-//   function fetchLikeCount() {
-//   console.log("Fetching from URL:", `${likeServerUrl}/likes/count/${articleId}`);
-//   fetch(`${likeServerUrl}/likes/count/${articleId}`)
-//     .then(response => {
-//       console.log("Server response status:", response.status);
-//       return response.json();
-//     })
-//     .then(data => {
-//       console.log("Received data:", data);
-//       likeCount.textContent = data.count;
-//       updateLikeButtonState();
-//     })
-//     .catch(error => {
-//       console.error('Error fetching like count:', error);
-//     });
-// }
+  // Fetch current like count from server
+  function fetchLikeCount() {
+  console.log("Fetching from URL:", `${likeServerUrl}/likes/count/${articleId}`);
+  fetch(`${likeServerUrl}/likes/count/${articleId}`)
+    .then(response => {
+      console.log("Server response status:", response.status);
+      return response.json();
+    })
+    .then(data => {
+      console.log("Received data:", data);
+      likeCount.textContent = data.count;
+      updateLikeButtonState();
+    })
+    .catch(error => {
+      console.error('Error fetching like count:', error);
+    });
+}
   
-//   // Submit a like
-//   function submitLike() {
-//     if (hasLiked()) {
-//       return; // Already liked
-//     }
+  // Submit a like
+  function submitLike() {
+    if (hasLiked()) {
+      return; // Already liked
+    }
     
-//     fetch(`${likeServerUrl}/likes/add/${articleId}`, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       }
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//       if (data.success) {
-//         markAsLiked();
-//         likeCount.textContent = data.newCount;
-//         updateLikeButtonState();
-//       }
-//     })
-//     .catch(error => {
-//       console.error('Error submitting like:', error);
-//     });
-//   }
+    fetch(`${likeServerUrl}/likes/add/${articleId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        markAsLiked();
+        likeCount.textContent = data.newCount;
+        updateLikeButtonState();
+      }
+    })
+    .catch(error => {
+      console.error('Error submitting like:', error);
+    });
+  }
+    // Function to update the cloned buttons
+  function updateClonedButtons() {
+    // Update image-after button if it exists
+    const imageAfterLikeButton = document.getElementById('imageAfterLikeButton');
+    if (imageAfterLikeButton) {
+      const imageCount = imageAfterLikeButton.querySelector('.like-count');
+      if (imageCount) imageCount.textContent = likeCount.textContent;
+      
+      // Update styling based on liked state
+      if (hasLiked()) {
+        imageAfterLikeButton.classList.add('liked');
+        imageAfterLikeButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff5555" stroke="#ff5555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="like-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          <span class="like-count">${likeCount.textContent}</span>
+        `;
+      }
+    }
+    
+    // Update bottom button if it exists
+    const bottomLikeButton = document.getElementById('bottomLikeButton');
+    if (bottomLikeButton) {
+      const bottomCount = bottomLikeButton.querySelector('.like-count');
+      if (bottomCount) bottomCount.textContent = likeCount.textContent;
+      
+      // Update styling based on liked state
+      if (hasLiked()) {
+        bottomLikeButton.classList.add('liked');
+        bottomLikeButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff5555" stroke="#ff5555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="like-icon"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          <span class="like-count">${likeCount.textContent}</span>
+        `;
+      }
+    }
+  }
+  // Initialize
+  updateLikeButtonState();
+  console.log("About to fetch like count for article ID:", articleId);
+  console.log("Using server URL:", likeServerUrl);
+  fetchLikeCount();
   
-//   // Initialize
-//   updateLikeButtonState();
-//   console.log("About to fetch like count for article ID:", articleId);
-//   console.log("Using server URL:", likeServerUrl);
-//   fetchLikeCount();
-  
-//   // Handle click events
-//   likeButton.addEventListener('click', function() {
-//     if (!hasLiked()) {
-//       submitLike();
-//     }
-//   });
+  // Handle click events
+  likeButton.addEventListener('click', function() {
+    if (!hasLiked()) {
+      submitLike();
+    }
+  });
 
 // });
 
