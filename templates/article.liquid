@@ -1778,6 +1778,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const bottomBookmarkButton = document.getElementById('bottomBookmarkButton');
     
     if (bottomLikeButton) {
+
+    // Sync counts again after a delay to make sure they're loaded
+      setTimeout(() => {
+        const mainCount = document.querySelector('#likeButton .like-count');
+        const bottomCount = bottomLikeButton.querySelector('.like-count');
+        if (mainCount && bottomCount) {
+          bottomCount.textContent = mainCount.textContent;
+          console.log("Re-synced bottom button count:", mainCount.textContent);
+        }
+      }, 2000);
+
       // Copy like count from main button
       const mainCount = document.querySelector('#likeButton .like-count');
       const bottomCount = bottomLikeButton.querySelector('.like-count');
@@ -1821,7 +1832,7 @@ document.addEventListener('DOMContentLoaded', function() {
               <span class="like-count">${mainCount.textContent}</span>
             `;
           }
-        }, 1000);
+        }, 1500);
       });
     }
     
