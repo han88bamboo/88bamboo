@@ -664,12 +664,12 @@ document.addEventListener('DOMContentLoaded', function() {
       shareButtonContainer.className = 'share-button-container';
       shareButtonContainer.style.position = 'relative';
       shareButtonContainer.style.display = 'inline-block';
-      shareButtonContainer.style.flexGrow = '0'; // Add this line
-      shareButtonContainer.style.flexShrink = '0'; // Add this line
-      shareButtonContainer.style.width = 'auto'; // Add this line
-      
-      // Add to wrapper instead of buttonContainer
-      buttonsWrapper.appendChild(shareButtonContainer);
+      shareButtonContainer.style.flexGrow = '0'; 
+      shareButtonContainer.style.flexShrink = '0'; 
+      shareButtonContainer.style.width = 'auto'; 
+            
+      // Add to buttonContainer instead of non-existent buttonsWrapper
+      buttonContainer.appendChild(shareButtonContainer);
 
       // Create the button
       const shareButton = document.createElement('button');
