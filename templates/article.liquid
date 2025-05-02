@@ -338,6 +338,19 @@ if (paragraphs.length >= 26) {
     background-color: #FBCC85;
     border-radius: 8px;
   }
+  /* Add this new rule for top container buttons */
+.article-share-container.in-article:not(:has(.d-block)) {
+    flex-direction: row;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px;
+}
+
+.article-share-container.in-article > button,
+.article-share-container.in-article > div {
+    flex: 0 0 auto;
+    width: auto;
+}
 .share-button {
   display: flex;
   align-items: center;
@@ -728,10 +741,19 @@ document.addEventListener('DOMContentLoaded', function() {
       // Give unique IDs to the cloned buttons
       likeButton.id = 'imageAfterLikeButton';
       bookmarkButton.id = 'imageAfterBookmarkButton';
-      
+      // Add styles to prevent stretching
+      bookmarkButton.style.flexGrow = '0';
+      bookmarkButton.style.flexShrink = '0';
+      bookmarkButton.style.width = 'auto';
+
       // Make sure we keep the data attribute for the article ID
       likeButton.setAttribute('data-article-id', document.getElementById('likeButton').getAttribute('data-article-id'));
       
+      // Add styles to prevent stretching
+      likeButton.style.flexGrow = '0';
+      likeButton.style.flexShrink = '0';
+      likeButton.style.width = 'auto';
+
       // Add the buttons to the container
       buttonContainer.appendChild(likeButton);
       buttonContainer.appendChild(shareButtonContainer);
