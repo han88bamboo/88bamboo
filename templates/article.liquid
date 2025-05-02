@@ -1045,9 +1045,9 @@ document.addEventListener('DOMContentLoaded', function() {
     actionHeading.style.textAlign = 'center';
     buttonContainer.appendChild(actionHeading);
 
-    // Create a wrapper for buttons to stack them vertically
+    // Create a wrapper for buttons to display in horizontal row
     const buttonsWrapper = document.createElement('div');
-    buttonsWrapper.className = 'd-flex flex-column align-items-center';
+    buttonsWrapper.className = 'd-flex flex-row justify-content-center';
     buttonsWrapper.style.gap = '10px'; // Space between buttons
     buttonContainer.appendChild(buttonsWrapper);
 
