@@ -1039,11 +1039,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create a single heading for all buttons
     const actionHeading = document.createElement('div');
     actionHeading.textContent = 'Like, Share & Bookmark this article:';
+    actionHeading.appendChild(document.createElement('br'));
     actionHeading.style.fontSize = '15px';
     actionHeading.style.marginBottom = '10px';
     actionHeading.style.textAlign = 'center';
     buttonContainer.appendChild(actionHeading);
-    
+
     // Clone the share and bookmark buttons
     const originalShareContainer = document.querySelector('.article-share-container');
     if (originalShareContainer) {
