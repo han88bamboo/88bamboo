@@ -1039,10 +1039,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create a single heading for all buttons
     const actionHeading = document.createElement('div');
     actionHeading.textContent = 'Like, Share & Bookmark this article:';
-    actionHeading.className = 'd-block w-100 text-center mb-3';
+    actionHeading.className = 'd-block w-100 text-center';
     actionHeading.style.fontSize = '15px';
-    actionHeading.style.marginBottom = '10px';
+    actionHeading.style.marginBottom = '15px'; // Increased margin for better separation
     actionHeading.style.textAlign = 'center';
+    actionHeading.style.display = 'block'; // Force block display
+    actionHeading.style.width = '100%';    // Force full width
     buttonContainer.appendChild(actionHeading);
 
     // Create a wrapper for buttons to display in horizontal row
