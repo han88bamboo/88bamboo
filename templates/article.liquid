@@ -663,7 +663,30 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create a container for our buttons
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'article-share-container in-article';
+        // Create a single heading for all buttons
+    const imageActionHeading = document.createElement('div');
+    imageActionHeading.textContent = 'Like, Share & Bookmark this article:';
+    imageActionHeading.className = 'd-block w-100 text-center';
+    imageActionHeading.style.fontSize = '15px';
+    imageActionHeading.style.marginBottom = '0px'; 
+    imageActionHeading.style.paddingTop = '0px';
+    imageActionHeading.style.textAlign = 'center';
+    imageActionHeading.style.display = 'block'; 
+    imageActionHeading.style.width = '100%';
+    buttonContainer.appendChild(imageActionHeading);
     
+    // Create a wrapper for buttons to display in horizontal row
+    const imageButtonsWrapper = document.createElement('div');
+    imageButtonsWrapper.className = 'd-flex flex-row justify-content-center';
+    imageButtonsWrapper.style.gap = '10px';
+    imageButtonsWrapper.style.alignItems = 'center';
+    imageButtonsWrapper.style.alignSelf = 'center';
+    imageButtonsWrapper.style.display = 'flex';
+    imageButtonsWrapper.style.width = 'auto';
+    imageButtonsWrapper.style.maxWidth = '100%';
+    imageButtonsWrapper.style.marginLeft = 'auto';
+    imageButtonsWrapper.style.marginRight = 'auto';
+    buttonContainer.appendChild(imageButtonsWrapper);
     // Clone the share and bookmark buttons
     const originalShareContainer = document.querySelector('.article-share-container');
     if (originalShareContainer) {
@@ -754,11 +777,11 @@ document.addEventListener('DOMContentLoaded', function() {
       likeButton.style.flexShrink = '0';
       likeButton.style.width = 'auto';
 
-      // Add the buttons to the container
-      buttonContainer.appendChild(likeButton);
-      buttonContainer.appendChild(shareButtonContainer);
-      buttonContainer.appendChild(bookmarkButton);
-
+      // Add the buttons to the wrapper instead of directly to the container
+      imageButtonsWrapper.appendChild(likeButton);
+      imageButtonsWrapper.appendChild(shareButtonContainer);
+      imageButtonsWrapper.appendChild(bookmarkButton);
+      
       // Insert our new container after the image
       firstImage.insertAdjacentElement('afterend', buttonContainer);
       
