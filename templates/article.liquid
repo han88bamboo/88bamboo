@@ -646,6 +646,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create a container for our buttons
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'article-share-container in-article';
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.flexDirection = 'column';
+    buttonContainer.style.alignItems = 'center';
     
     // Clone the share and bookmark buttons
     const originalShareContainer = document.querySelector('.article-share-container');
@@ -1029,9 +1032,9 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   // Check if we have at least 3 paragraphs
-  if (paragraphs.length >= 7) {
+  if (paragraphs.length >= 9) {
     // Get the third paragraph
-    const thirdParagraph = paragraphs[6];
+    const thirdParagraph = paragraphs[8];
     
     // Create a container for our buttons
     const buttonContainer = document.createElement('div');
@@ -1049,6 +1052,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const buttonsWrapper = document.createElement('div');
     buttonsWrapper.className = 'd-flex flex-row justify-content-center';
     buttonsWrapper.style.gap = '10px'; // Space between buttons
+    buttonsWrapper.style.width = '100%'; // Make it take full width
     buttonContainer.appendChild(buttonsWrapper);
 
     // Clone the share and bookmark buttons
