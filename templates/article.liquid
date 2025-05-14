@@ -782,36 +782,32 @@ document.addEventListener('DOMContentLoaded', function() {
       imageButtonsWrapper.appendChild(shareButtonContainer);
       imageButtonsWrapper.appendChild(bookmarkButton);
       
-      // Find where to insert the buttons
+      // Find where to insert the buttons - get the image's container div
       let targetElement = firstImage;
       
-      // If the image is inside a paragraph, use that as our starting point
-      while (targetElement.parentElement && targetElement.parentElement.tagName !== 'P') {
+      // Get the parent div of the image (usually the container)
+      if (targetElement.parentElement) {
         targetElement = targetElement.parentElement;
+        console.log("Using image's parent element:", targetElement.tagName);
       }
       
-      // If we found a containing paragraph, use it as our target
-      if (targetElement.parentElement && targetElement.parentElement.tagName === 'P') {
-        targetElement = targetElement.parentElement;
-      }
-      
-      // Now check if the next element is a centered paragraph (likely a caption)
-      let nextElement = targetElement.nextElementSibling;
-      
+      // Check if there's a centered paragraph right after the image container
+      const nextElement = targetElement.nextElementSibling;
       if (nextElement && 
           nextElement.tagName === 'P' && 
           (nextElement.style.textAlign === 'center' || 
-          nextElement.getAttribute('style')?.includes('text-align: center') ||
-          window.getComputedStyle(nextElement).textAlign === 'center' ||
-          nextElement.classList.contains('p1'))) {
-        // We found a centered paragraph after the image, insert after this instead
-        console.log('Found centered paragraph after image, inserting buttons after it');
-        nextElement.insertAdjacentElement('afterend', buttonContainer);
-      } else {
-        // No centered paragraph found, insert after the image (or its container)
-        console.log('No centered paragraph found, inserting buttons after the image');
-        targetElement.insertAdjacentElement('afterend', buttonContainer);
-      }     
+           nextElement.getAttribute('style')?.includes('text-align: center') ||
+           window.getComputedStyle(nextElement).textAlign === 'center' ||
+           nextElement.classList.contains('p1'))) {
+        
+        // Use the centered paragraph as our target element instead
+        targetElement = nextElement;
+        console.log("Found centered paragraph after image, using it as insertion point");
+      }
+      
+      // Insert our button container after the target element (either image container or centered paragraph)
+      console.log('Inserting buttons after:', targetElement.tagName);
+      targetElement.insertAdjacentElement('afterend', buttonContainer);
       
       // Initialize the buttons
       initImageButtons();
