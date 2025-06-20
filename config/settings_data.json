@@ -3266,7 +3266,7 @@
         "type": "article-side-advertising-area-top",
         "custom_css": [],
         "settings": {
-          "display-ad": true,
+          "display-ad": false,
           "text-box": "",
           "text-link": "https://vinexpoasia.com/newfront/page/visit?utm_source=88_bamboo&utm_medium=banner&utm_campaign=media",
           "hover-text": "",
@@ -3290,9 +3290,9 @@
         "custom_css": [],
         "settings": {
           "display-ad": true,
-          "text-box": "",
-          "custom-link": "https://vinexpoasia.com/newfront/page/visit?utm_source=88_bamboo&utm_medium=banner&utm_campaign=media",
-          "custom-image": "shopify://shop_images/Vinexpo_275056cf-70c6-44b1-af0d-6f689f358922.png",
+          "text-box": "Want To Make a Good Drink Last Forever?",
+          "custom-link": "/",
+          "custom-image": "shopify://shop_images/WhiskyNotebook-SKUCoverProdImage_1024x1024_2x_1_copy.png",
           "custom-code": ""
         }
       },
@@ -3317,7 +3317,7 @@
       "article-advertising-top-banner": {
         "type": "article-advertising-top-banner",
         "settings": {
-          "display-ad": true,
+          "display-ad": false,
           "banner-image": "shopify://shop_images/Ban-VinexpoASIA2025-1000x250_1.jpg",
           "custom-link": "https://vinexpoasia.com/newfront/page/visit?utm_source=88_bamboo&utm_medium=banner&utm_campaign=media"
         }
