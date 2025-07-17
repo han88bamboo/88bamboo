@@ -3289,10 +3289,10 @@
         "type": "article-side-advertising-area-bottom",
         "custom_css": [],
         "settings": {
-          "display-ad": false,
-          "text-box": "It's Not As Fun to Drink Alone",
+          "display-ad": true,
+          "text-box": "Hold Up! ✋",
           "custom-link": "https://drink-x.com/",
-          "custom-image": "shopify://shop_images/Your_new_go-to_drink_review_and_discovery_platform..png",
+          "custom-image": "shopify://shop_images/Your_new_go-to_drink_review_and_discovery_platform._800_x_1000_px.gif",
           "custom-code": ""
         }
       },
