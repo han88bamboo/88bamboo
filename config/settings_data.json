@@ -3266,7 +3266,7 @@
         "type": "article-side-advertising-area-top",
         "custom_css": [],
         "settings": {
-          "display-ad": false,
+          "display-ad": true,
           "text-box": "",
           "text-link": "https://drink-x.com",
           "hover-text": "",
