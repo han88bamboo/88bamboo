@@ -27,6 +27,18 @@
   {%- endif -%}
 {% endcomment %}
 
+{%- assign paragraphs = article.content | split: '</p>' -%}
+{%- assign num_paragraphs = paragraphs | size | minus: 1 -%}
+
+{%- for paragraph in paragraphs -%}
+  {{ paragraph | append: '</p>' }}
+  {%- if forloop.index == 6 -%}
+    <a href="https://tinyurl.com/midarticlebanner" target="_blank" style="display:block; margin: 2em 0;">
+      <img src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/Mid-Article_Banner.png?v=1752776437" alt="Banner" style="width:100%; height:auto;"/>
+    </a>
+  {%- endif -%}
+{%- endfor -%}
+
 {{ article.content }}
 
 {% schema %}
