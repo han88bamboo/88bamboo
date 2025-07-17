@@ -3270,7 +3270,7 @@
           "text-box": "",
           "text-link": "https://drink-x.com",
           "hover-text": "",
-          "custom-link": "https://drink-x.com",
+          "custom-link": "https://tinyurl.com/drink-x",
           "custom-image": "shopify://shop_images/Your_new_go-to_drink_review_and_discovery_platform..png",
           "custom-code": ""
         }
@@ -3291,7 +3291,7 @@
         "settings": {
           "display-ad": true,
           "text-box": "Hold Up! ✋",
-          "custom-link": "https://drink-x.com/",
+          "custom-link": "https://tinyurl.com/drink-x",
           "custom-image": "shopify://shop_images/Your_new_go-to_drink_review_and_discovery_platform._800_x_1000_px_28596616-6a49-4fae-8105-bb870ae39e45.gif",
           "custom-code": ""
         }
