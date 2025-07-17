@@ -3318,8 +3318,8 @@
         "type": "article-advertising-top-banner",
         "settings": {
           "display-ad": false,
-          "banner-image": "shopify://shop_images/Ban-VinexpoASIA2025-1000x250_1.jpg",
-          "custom-link": "https://vinexpoasia.com/newfront/page/visit?utm_source=88_bamboo&utm_medium=banner&utm_campaign=media"
+          "banner-image": "shopify://shop_images/Drink-X_Top_Banner.png",
+          "custom-link": "https://drink-x.com"
         }
       },
       "news-subscription": {
