@@ -3289,10 +3289,10 @@
         "type": "article-side-advertising-area-bottom",
         "custom_css": [],
         "settings": {
-          "display-ad": true,
-          "text-box": "Want To Make a Good Drink Last Forever?",
-          "custom-link": "/",
-          "custom-image": "shopify://shop_images/WhiskyNotebook-SKUCoverProdImage_1024x1024_2x_1_copy.png",
+          "display-ad": false,
+          "text-box": "It's Not As Fun to Drink Alone",
+          "custom-link": "https://drink-x.com/",
+          "custom-image": "shopify://shop_images/Your_new_go-to_drink_review_and_discovery_platform..png",
           "custom-code": ""
         }
       },
