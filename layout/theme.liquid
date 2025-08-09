@@ -98,7 +98,7 @@
       <meta name="description" content="{{ page_description | escape }}">
     {%- endif -%}
 
-    {% include 'social-meta-tags' %}
+    {% render 'social-meta-tags' %}
 
     <!-- below shifted down from line 24 -->
     <script>
@@ -256,16 +256,16 @@
     {% comment %}
       {%include "alley"%}
     {% endcomment %}
-    {% include 'pagefly-header' %}
+    {% render 'pagefly-header' %}
     {{ 'mamuta-smarty-core.css' | asset_url | stylesheet_tag }}
     {{ 'mamuta-smarty.css' | asset_url | stylesheet_tag }}
-    {% include 'qikify-navigator' %}
-    {% include 'qikify-smartmenu' %}
-    {% capture cur %}{% include "booster-currency" %}{% endcapture %}
+    {% render 'qikify-navigator' %}
+    {% render 'qikify-smartmenu' %}
+    {% capture cur %}{% render "booster-currency" %}{% endcapture %}
     {% unless cur contains 'Liquid error' %}{{ cur }}{% endunless %}
-    {% include 'bucks-cc' %}
-    {% include 'hulk_po_vd.liquid' %}
-    {% include 'hulkcode_common' %}
+    {% render 'bucks-cc' %}
+    {% render 'hulk_po_vd.liquid' %}
+    {% render 'hulkcode_common' %}
     <script
       src="https://ha-volume-discount.nyc3.digitaloceanspaces.com/assets/api/v2/hulkcode.js?{{ 'now' | date: '%s'}}"
       defer="defer"
@@ -292,7 +292,7 @@
     </a>
 
     {%- if settings.enable_ajax -%}
-      {% include 'cart-popup' %}
+      {% render 'cart-popup' %}
     {%- endif -%}
 
     {% section 'header' %}
@@ -346,7 +346,7 @@
     </ul>
 
     {% comment %}
-      {% include 'tierprice-storefront' %}
+      {% render 'tierprice-storefront' %}
 
       <!-- spurit_stp-added -->
       {% render 'spurit_stp-theme-snippet' %}

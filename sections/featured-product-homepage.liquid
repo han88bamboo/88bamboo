@@ -51,7 +51,7 @@
         -%}
 
         {%- for media in product.media -%}
-          {% include 'media',
+          {% render 'media',
             media: media,
             featured_media: featured_media,
             height: height,
@@ -83,7 +83,7 @@
             data-shopify-title="{{ product.title | escape }}"
             data-shopify-xr-hidden
           >
-            {% include 'icon-3d-badge-full-color' -%}
+            {% render 'icon-3d-badge-full-color' -%}
             <span class="product-single__view-in-space-text">{{ 'products.product.view_in_space' | t }}</span>
           </button>
         {%- endif -%}
@@ -105,7 +105,7 @@
               type="button"
               class="btn btn--link medium-up--hide thumbnails-slider__btn thumbnails-slider__prev thumbnails-slider__prev--{{ section.id }}"
             >
-              {% include 'icon-chevron-left' %}
+              {% render 'icon-chevron-left' %}
               <span class="icon__fallback-text">{{ 'sections.slideshow.previous_slide' | t }}</span>
             </button>
           {% endif %}
@@ -137,12 +137,12 @@
                   >
                   {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
                     <div class="product-single__thumbnail-badge">
-                      {% include 'icon-video-badge-full-color' %}
+                      {% render 'icon-video-badge-full-color' %}
                     </div>
                   {%- endif -%}
                   {%- if media.media_type == 'model' -%}
                     <div class="product-single__thumbnail-badge">
-                      {% include 'icon-3d-badge-full-color' %}
+                      {% render 'icon-3d-badge-full-color' %}
                     </div>
                   {%- endif -%}
                 </a>
@@ -154,7 +154,7 @@
               type="button"
               class="btn btn--link medium-up--hide thumbnails-slider__btn thumbnails-slider__next thumbnails-slider__next--{{ section.id }}"
             >
-              {% include 'icon-chevron-right' %}
+              {% render 'icon-chevron-right' %}
               <span class="icon__fallback-text">{{ 'sections.slideshow.next_slide' | t }}</span>
             </button>
           {% endif %}
@@ -182,7 +182,7 @@
 
         <div>
           <div class="featured-product__price">
-            {% include 'product-price',
+            {% render 'product-price',
               variant: current_variant,
               product: product,
               show_vendor: section.settings.show_vendor
@@ -301,7 +301,7 @@
                 role="alert"
               >
                 <span class="visually-hidden">{{ 'general.accessibility.error' | t }} </span>
-                {% include 'icon-error' %}
+                {% render 'icon-error' %}
                 <span class="product-form__error-message" data-error-message>
                   {{- 'products.product.quantity_minimum_message' | t -}}
                 </span>
@@ -333,7 +333,7 @@
                       {% endunless %}
                     </span>
                     <span class="hide" data-loader>
-                      {% include 'icon-spinner' %}
+                      {% render 'icon-spinner' %}
                     </span>
                   </button>
                   {% if section.settings.enable_payment_button %}
@@ -382,7 +382,7 @@
         </div>
 
         {% if section.settings.show_share_buttons %}
-          {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
+          {% render 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
         {% endif %}
       </div>
     </div>

@@ -34,7 +34,7 @@
     <meta name="description" content="{{ page_description | escape }}">
   {%- endif -%}
 
-  {% include 'social-meta-tags' %}
+  {% render 'social-meta-tags' %}
 
   {{ 'theme.scss.css' | asset_url | stylesheet_tag }}
 
@@ -105,10 +105,10 @@
   <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
 
   {{ content_for_header }}
-{% include 'hulkcode_common' %}{% if template contains 'product' or template contains 'cart' %}<script src='https://volumediscount.hulkapps.com/api/v2/frontend/hulkcode.js' defer='defer'></script>{% endif %} 
-{% include 'pagefly-header' %}
- {{ 'mamuta-smarty-core.css' | asset_url | stylesheet_tag }}{{ 'mamuta-smarty.css' | asset_url | stylesheet_tag }}  {% include 'qikify-navigator' %}
-  {% include 'qikify-smartmenu' %}
+{% render 'hulkcode_common' %}{% if template contains 'product' or template contains 'cart' %}<script src='https://volumediscount.hulkapps.com/api/v2/frontend/hulkcode.js' defer='defer'></script>{% endif %} 
+{% render 'pagefly-header' %}
+ {{ 'mamuta-smarty-core.css' | asset_url | stylesheet_tag }}{{ 'mamuta-smarty.css' | asset_url | stylesheet_tag }}  {% render 'qikify-navigator' %}
+  {% render 'qikify-smartmenu' %}
 </head> 
 
 <body class="template-{{ request.page_type | handle }}">
@@ -116,7 +116,7 @@
   <a class="in-page-link visually-hidden skip-link" href="#MainContent">{{ 'general.accessibility.skip_to_content' | t }}</a>
 
   {%- if settings.enable_ajax -%}
-    {% include 'cart-popup' %}
+    {% render 'cart-popup' %}
   {%- endif -%}
 
   {% section 'header' %}
@@ -139,5 +139,5 @@
     <li id="a11y-refresh-page-message">{{ 'general.accessibility.refresh_page' | t }}</li>
     <li id="a11y-selection-message">{{ 'general.accessibility.selection_help' | t }}</li>
   </ul>
-{% include 'tierprice-storefront' %}</body>
+{% render 'tierprice-storefront' %}</body>
 </html>
