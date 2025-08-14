@@ -3271,7 +3271,7 @@
           "text-link": "https://drink-x.com",
           "hover-text": "",
           "custom-link": "https://www.drink-x.com/",
-          "custom-image": "shopify://shop_images/Drink-X_IG_Stories_2.png",
+          "custom-image": "shopify://shop_images/Drink-X_IG_Stories_3.png",
           "custom-code": ""
         }
       },
@@ -3318,7 +3318,7 @@
         "type": "article-advertising-top-banner",
         "settings": {
           "display-ad": true,
-          "banner-image": "shopify://shop_images/Drink-X_Top_Banner_05e7dc70-d5be-4b2b-b39e-f7aa57e22b32.png",
+          "banner-image": "shopify://shop_images/Drink-X_TOP_Banner_for_88B_3.png",
           "custom-link": "https://tinyurl.com/drinkx-topbanner"
         }
       },
