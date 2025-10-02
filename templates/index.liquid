@@ -40,7 +40,7 @@
           <!-- Placeholder for the fourth article -->
         <div class="d-flex justify-content-between new--header">
           <h3>DRINK-X UPDATES</h3>
-          <a href="https://88bamboo.co/pages/all-our-reviews">SEE ALL →</a>
+          <a href="https://88bamboo.co/blogs/news/tagged/drink-x-com">SEE ALL →</a> <!--https://88bamboo.co/pages/all-our-reviews-->
         </div>
             <div class="news-container--content d-flex">
 
@@ -49,7 +49,7 @@
                 {% assign latest_article = null %}
 
                 {% for handle in blog_handles %}
-                    {% for article in blogs[handle].articles %}
+                    {% for article in blogs[handle].articles limit: 100 %}
                         {% if article.tags contains blog_tag %}
                             {% if latest_article == null or article.published_at > latest_article.published_at %}
                                 {% assign latest_article = article %}
