@@ -50,8 +50,9 @@
 
     <!-- -below added by Zhe Han to prevent Google from indexing the alternate home page and blog pages and blog tag pages- -->
     {%- if template contains 'alternatehomepage'
-      or request.path contains '/home-page-featured-products-to-be-randomized'
-       or (blog and article == null)
+        or request.path contains '/home-page-featured-products-to-be-randomized'
+        or (blog and article == null)
+        or (article and article.tags contains 'noindex')
     -%}
       <meta name="robots" content="noindex">
     {%- endif -%}
