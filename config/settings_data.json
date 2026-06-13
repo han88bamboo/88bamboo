@@ -3266,7 +3266,7 @@
         "type": "article-side-advertising-area-top",
         "custom_css": [],
         "settings": {
-          "display-ad": true,
+          "display-ad": false,
           "text-box": "",
           "text-link": "https://drink-x.com",
           "hover-text": "",
@@ -3289,7 +3289,7 @@
         "type": "article-side-advertising-area-bottom",
         "custom_css": [],
         "settings": {
-          "display-ad": true,
+          "display-ad": false,
           "text-box": "Hold Up! ✋",
           "custom-link": "https://tinyurl.com/drink-x",
           "custom-image": "shopify://shop_images/Your_new_go-to_drink_review_and_discovery_platform._800_x_1000_px_28596616-6a49-4fae-8105-bb870ae39e45.gif",
@@ -3317,7 +3317,7 @@
       "article-advertising-top-banner": {
         "type": "article-advertising-top-banner",
         "settings": {
-          "display-ad": true,
+          "display-ad": false,
           "banner-image": "shopify://shop_images/FB_ad_1.91_format_Twitch_Banner.png",
           "custom-link": "https://drink-x.com/"
         }
