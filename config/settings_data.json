@@ -3345,7 +3345,7 @@
       "article-advertising-top-banner-homepage": {
         "type": "article-advertising-top-banner-homepage",
         "settings": {
-          "display-ad": true,
+          "display-ad": false,
           "banner-image": "shopify://shop_images/FB_ad_1.91_format_Twitch_Banner.png",
           "custom-link": "https://drink-x.com/"
         }
