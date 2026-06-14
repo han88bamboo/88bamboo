@@ -40,6 +40,20 @@
   {%- endif -%}
   {%- endcomment -%}
 {%- endfor -%}
+
+<script>
+  (function() {
+    var section = document.getElementById('shopify-section-{{ section.id }}');
+    if (!section) return;
+    var firstEl = section.firstElementChild;
+    if (!firstEl || firstEl.tagName !== 'H1') return;
+    firstEl.style.fontSize = '1rem';
+    firstEl.style.fontWeight = 'normal';
+    firstEl.style.lineHeight = 'normal';
+    firstEl.style.margin = '1em 0';
+  })();
+</script>
+
 {% comment %}
 {{ article.content }}
 {% endcomment %}
