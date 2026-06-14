@@ -39,13 +39,13 @@
            
           <!-- Placeholder for the fourth article -->
         <div class="d-flex justify-content-between new--header">
-          <h3>DRINK-X UPDATES</h3>
+          <h3>REVIEW OF THE WEEK</h3>  <!--DRINK-X UPDATES-->
           <a href="https://88bamboo.co/pages/all-our-reviews">SEE ALL →</a>
         </div>
             <div class="news-container--content d-flex">
 
-                {% assign blog_handles = 'news,features' | split: ',' %} <!--whisky-reviews,sake,rum-reviews,tequila-mezcal-reviews,craft-beer,baijiu,gin,everything-nice,wine-reviews,-->
-                {% assign blog_tag = 'Drink-X.com' %} <!--Drink-X.com-->
+                {% assign blog_handles = 'whisky-reviews,sake,rum-reviews,tequila-mezcal-reviews,craft-beer,baijiu,gin,everything-nice,wine-reviews' | split: ',' %} <!-- news,features -->
+                {% assign blog_tag = 'Review Of The Week' %} <!--  Drink-X.com-->
                 {% assign latest_article = null %}
 
                 {% for handle in blog_handles %}
