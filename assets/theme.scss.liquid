@@ -1499,7 +1499,6 @@ h3 {
   text-transform: none;
   letter-spacing: 0;
   margin-top: .25rem !important;
-  color: #03652a;
 
  /* @include media-query($small) {
     font-size: em(floor($font-size-header * 0.78));
@@ -1523,10 +1522,19 @@ h5 {
 }
 
 h6 {
-  font-size: em(floor($font-size-header * 0.54));
+  /*==ZHE HAN: h6 now renders like ordinary body <p> text, but green + bold==*/
+  font-family: $font-stack-body;
+  font-style: $font-style-body;
+  font-weight: 700;
+  font-size: $font-size-base;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  margin: 0 0 ($section-spacing-small / 1.8);
+  color: #03652a;
 
   @include media-query($small) {
-    font-size: em(floor(($font-size-header * 0.54) * 0.9));
+    font-size: em($font-size-base - 1);
   }
 }
 
@@ -1586,6 +1594,11 @@ h6 {
     &:last-child {
       margin-bottom: 0;
     }
+  }
+
+  /*==ZHE HAN: keep h6 spacing identical to <p> inside article content==*/
+  h6 {
+    margin: 0 0 ($section-spacing-small / 1.8);
   }
 }
 
