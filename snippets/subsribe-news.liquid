@@ -54,6 +54,10 @@
               >
             </span>
           {% endif %}
+          <!-- added by Zhe Han: replaces the floating hCaptcha badge with an inline disclaimer -->
+          <div style="margin-top:8px; font-size:11px; line-height:1.4; color:#8a8f93;">
+            {{ 'shopify.online_store.spam_detection.disclaimer_html' | t }}
+          </div>
         {% endform %}
       </div>
     </div>

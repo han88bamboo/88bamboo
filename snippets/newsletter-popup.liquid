@@ -43,10 +43,29 @@
     background: #fff;
     max-width: 520px;
     width: 100%;
-    padding: 40px 36px 36px;
+    padding: 0 0 36px;
     position: relative;
     text-align: center;
     box-shadow: 0 6px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+  }
+
+  .bamboo-nl-modal__image {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+  }
+
+  .bamboo-nl-modal__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .bamboo-nl-modal__content {
+    padding: 28px 36px 0;
   }
 
   .bamboo-nl-modal__title {
@@ -89,17 +108,36 @@
     margin-top: 10px;
   }
 
+  .bamboo-nl-modal__disclaimer {
+    margin-top: 12px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #8a8f93;
+  }
+
+  .bamboo-nl-modal__disclaimer a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
   .bamboo-nl-modal__close {
     position: absolute;
-    top: 8px;
-    right: 12px;
-    background: none;
+    top: 10px;
+    right: 10px;
+    z-index: 1;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 50%;
     border: 0;
-    font-size: 28px;
+    font-size: 22px;
     line-height: 1;
     cursor: pointer;
     color: #3d4246;
-    padding: 4px 8px;
+    padding: 0;
   }
 
   .bamboo-nl-modal__success {
@@ -112,19 +150,22 @@
   .bamboo-nl-trigger {
     display: inline-block;
     padding: 10px 18px;
-    border: 1px solid #3d4246;
-    background: none;
+    border: 1px solid #fcc200;
+    background-color: #fcc200;
     color: #3d4246;
+    font-weight: 600;
     font-size: 13px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     cursor: pointer;
     white-space: nowrap;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
   }
 
   .bamboo-nl-trigger:hover {
-    background: #3d4246;
-    color: #fff;
+    background-color: #fff;
+    border-color: #fcc200;
+    color: #3d4246;
   }
 
   /* Homepage banner placement: keep the 88 BAMBOO title optically centred by
@@ -154,8 +195,8 @@
       display: none;
     }
 
-    .bamboo-nl-modal {
-      padding: 34px 22px 28px;
+    .bamboo-nl-modal__content {
+      padding: 22px 22px 0;
     }
   }
 </style>
@@ -164,6 +205,17 @@
   <div class="bamboo-nl-modal">
     <button type="button" class="bamboo-nl-modal__close" id="bamboo-nl-close" aria-label="Close">&times;</button>
 
+    <div class="bamboo-nl-modal__image">
+      <img
+        src="https://cdn.shopify.com/s/files/1/0353/9510/9003/files/IMG_7232_600x600.jpg?v=1759261076"
+        alt="88 Bamboo newsletter"
+        loading="lazy"
+        width="600"
+        height="400"
+      >
+    </div>
+
+    <div class="bamboo-nl-modal__content">
     {%- assign popupFormId = 'BambooNewsletterPopup' -%}
     {% form 'customer', id: popupFormId, novalidate: 'novalidate' %}
       {%- comment -%} The form object only exists inside this block, so hold the state for the script below. {%- endcomment -%}
@@ -205,8 +257,13 @@
         </span>
 
         <button type="submit" class="btn bamboo-nl-modal__submit" name="commit">Sign me up!</button>
+
+        <div class="bamboo-nl-modal__disclaimer">
+          {{ 'shopify.online_store.spam_detection.disclaimer_html' | t }}
+        </div>
       {%- endif -%}
     {% endform %}
+    </div>
   </div>
 </div>
 
