@@ -1,0 +1,329 @@
+{% comment %}
+  Newsletter signup popup — added by Zhe Han
+
+  Self-contained: markup + styles + behaviour all live in this snippet so it can be
+  removed by deleting the single render call in layout/theme.liquid.
+
+  Submits through Shopify's customer form tag, which creates a customer record in
+  Admin > Customers with email subscription set to "Subscribed".
+
+  Triggers:
+    - Any element with [data-bamboo-nl-open] opens it (desktop button placements).
+    - On mobile (<=749px) on the homepage only, it auto-opens once the reader
+      scrolls to #bamboo-nl-scroll-trigger (the ESCAPADES section), because the
+      button itself is hidden at that width.
+
+  Suppression (localStorage key "bambooNewsletterSeen"):
+    - auto-open sets a 7 day cooldown
+    - a successful signup suppresses the auto-open for 10 years
+    - the button always works regardless of cooldown
+{% endcomment %}
+
+<style>
+  .bamboo-nl-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 99998;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .bamboo-nl-overlay.is-open {
+    display: flex;
+  }
+
+  .bamboo-nl-modal {
+    background: #fff;
+    max-width: 520px;
+    width: 100%;
+    padding: 40px 36px 36px;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 6px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  .bamboo-nl-modal__title {
+    margin: 0 0 14px;
+    letter-spacing: 0.04em;
+  }
+
+  .bamboo-nl-modal__body {
+    margin: 0 0 24px;
+    color: #3d4246;
+    line-height: 1.5;
+  }
+
+  .bamboo-nl-modal__field {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #c8cdd0;
+    margin-bottom: 6px;
+    font-size: 16px; /* 16px stops iOS Safari zooming on focus */
+  }
+
+  .bamboo-nl-modal__field.has-error {
+    border-color: #d02e2e;
+  }
+
+  .bamboo-nl-modal__error {
+    display: none;
+    color: #d02e2e;
+    font-size: 14px;
+    text-align: left;
+    margin-bottom: 10px;
+  }
+
+  .bamboo-nl-modal__error.is-visible {
+    display: block;
+  }
+
+  .bamboo-nl-modal__submit {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .bamboo-nl-modal__close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: none;
+    border: 0;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    color: #3d4246;
+    padding: 4px 8px;
+  }
+
+  .bamboo-nl-modal__success {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.5;
+  }
+
+  /* Trigger button — shared by the homepage banner and the article sidebar */
+  .bamboo-nl-trigger {
+    display: inline-block;
+    padding: 10px 18px;
+    border: 1px solid #3d4246;
+    background: none;
+    color: #3d4246;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .bamboo-nl-trigger:hover {
+    background: #3d4246;
+    color: #fff;
+  }
+
+  /* Homepage banner placement: keep the 88 BAMBOO title optically centred by
+     taking the button out of flow rather than making the banner a flex row. */
+  .bamboo-nl-banner-slot {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* Article sidebar placement */
+  .bamboo-nl-sidebar-slot {
+    margin-bottom: 20px;
+  }
+
+  .bamboo-nl-sidebar-slot .bamboo-nl-trigger {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Below Debut's medium breakpoint the banner is too tight for a button, so the
+     mobile scroll trigger takes over instead. */
+  @media only screen and (max-width: 749px) {
+    .bamboo-nl-banner-slot {
+      display: none;
+    }
+
+    .bamboo-nl-modal {
+      padding: 34px 22px 28px;
+    }
+  }
+</style>
+
+<div class="bamboo-nl-overlay" id="bamboo-nl-overlay" role="dialog" aria-modal="true" aria-labelledby="bamboo-nl-title" hidden>
+  <div class="bamboo-nl-modal">
+    <button type="button" class="bamboo-nl-modal__close" id="bamboo-nl-close" aria-label="Close">&times;</button>
+
+    {%- assign popupFormId = 'BambooNewsletterPopup' -%}
+    {% form 'customer', id: popupFormId, novalidate: 'novalidate' %}
+      {%- comment -%} The form object only exists inside this block, so hold the state for the script below. {%- endcomment -%}
+      {%- assign bambooNlPosted = form.posted_successfully? -%}
+      {%- if form.posted_successfully? -%}
+        <h2 class="bamboo-nl-modal__title" id="bamboo-nl-title">Thanks for subscribing</h2>
+        <p class="bamboo-nl-modal__success">
+          You&rsquo;re on the list. The freshest drinks stories are on their way to your inbox.
+        </p>
+      {%- else -%}
+        <h2 class="bamboo-nl-modal__title" id="bamboo-nl-title">Free Drinks Content</h2>
+        <p class="bamboo-nl-modal__body">
+          Sign up for our newsletter and get the latest reviews, releases and exclusive offers,
+          poured straight into your inbox.
+        </p>
+
+        <input type="hidden" name="contact[tags]" value="newsletter, popup-signup">
+
+        <label class="visually-hidden" for="bamboo-nl-email">Email address</label>
+        <input
+          type="email"
+          name="contact[email]"
+          id="bamboo-nl-email"
+          class="bamboo-nl-modal__field{% if form.errors %} has-error{% endif %}"
+          value="{{ form.email }}"
+          placeholder="Email address"
+          aria-label="Email address"
+          aria-required="true"
+          autocorrect="off"
+          autocapitalize="off"
+        >
+
+        <span class="bamboo-nl-modal__error{% if form.errors contains 'email' %} is-visible{% endif %}" id="bamboo-nl-error">
+          {%- if form.errors contains 'email' -%}
+            {{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}.
+          {%- else -%}
+            Please enter a valid email address.
+          {%- endif -%}
+        </span>
+
+        <button type="submit" class="btn bamboo-nl-modal__submit" name="commit">Sign me up!</button>
+      {%- endif -%}
+    {% endform %}
+  </div>
+</div>
+
+<script>
+  (function () {
+    var STORAGE_KEY = 'bambooNewsletterSeen';
+    var WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+    var TEN_YEARS_MS = 10 * 365 * 24 * 60 * 60 * 1000;
+
+    var overlay = document.getElementById('bamboo-nl-overlay');
+    if (!overlay) return;
+
+    var emailField = document.getElementById('bamboo-nl-email');
+    var errorEl = document.getElementById('bamboo-nl-error');
+    var form = document.getElementById('BambooNewsletterPopup');
+    var lastFocused = null;
+
+    // Has @, a dot after it, and a suffix of at least two characters.
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@.]{2,}$/;
+
+    // localStorage throws in Safari private mode, so every access is guarded.
+    function readSeen() {
+      try {
+        return parseInt(window.localStorage.getItem(STORAGE_KEY), 10) || 0;
+      } catch (e) {
+        return 0;
+      }
+    }
+
+    function writeSeen(durationMs) {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, String(Date.now() + durationMs));
+      } catch (e) {
+        /* storage unavailable — popup simply falls back to showing again */
+      }
+    }
+
+    function isSuppressed() {
+      return readSeen() > Date.now();
+    }
+
+    function openPopup() {
+      lastFocused = document.activeElement;
+      overlay.removeAttribute('hidden');
+      overlay.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      if (emailField) emailField.focus();
+    }
+
+    function closePopup() {
+      overlay.classList.remove('is-open');
+      overlay.setAttribute('hidden', '');
+      document.body.style.overflow = '';
+      if (lastFocused && lastFocused.focus) lastFocused.focus();
+    }
+
+    // Button triggers always open, regardless of the cooldown.
+    document.addEventListener('click', function (event) {
+      var trigger = event.target.closest('[data-bamboo-nl-open]');
+      if (!trigger) return;
+      event.preventDefault();
+      openPopup();
+    });
+
+    document.getElementById('bamboo-nl-close').addEventListener('click', closePopup);
+
+    overlay.addEventListener('click', function (event) {
+      if (event.target === overlay) closePopup();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && overlay.classList.contains('is-open')) closePopup();
+    });
+
+    if (form && emailField) {
+      form.addEventListener('submit', function (event) {
+        var value = emailField.value.trim();
+        if (EMAIL_RE.test(value)) {
+          // Treat a signup as a permanent opt-out of the auto-open.
+          writeSeen(TEN_YEARS_MS);
+          return;
+        }
+        event.preventDefault();
+        emailField.classList.add('has-error');
+        errorEl.textContent = 'Please enter a valid email address.';
+        errorEl.classList.add('is-visible');
+        emailField.focus();
+      });
+
+      emailField.addEventListener('input', function () {
+        emailField.classList.remove('has-error');
+        errorEl.classList.remove('is-visible');
+      });
+    }
+
+    {%- if bambooNlPosted -%}
+      // Shopify redirects back here after a successful post — reopen with the thank-you.
+      writeSeen(TEN_YEARS_MS);
+      openPopup();
+    {%- endif -%}
+
+    {%- if template == 'index' -%}
+      // Mobile only: the banner button is hidden below 750px, so use the ESCAPADES
+      // section as the scroll trigger instead.
+      var scrollTrigger = document.getElementById('bamboo-nl-scroll-trigger');
+      var isMobile = window.matchMedia('(max-width: 749px)').matches;
+
+      if (scrollTrigger && isMobile && !isSuppressed() && 'IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          if (!entries[0].isIntersecting) return;
+          observer.disconnect();
+          writeSeen(WEEK_MS);
+          openPopup();
+        }, { threshold: 0.2 });
+
+        observer.observe(scrollTrigger);
+      }
+    {%- endif -%}
+  })();
+</script>

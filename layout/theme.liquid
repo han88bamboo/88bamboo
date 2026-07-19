@@ -222,9 +222,13 @@
           <div class="custom-content hh">
             <div class="custom__item custom__item--html custom__item--a7fe12b2-8116-4676-9f22-f93c90e3a646  one-whole">
               <div class="custom__item-inner custom__item-inner--html">
-                <div style="overflow:hidden; white-space:nowrap; text-align: center;">
+                <div style="overflow:hidden; white-space:nowrap; text-align: center; position:relative;">
                   <h1 id="bamboobanner1" style="letter-spacing:0.12em; margin-bottom:0px; ">88 BAMBOO</h1>
                   <p id="bamboobanner2" style="letter-spacing:0.05em; color:#3d4246;" ><em>The Freshest Drinks Companion</em></p>
+                  <!-- newsletter signup trigger added by Zhe Han -->
+                  <div class="bamboo-nl-banner-slot">
+                    <button type="button" class="bamboo-nl-trigger" data-bamboo-nl-open>Newsletter Sign Up</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -446,8 +450,10 @@
              </script>
         {%- endif -%}
      <!---above added by Zhe Han insert JS code for patreon stuff on news article pages -->
-    {% endcomment %} 
+    {% endcomment %}
 
-   
+    <!-- newsletter signup popup added by Zhe Han -->
+    {% render 'newsletter-popup' %}
+
   </body>
 </html>

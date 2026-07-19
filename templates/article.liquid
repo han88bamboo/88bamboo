@@ -126,6 +126,10 @@
         <!-- right column -->
         <div class="grid__item medium-up--three-tenths">
           <div class="sidebar-section">
+            <!-- newsletter signup trigger added by Zhe Han -->
+            <div class="bamboo-nl-sidebar-slot">
+              <button type="button" class="bamboo-nl-trigger" data-bamboo-nl-open>Newsletter Sign Up</button>
+            </div>
             <!-- advertising area -->
             {% section 'article-side-advertising-area-top' %}<!-- deactivated editable side banner -->
               <!-- below is a Google display ad-->
@@ -142,7 +146,10 @@
                        (adsbygoogle = window.adsbygoogle || []).push({});
                   </script>
               <!-- above is a Google display ad-->
-            {% section 'news-subscription' %}  <style> #shopify-section-news-subscription {margin-left:0px; margin-right:0px;} </style>
+            <!-- inline subscription box disabled by Zhe Han — replaced by the newsletter popup trigger at the top of this column. Restore by removing the comment tags. -->
+            {% comment %}
+              {% section 'news-subscription' %}  <style> #shopify-section-news-subscription {margin-left:0px; margin-right:0px;} </style>
+            {% endcomment %}
             <!-- article suggestion div for reader -->
             {% section 'article-recommend-list' %}
             
