@@ -39,3 +39,13 @@ Each resource type has many alternate templates assigned per-page/blog in Shopif
 ### Third-party app residue
 
 Snippets/assets from installed or formerly-installed apps: HulkApps (`hulk_po_vd`, `hulkcode_common`, cart backups), Booster currency (`booster-currency`, currency flag PNGs), Qikify smart menu (`qikify-smartmenu-data.js`), XenForum (`xenforum-*` sections), Spurit. Treat these as app-managed: don't modify or remove them as part of unrelated changes.
+
+## General coding hygiene to follow at all times
+
+**Think before coding.** State assumptions explicitly; if uncertain, ask. If multiple interpretations exist, present them — don't pick silently. If a simpler approach exists, say so. If something is unclear, stop, name what's confusing, and ask.
+
+**Surgical changes.** Touch only what you must. Don't "improve" adjacent code, comments, or formatting; don't refactor what isn't broken; match existing style. Remove imports/variables/functions that *your* changes made unused, but don't delete pre-existing dead code unless asked — mention it instead. Every changed line should trace directly to the request.
+
+**Goal-driven execution.** Turn tasks into verifiable goals and state a brief plan for multi-step work (`1. step → verify: check`). For this project, verification usually means running the pipeline end-to-end and checking outputs; lightweight unit tests for data-processing functions are encouraged (they are explicitly valued and are cheap marks). Confirm the pipeline still runs after each meaningful change.
+
+**These guidelines are working if:** decisions are surfaced to the user before code is written and the code carries clear professional comments.
