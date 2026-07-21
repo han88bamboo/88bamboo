@@ -158,10 +158,18 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     text-decoration: none;
+    text-align: center;
     cursor: pointer;
     white-space: nowrap;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
     transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  /* The red button is an <a>, which picks up the theme's global a:hover
+     underline unless overridden here — the green <button> never had this
+     issue since underline only applies to anchors. */
+  .bamboo-cta-btn:hover {
+    text-decoration: none;
   }
 
   .bamboo-cta-btn--green {
@@ -190,7 +198,9 @@
 
   /* Homepage banner placement: the slot is a sibling of the "88 BAMBOO" title,
      not a descendant of it, so it can stack two buttons vertically without
-     being clipped by the title's own overflow:hidden wrapper. */
+     being clipped by the title's own overflow:hidden wrapper. align-items:
+     stretch (rather than flex-end) makes the shorter "Access Drink-X" button
+     match the width of "Newsletter Sign Up" above it. */
   .bamboo-nl-banner-slot {
     position: absolute;
     right: 0;
@@ -198,7 +208,7 @@
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: stretch;
     gap: 8px;
   }
 
