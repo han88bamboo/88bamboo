@@ -222,13 +222,17 @@
           <div class="custom-content hh">
             <div class="custom__item custom__item--html custom__item--a7fe12b2-8116-4676-9f22-f93c90e3a646  one-whole">
               <div class="custom__item-inner custom__item-inner--html">
-                <div style="overflow:hidden; white-space:nowrap; text-align: center; position:relative;">
+                <div style="overflow:hidden; white-space:nowrap; text-align: center;">
                   <h1 id="bamboobanner1" style="letter-spacing:0.12em; margin-bottom:0px; ">88 BAMBOO</h1>
                   <p id="bamboobanner2" style="letter-spacing:0.05em; color:#3d4246;" ><em>The Freshest Drinks Companion</em></p>
-                  <!-- newsletter signup trigger added by Zhe Han -->
-                  <div class="bamboo-nl-banner-slot">
-                    <button type="button" class="bamboo-nl-trigger" data-bamboo-nl-open>Newsletter Sign Up</button>
-                  </div>
+                </div>
+                <!-- newsletter + Drink-X signup triggers added by Zhe Han. Kept as a sibling
+                     of the overflow:hidden title block above (not nested inside it) so the
+                     stacked buttons aren't clipped; .custom__item-inner already has
+                     position:relative via theme.scss.liquid, which anchors them. -->
+                <div class="bamboo-nl-banner-slot">
+                  <button type="button" class="bamboo-cta-btn bamboo-cta-btn--green" data-bamboo-nl-open>Newsletter Sign Up</button>
+                  <a href="https://www.drink-x.com/" target="_blank" rel="noopener noreferrer" class="bamboo-cta-btn bamboo-cta-btn--red">Access Drink-X</a>
                 </div>
               </div>
             </div>

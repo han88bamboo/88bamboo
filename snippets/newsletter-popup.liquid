@@ -146,43 +146,71 @@
     line-height: 1.5;
   }
 
-  /* Trigger button — shared by the homepage banner and the article sidebar */
-  .bamboo-nl-trigger {
+  /* CTA buttons — shared by the homepage banner and the article sidebar */
+  .bamboo-cta-btn {
     display: inline-block;
     padding: 10px 18px;
-    border: 1px solid #fcc200;
-    background-color: #fcc200;
-    color: #3d4246;
-    font-weight: 600;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 700;
     font-size: 13px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
+    text-decoration: none;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color 0.15s ease, border-color 0.15s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   }
 
-  .bamboo-nl-trigger:hover {
+  .bamboo-cta-btn--green {
+    background-color: #0e6530;
+    border-color: #0e6530;
+    color: #fff;
+  }
+
+  .bamboo-cta-btn--green:hover {
     background-color: #fff;
-    border-color: #fcc200;
-    color: #3d4246;
+    color: #0e6530;
+    border-color: #0e6530;
   }
 
-  /* Homepage banner placement: keep the 88 BAMBOO title optically centred by
-     taking the button out of flow rather than making the banner a flex row. */
+  .bamboo-cta-btn--red {
+    background-color: #f82526;
+    border-color: #f82526;
+    color: #fff;
+  }
+
+  .bamboo-cta-btn--red:hover {
+    background-color: #fff;
+    color: #f82526;
+    border-color: #f82526;
+  }
+
+  /* Homepage banner placement: the slot is a sibling of the "88 BAMBOO" title,
+     not a descendant of it, so it can stack two buttons vertically without
+     being clipped by the title's own overflow:hidden wrapper. */
   .bamboo-nl-banner-slot {
     position: absolute;
     right: 0;
     top: 50%;
     transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
   }
 
   /* Article sidebar placement */
   .bamboo-nl-sidebar-slot {
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
-  .bamboo-nl-sidebar-slot .bamboo-nl-trigger {
+  .bamboo-nl-sidebar-slot .bamboo-cta-btn {
     display: block;
     width: 100%;
     text-align: center;
