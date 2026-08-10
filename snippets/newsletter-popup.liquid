@@ -226,6 +226,26 @@
     text-align: center;
   }
 
+  /* Homepage section-heading placement ("SEE ALL EVENTS" in templates/index.liquid).
+     theme.scss.liquid styles these heading links with ".main--header a", a class+type
+     selector that outranks the single-class rules above — left alone it would keep the
+     link grey (#717171) at 14px, and 12px below 991px. The theme's global
+     "a:not([disabled]):hover" likewise outranks the plain hover rules. Both are restated
+     here with the anchor qualified so specificity wins rather than source order. */
+  .main--header a.bamboo-cta-btn {
+    font-size: 13px;
+  }
+
+  .main--header a.bamboo-cta-btn--green {
+    color: #fff;
+  }
+
+  .main--header a.bamboo-cta-btn--green:hover {
+    background-color: #fff;
+    color: #0e6530;
+    border-color: #0e6530;
+  }
+
   /* Below Debut's medium breakpoint the banner is too tight for a button, so the
      mobile scroll trigger takes over instead. */
   @media only screen and (max-width: 749px) {
