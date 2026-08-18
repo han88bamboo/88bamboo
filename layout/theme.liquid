@@ -53,6 +53,7 @@
         or request.path contains '/home-page-featured-products-to-be-randomized'
         or (blog and article == null)
         or (article and article.tags contains 'noindex')
+        or request.path contains '/unpublished-draft'
     -%}
       <meta name="robots" content="noindex">
     {%- endif -%}
