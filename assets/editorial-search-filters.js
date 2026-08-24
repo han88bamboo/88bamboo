@@ -23,7 +23,6 @@
   ];
   var LEGACY_EXCLUSION_TAGS = ['Panda Press'];
   var CLEANUP_TAGS = EXCLUSION_TAGS.concat(LEGACY_EXCLUSION_TAGS);
-  var BROWSE_GROUP_PARAMETER = 'browse_group';
   var selectors = {
     form: '[data-editorial-search-form]',
     visibleQuery: '[data-editorial-search-visible-query]',
@@ -32,7 +31,6 @@
     browseFilter: '[data-editorial-search-browse-filter]',
     browseGroup: '[data-editorial-search-browse-group]',
     browseGroupSummary: '[data-editorial-search-browse-group-summary]',
-    browseGroupState: '[data-editorial-search-browse-group-state]',
     browseClear: '[data-editorial-search-browse-clear]'
   };
 
@@ -55,6 +53,28 @@
 
   function getExclusionClause(tag) {
     return '-tag:"' + tag + '"';
+  }
+
+  function getInclusionClause(tag) {
+    return 'tag:"' + tag + '"';
+  }
+
+  function findInclusionClauseIndex(query, tag) {
+    var inclusionClause = getInclusionClause(tag);
+    var searchFromIndex = 0;
+    var inclusionIndex = -1;
+
+    while (
+      (inclusionIndex = query.indexOf(inclusionClause, searchFromIndex)) !== -1
+    ) {
+      if (inclusionIndex === 0 || query.charAt(inclusionIndex - 1) !== '-') {
+        return inclusionIndex;
+      }
+
+      searchFromIndex = inclusionIndex + inclusionClause.length;
+    }
+
+    return -1;
   }
 
   function getFormPersistentFilters(form) {
@@ -89,21 +109,64 @@
     }, []);
   }
 
-  function getManagedCleanupTags() {
-    var cleanupTags = CLEANUP_TAGS.slice();
+  function getManagedBrowseTags() {
+    var browseTags = [];
     var browseFilters = document.querySelectorAll(selectors.browseFilter);
 
     Array.prototype.forEach.call(browseFilters, function(filter) {
       getBrowseTags(filter).forEach(function(tag) {
-        addUnique(cleanupTags, tag);
+        addUnique(browseTags, tag);
       });
+    });
+
+    return browseTags;
+  }
+
+  function getManagedCleanupTags() {
+    var cleanupTags = CLEANUP_TAGS.slice();
+
+    getManagedBrowseTags().forEach(function(tag) {
+      addUnique(cleanupTags, tag);
     });
 
     return cleanupTags;
   }
 
-  function removeManagedExclusions(value) {
+  function removeManagedFilters(value) {
     var visibleQuery = normalizeHtmlEntities(value);
+    var firstBrowseInclusionIndex = -1;
+
+    getManagedBrowseTags().forEach(function(tag) {
+      var inclusionIndex = findInclusionClauseIndex(visibleQuery, tag);
+
+      if (
+        inclusionIndex !== -1 &&
+        (firstBrowseInclusionIndex === -1 ||
+          inclusionIndex < firstBrowseInclusionIndex)
+      ) {
+        firstBrowseInclusionIndex = inclusionIndex;
+      }
+    });
+
+    if (firstBrowseInclusionIndex !== -1) {
+      var browseSeparatorIndex = visibleQuery.lastIndexOf(
+        ' AND ',
+        firstBrowseInclusionIndex
+      );
+
+      if (browseSeparatorIndex !== -1) {
+        visibleQuery = visibleQuery.slice(0, browseSeparatorIndex);
+      } else {
+        getManagedBrowseTags().forEach(function(tag) {
+          visibleQuery = visibleQuery
+            .split(getInclusionClause(tag))
+            .join(' ');
+        });
+        visibleQuery = visibleQuery
+          .replace(/\(\s*(?:OR\s*)*\)/g, ' ')
+          .replace(/(^|\s)OR(?=\s|$)/g, ' ');
+      }
+    }
 
     getManagedCleanupTags().forEach(function(tag) {
       visibleQuery = visibleQuery.split(getExclusionClause(tag)).join(' ');
@@ -134,10 +197,6 @@
     return [];
   }
 
-  function getBrowseGroupStateInput(form) {
-    return form.querySelector(selectors.browseGroupState);
-  }
-
   function getBrowseGroupContainers() {
     return document.querySelectorAll(selectors.browseGroup);
   }
@@ -159,7 +218,7 @@
     return getBrowseGroupCheckboxes(form, groupName).length > 0;
   }
 
-  function getUrlBrowseGroup() {
+  function getLegacyUrlBrowseGroup() {
     var queryString = window.location.search.replace(/^\?/, '');
     var pairs = queryString ? queryString.split('&') : [];
     var browseGroup = '';
@@ -168,7 +227,7 @@
       var parts = pair.split('=');
       var name = decodeURIComponent((parts[0] || '').replace(/\+/g, ' '));
 
-      if (name !== BROWSE_GROUP_PARAMETER) {
+      if (name !== 'browse_group') {
         return false;
       }
 
@@ -185,7 +244,11 @@
     );
   }
 
-  function detectBrowseGroupFromQuery(form, query) {
+  function queryHasInclusion(query, tag) {
+    return findInclusionClauseIndex(normalizeHtmlEntities(query), tag) !== -1;
+  }
+
+  function detectLegacyBrowseGroupFromQuery(form, query) {
     var detectedGroup = '';
 
     getFormBrowseFilters(form).some(function(checkbox) {
@@ -205,54 +268,48 @@
     return detectedGroup;
   }
 
-  function getActiveBrowseGroup(form) {
-    var stateInput = getBrowseGroupStateInput(form);
+  function getBrowseInclusionExpressions(form) {
+    var groupNames = [];
+    var tagsByGroup = {};
 
-    if (!stateInput || stateInput.disabled) {
-      return '';
-    }
-
-    return stateInput.value;
-  }
-
-  function setActiveBrowseGroup(form, groupName) {
-    var stateInput = getBrowseGroupStateInput(form);
-
-    if (!stateInput) {
-      return;
-    }
-
-    stateInput.value = groupName || '';
-    stateInput.disabled = !groupName;
-  }
-
-  function getBrowseComplementExclusionTags(form) {
-    var activeGroup = getActiveBrowseGroup(form);
-
-    if (!activeGroup) {
-      return [];
-    }
-
-    return getBrowseGroupCheckboxes(form, activeGroup).reduce(function(
-      tags,
-      checkbox
-    ) {
+    getFormBrowseFilters(form).forEach(function(checkbox) {
       if (!checkbox.checked) {
-        getBrowseTags(checkbox).forEach(function(tag) {
-          addUnique(tags, tag);
-        });
+        return;
       }
 
-      return tags;
+      var groupName = checkbox.getAttribute(
+        'data-editorial-search-browse-group-name'
+      );
+
+      if (!tagsByGroup[groupName]) {
+        tagsByGroup[groupName] = [];
+        groupNames.push(groupName);
+      }
+
+      getBrowseTags(checkbox).forEach(function(tag) {
+        addUnique(tagsByGroup[groupName], tag);
+      });
+    });
+
+    return groupNames.reduce(function(expressions, groupName) {
+      var clauses = tagsByGroup[groupName].map(getInclusionClause);
+
+      if (clauses.length === 1) {
+        expressions.push(clauses[0]);
+      } else if (clauses.length > 1) {
+        expressions.push('(' + clauses.join(' OR ') + ')');
+      }
+
+      return expressions;
     }, []);
   }
 
   function buildShopifyQuery(
     value,
     activeExclusionTags,
-    browseExclusionTags
+    browseInclusionExpressions
   ) {
-    var visibleQuery = removeManagedExclusions(value);
+    var visibleQuery = removeManagedFilters(value);
 
     if (visibleQuery.length === 0) {
       return visibleQuery;
@@ -262,56 +319,55 @@
     (activeExclusionTags || []).forEach(function(tag) {
       addUnique(allExclusionTags, tag);
     });
-    (browseExclusionTags || []).forEach(function(tag) {
-      addUnique(allExclusionTags, tag);
-    });
 
     var exclusionClauses = allExclusionTags.map(getExclusionClause);
-    return normalizeWhitespace(
+    var shopifyQuery = normalizeWhitespace(
       [visibleQuery].concat(exclusionClauses).join(' ')
     );
+
+    (browseInclusionExpressions || []).forEach(function(expression) {
+      shopifyQuery += ' AND ' + expression;
+    });
+
+    return normalizeWhitespace(shopifyQuery);
   }
 
   function updateBrowseAvailability(form) {
-    var activeGroup = getActiveBrowseGroup(form);
     var groupContainers = getBrowseGroupContainers();
     var clearButton = document.querySelector(selectors.browseClear);
+    var hasBrowseSelections = getFormBrowseFilters(form).some(function(
+      checkbox
+    ) {
+      return checkbox.checked;
+    });
 
     Array.prototype.forEach.call(groupContainers, function(container) {
       var groupName = container.getAttribute(
         'data-editorial-search-browse-group'
       );
-      var isUnavailable = Boolean(activeGroup && groupName !== activeGroup);
       var summary = container.querySelector(selectors.browseGroupSummary);
 
       container.classList.toggle(
         'search-page-browse__group--disabled',
-        isUnavailable
+        false
       );
 
       if (summary) {
-        summary.setAttribute('aria-disabled', String(isUnavailable));
-        summary.setAttribute(
-          'title',
-          isUnavailable ? 'Clear the active Browse filters to use this group' : ''
-        );
-      }
-
-      if (isUnavailable) {
-        container.open = false;
+        summary.setAttribute('aria-disabled', 'false');
+        summary.setAttribute('title', '');
       }
 
       getBrowseGroupCheckboxes(form, groupName).forEach(function(checkbox) {
-        checkbox.disabled = isUnavailable;
+        checkbox.disabled = false;
       });
     });
 
     if (clearButton) {
-      clearButton.disabled = !activeGroup;
+      clearButton.disabled = !hasBrowseSelections;
     }
   }
 
-  function syncPaginationBrowseGroup(groupName) {
+  function removeLegacyBrowseGroupFromPagination() {
     var paginationLinks = document.querySelectorAll('.pagination a[href]');
 
     Array.prototype.forEach.call(paginationLinks, function(link) {
@@ -320,13 +376,7 @@
       }
 
       var url = new window.URL(link.href, window.location.href);
-
-      if (groupName) {
-        url.searchParams.set(BROWSE_GROUP_PARAMETER, groupName);
-      } else {
-        url.searchParams.delete(BROWSE_GROUP_PARAMETER);
-      }
-
+      url.searchParams.delete('browse_group');
       link.href = url.pathname + url.search + url.hash;
     });
   }
@@ -338,33 +388,50 @@
       return;
     }
 
-    var activeGroup = getUrlBrowseGroup();
+    var hasBrowseInclusions = browseFilters.some(function(checkbox) {
+      return getBrowseTags(checkbox).some(function(tag) {
+        return queryHasInclusion(shopifyQuery, tag);
+      });
+    });
+    var legacyActiveGroup = '';
 
-    if (!isValidBrowseGroup(form, activeGroup)) {
-      activeGroup = detectBrowseGroupFromQuery(form, shopifyQuery);
+    if (!hasBrowseInclusions) {
+      legacyActiveGroup = getLegacyUrlBrowseGroup();
+
+      if (!isValidBrowseGroup(form, legacyActiveGroup)) {
+        legacyActiveGroup = detectLegacyBrowseGroupFromQuery(
+          form,
+          shopifyQuery
+        );
+      }
+
+      if (!isValidBrowseGroup(form, legacyActiveGroup)) {
+        legacyActiveGroup = '';
+      }
     }
-
-    if (!isValidBrowseGroup(form, activeGroup)) {
-      activeGroup = '';
-    }
-
-    setActiveBrowseGroup(form, activeGroup);
 
     browseFilters.forEach(function(checkbox) {
       var checkboxGroup = checkbox.getAttribute(
         'data-editorial-search-browse-group-name'
       );
+      var browseTags = getBrowseTags(checkbox);
 
-      checkbox.checked = Boolean(
-        activeGroup === checkboxGroup &&
-          !getBrowseTags(checkbox).some(function(tag) {
+      if (hasBrowseInclusions) {
+        checkbox.checked = browseTags.some(function(tag) {
+          return queryHasInclusion(shopifyQuery, tag);
+        });
+      } else {
+        checkbox.checked = Boolean(
+          legacyActiveGroup === checkboxGroup &&
+          !browseTags.some(function(tag) {
             return queryHasExclusion(shopifyQuery, tag);
           })
-      );
+        );
+      }
     });
 
     updateBrowseAvailability(form);
-    syncPaginationBrowseGroup(activeGroup);
+    removeLegacyBrowseGroupFromPagination();
   }
 
   function prepareForm(form) {
@@ -375,12 +442,12 @@
       return true;
     }
 
-    var visibleQuery = removeManagedExclusions(visibleInput.value);
+    var visibleQuery = removeManagedFilters(visibleInput.value);
     visibleInput.value = visibleQuery;
     shopifyQueryInput.value = buildShopifyQuery(
       visibleQuery,
       getActiveExclusionTags(form),
-      getBrowseComplementExclusionTags(form)
+      getBrowseInclusionExpressions(form)
     );
 
     if (visibleQuery.length === 0) {
@@ -414,30 +481,9 @@
   }
 
   function handleBrowseFilterChange(event) {
-    var checkbox = event.currentTarget;
-    var form = checkbox.form;
-    var checkboxGroup = checkbox.getAttribute(
-      'data-editorial-search-browse-group-name'
-    );
-    var activeGroup = getActiveBrowseGroup(form);
+    var form = event.currentTarget.form;
 
-    if (activeGroup && activeGroup !== checkboxGroup) {
-      checkbox.checked = false;
-      return;
-    }
-
-    var checkedInGroup = getBrowseGroupCheckboxes(form, checkboxGroup).filter(
-      function(groupCheckbox) {
-        return groupCheckbox.checked;
-      }
-    );
-
-    setActiveBrowseGroup(
-      form,
-      checkedInGroup.length > 0 ? checkboxGroup : ''
-    );
     updateBrowseAvailability(form);
-    syncPaginationBrowseGroup(getActiveBrowseGroup(form));
     submitPreparedForm(form);
   }
 
@@ -452,16 +498,8 @@
       checkbox.checked = false;
     });
 
-    setActiveBrowseGroup(form, '');
     updateBrowseAvailability(form);
-    syncPaginationBrowseGroup('');
     submitPreparedForm(form);
-  }
-
-  function handleBrowseGroupSummaryClick(event) {
-    if (event.currentTarget.getAttribute('aria-disabled') === 'true') {
-      event.preventDefault();
-    }
   }
 
   function init() {
@@ -477,7 +515,7 @@
       );
 
       if (visibleInput) {
-        visibleInput.value = removeManagedExclusions(visibleInput.value);
+        visibleInput.value = removeManagedFilters(visibleInput.value);
       }
 
       form.addEventListener('submit', handleSubmit);
@@ -495,23 +533,17 @@
     if (clearButton) {
       clearButton.addEventListener('click', handleBrowseClear);
     }
-
-    var browseGroupSummaries = document.querySelectorAll(
-      selectors.browseGroupSummary
-    );
-    Array.prototype.forEach.call(browseGroupSummaries, function(summary) {
-      summary.addEventListener('click', handleBrowseGroupSummaryClick);
-    });
   }
 
   window.theme = window.theme || {};
   window.theme.EditorialSearchFilters = {
     exclusionTags: EXCLUSION_TAGS.slice(),
     buildShopifyQuery: buildShopifyQuery,
-    getBrowseComplementExclusionTags: getBrowseComplementExclusionTags,
+    getBrowseInclusionExpressions: getBrowseInclusionExpressions,
     getExclusionClause: getExclusionClause,
+    getInclusionClause: getInclusionClause,
     normalizeHtmlEntities: normalizeHtmlEntities,
-    removeManagedExclusions: removeManagedExclusions,
+    removeManagedFilters: removeManagedFilters,
     init: init
   };
 

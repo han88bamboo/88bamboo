@@ -32,7 +32,33 @@
 {% assign editorial_search_cleanup_tags_string = editorial_search_filter_tags_string | append: '|Panda Press' | append: editorial_search_browse_cleanup_tags_string %}
 {% assign editorial_search_cleanup_tags = editorial_search_cleanup_tags_string | split: '|' %}
 {% assign normalized_search_terms = search.terms | replace: '&amp;quot;', '"' | replace: '&quot;', '"' | replace: '&#34;', '"' | replace: '&#x22;', '"' | replace: '&apos;', "'" | replace: '&#39;', "'" | replace: '&#x27;', "'" %}
-{% assign visible_search_terms_with_spacing = normalized_search_terms %}
+{% assign editorial_search_browse_cleanup_tags = editorial_search_browse_cleanup_tags_string | split: '|' %}
+{% assign editorial_search_query_segments = normalized_search_terms | split: ' AND ' %}
+{% assign visible_search_terms_with_spacing = '' %}
+{% assign editorial_search_browse_suffix_started = false %}
+{% for editorial_search_query_segment in editorial_search_query_segments %}
+  {% assign editorial_search_segment_has_browse_inclusion = false %}
+  {% for editorial_search_browse_tag in editorial_search_browse_cleanup_tags %}
+    {% if editorial_search_browse_tag != blank %}
+      {% capture editorial_search_browse_inclusion %}tag:"{{ editorial_search_browse_tag }}"{% endcapture %}
+      {% capture editorial_search_browse_exclusion %}-tag:"{{ editorial_search_browse_tag }}"{% endcapture %}
+      {% assign editorial_search_segment_without_browse_exclusion = editorial_search_query_segment | replace: editorial_search_browse_exclusion, ' ' %}
+      {% if editorial_search_segment_without_browse_exclusion contains editorial_search_browse_inclusion %}
+        {% assign editorial_search_segment_has_browse_inclusion = true %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  {% if editorial_search_segment_has_browse_inclusion %}
+    {% assign editorial_search_browse_suffix_started = true %}
+  {% endif %}
+  {% unless editorial_search_browse_suffix_started %}
+    {% if visible_search_terms_with_spacing == blank %}
+      {% assign visible_search_terms_with_spacing = editorial_search_query_segment %}
+    {% else %}
+      {% assign visible_search_terms_with_spacing = visible_search_terms_with_spacing | append: ' AND ' | append: editorial_search_query_segment %}
+    {% endif %}
+  {% endunless %}
+{% endfor %}
 {% for editorial_search_filter_tag in editorial_search_cleanup_tags %}
   {% capture editorial_search_exclusion %}-tag:"{{ editorial_search_filter_tag }}"{% endcapture %}
   {% assign visible_search_terms_with_spacing = visible_search_terms_with_spacing | replace: editorial_search_exclusion, ' ' %}
@@ -89,13 +115,6 @@
               data-editorial-search-shopify-query
             />
             <input type="hidden" name="type" value="article" aria-hidden="true" />
-            <input
-              type="hidden"
-              name="browse_group"
-              value=""
-              data-editorial-search-browse-group-state
-              disabled
-            />
             <div class="input-group input-group--nowrap">
               <div class="input-group__field input-group__field--connected search-form__input-wrapper">
                 <input
