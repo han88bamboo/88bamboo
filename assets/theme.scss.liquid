@@ -6308,6 +6308,7 @@ $search-bar-button-hover: rgba($color-text-field-text, 0.6);
   letter-spacing: 0.04em;
   list-style: none;
   cursor: pointer;
+  transition: background-color $transition-duration-fast ease-in-out;
 
   > span:first-child {
     flex: 0 0 auto;
@@ -6333,6 +6334,16 @@ $search-bar-button-hover: rgba($color-text-field-text, 0.6);
     outline: 2px solid $color-text;
     outline-offset: 2px;
   }
+}
+
+.search-page-browse__group--active > .search-page-browse__group-summary {
+  margin-right: -8px;
+  margin-left: -8px;
+  padding-right: 8px;
+  padding-left: 8px;
+  border-radius: 4px;
+  background-color: #dfece3;
+  color: #174f37;
 }
 
 .search-page-browse__group[open] .search-page-browse__group-summary::after {

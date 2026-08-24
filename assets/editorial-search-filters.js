@@ -433,12 +433,14 @@
         var summary = container.querySelector(
           selectors.browseGroupSelection
         );
+        var selectedLabels = getSelectedBrowseLabels(
+          getBrowseGroupCheckboxes(form, groupName)
+        );
 
-        setBrowseSelectionSummary(
-          summary,
-          getSelectedBrowseLabels(
-            getBrowseGroupCheckboxes(form, groupName)
-          )
+        setBrowseSelectionSummary(summary, selectedLabels);
+        container.classList.toggle(
+          'search-page-browse__group--active',
+          selectedLabels.length > 0
         );
       }
     );
