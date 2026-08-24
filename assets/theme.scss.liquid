@@ -6121,22 +6121,75 @@ $search-bar-button-hover: rgba($color-text-field-text, 0.6);
 
 .search-page-filters {
   margin: 18px 0 0;
-  padding: 16px;
   border: 1px solid $color-border;
   border-radius: $border-radius;
+  background-color: $color-bg;
   text-align: left;
+
+  @include media-query($large-up) {
+    z-index: $z-index-dropdown;
+    position: fixed;
+    top: 50%;
+    left: $gutter-site-mobile;
+    width: 270px;
+    max-height: calc(100vh - 40px);
+    margin: 0;
+    overflow-y: auto;
+    transform: translateY(-50%);
+    box-shadow: 0 4px 18px rgba($color-body-text, 0.16);
+  }
 }
 
-.search-page-filters__title {
-  width: auto;
+.search-page-filters__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin: 0;
-  padding: 0 6px;
+  padding: 14px 16px;
   color: $color-body-text;
   font-family: $font-stack-header;
   font-size: em($font-size-base - 2px);
   font-weight: $font-weight-header;
   letter-spacing: 0.08em;
+  list-style: none;
   text-transform: uppercase;
+  cursor: pointer;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &::after {
+    content: '';
+    flex: 0 0 auto;
+    width: 9px;
+    height: 9px;
+    margin-left: 16px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg) translate(-2px, 2px);
+    transition: transform $transition-duration-fast ease-in-out;
+  }
+
+  &:focus {
+    outline: 2px solid $color-text;
+    outline-offset: -2px;
+  }
+}
+
+.search-page-filters[open] .search-page-filters__summary {
+  border-bottom: 1px solid $color-border;
+
+  &::after {
+    transform: rotate(225deg) translate(-2px, 2px);
+  }
+}
+
+.search-page-filters__content {
+  min-width: 0;
+  margin: 0;
+  padding: 12px 16px 16px;
+  border: 0;
 }
 
 .search-page-filters__group {
@@ -6153,6 +6206,10 @@ $search-bar-button-hover: rgba($color-text-field-text, 0.6);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   column-gap: 18px;
+
+  @include media-query($large-up) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .search-page-filters__option {
@@ -12098,5 +12155,4 @@ blockquote.tiktok-embed[data-unique-id="88.bamboo"] iframe {
   font-size: 30px; /* Adjust the size of the arrow */
 
 }
-
 
