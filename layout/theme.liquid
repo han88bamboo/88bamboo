@@ -80,9 +80,11 @@
     {%- capture seo_title -%}
     {%- if request.page_type == 'search' and search.performed == true -%}
       {%- assign editorial_search_filter_tags_string = "Section: Books|Section: DuRhum Rum Reviews|Section: Rhythm and Booze|Section: Bottoms Up|Section: 88 Bamboo Philippines|Section: Japanese Whisky Dictionary|Section: Sku's Drinks|Section: Sicklehut|Section: SG Alcohol Guy|Section: Prints|Section: TV" -%}
-      {%- assign editorial_search_filter_tags = editorial_search_filter_tags_string | split: '|' -%}
-      {%- assign visible_search_terms_with_spacing = search.terms -%}
-      {%- for editorial_search_filter_tag in editorial_search_filter_tags -%}
+      {%- assign editorial_search_cleanup_tags_string = editorial_search_filter_tags_string | append: '|Panda Press' -%}
+      {%- assign editorial_search_cleanup_tags = editorial_search_cleanup_tags_string | split: '|' -%}
+      {%- assign normalized_search_terms = search.terms | replace: '&amp;quot;', '"' | replace: '&quot;', '"' | replace: '&#34;', '"' | replace: '&#x22;', '"' | replace: '&apos;', "'" | replace: '&#39;', "'" | replace: '&#x27;', "'" -%}
+      {%- assign visible_search_terms_with_spacing = normalized_search_terms -%}
+      {%- for editorial_search_filter_tag in editorial_search_cleanup_tags -%}
         {%- capture editorial_search_exclusion -%}-tag:"{{ editorial_search_filter_tag }}"{%- endcapture -%}
         {%- assign visible_search_terms_with_spacing = visible_search_terms_with_spacing | replace: editorial_search_exclusion, ' ' -%}
       {%- endfor -%}

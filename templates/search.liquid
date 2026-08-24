@@ -1,7 +1,10 @@
 {% assign editorial_search_filter_tags_string = "Section: Books|Section: DuRhum Rum Reviews|Section: Rhythm and Booze|Section: Bottoms Up|Section: 88 Bamboo Philippines|Section: Japanese Whisky Dictionary|Section: Sku's Drinks|Section: Sicklehut|Section: SG Alcohol Guy|Section: Prints|Section: TV" %}
 {% assign editorial_search_filter_tags = editorial_search_filter_tags_string | split: '|' %}
-{% assign visible_search_terms_with_spacing = search.terms %}
-{% for editorial_search_filter_tag in editorial_search_filter_tags %}
+{% assign editorial_search_cleanup_tags_string = editorial_search_filter_tags_string | append: '|Panda Press' %}
+{% assign editorial_search_cleanup_tags = editorial_search_cleanup_tags_string | split: '|' %}
+{% assign normalized_search_terms = search.terms | replace: '&amp;quot;', '"' | replace: '&quot;', '"' | replace: '&#34;', '"' | replace: '&#x22;', '"' | replace: '&apos;', "'" | replace: '&#39;', "'" | replace: '&#x27;', "'" %}
+{% assign visible_search_terms_with_spacing = normalized_search_terms %}
+{% for editorial_search_filter_tag in editorial_search_cleanup_tags %}
   {% capture editorial_search_exclusion %}-tag:"{{ editorial_search_filter_tag }}"{% endcapture %}
   {% assign visible_search_terms_with_spacing = visible_search_terms_with_spacing | replace: editorial_search_exclusion, ' ' %}
 {% endfor %}
@@ -26,8 +29,13 @@
   {% else %}
     <div class="text-center">
       <h1 class="h2">
-        <span class="visually-hidden">{{ 'general.search.heading' | t: count: search.results_count }}:</span>
-        {{ 'general.search.results_with_count' | t: terms: visible_search_terms, count: search.results_count }}
+        {% comment %}
+          Search terms are intentionally omitted here so internal Shopify query
+          syntax is never presented in the visible results heading.
+          <span class="visually-hidden">{{ 'general.search.heading' | t: count: search.results_count }}:</span>
+          {{ 'general.search.results_with_count' | t: terms: visible_search_terms, count: search.results_count }}
+        {% endcomment %}
+        {{ search.results_count }} {% if search.results_count == 1 %}result{% else %}results{% endif %}
       </h1>
   {% endif %}
       <div class="grid">
@@ -47,7 +55,7 @@
             <input
               type="hidden"
               name="q"
-              value="{{ search.terms | escape }}"
+              value="{{ normalized_search_terms | escape }}"
               data-editorial-search-shopify-query
             />
             <div class="input-group input-group--nowrap">
@@ -89,7 +97,7 @@
                   {% for editorial_search_filter_tag in editorial_search_filter_tags %}
                     {% capture editorial_search_exclusion %}-tag:"{{ editorial_search_filter_tag }}"{% endcapture %}
                     {% assign editorial_search_filter_active = false %}
-                    {% if search.terms contains editorial_search_exclusion %}
+                    {% if normalized_search_terms contains editorial_search_exclusion %}
                       {% assign editorial_search_filter_active = true %}
                     {% endif %}
                     {% assign editorial_search_filter_label = editorial_search_filter_tag | remove: 'Section: ' %}

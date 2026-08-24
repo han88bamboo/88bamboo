@@ -14,6 +14,8 @@
     'Section: Prints',
     'Section: TV'
   ];
+  var LEGACY_EXCLUSION_TAGS = ['Panda Press'];
+  var CLEANUP_TAGS = EXCLUSION_TAGS.concat(LEGACY_EXCLUSION_TAGS);
   var selectors = {
     form: '[data-editorial-search-form]',
     visibleQuery: '[data-editorial-search-visible-query]',
@@ -25,14 +27,21 @@
     return (value || '').replace(/\s+/g, ' ').trim();
   }
 
+  function normalizeHtmlEntities(value) {
+    return (value || '')
+      .replace(/&amp;quot;/gi, '"')
+      .replace(/&quot;|&#34;|&#x22;/gi, '"')
+      .replace(/&apos;|&#39;|&#x27;/gi, "'");
+  }
+
   function getExclusionClause(tag) {
     return '-tag:"' + tag + '"';
   }
 
   function removeManagedExclusions(value) {
-    var visibleQuery = value || '';
+    var visibleQuery = normalizeHtmlEntities(value);
 
-    EXCLUSION_TAGS.forEach(function(tag) {
+    CLEANUP_TAGS.forEach(function(tag) {
       visibleQuery = visibleQuery.split(getExclusionClause(tag)).join(' ');
     });
 
@@ -121,6 +130,11 @@
     var forms = document.querySelectorAll(selectors.form);
 
     Array.prototype.forEach.call(forms, function(form) {
+      var visibleInput = form.querySelector(selectors.visibleQuery);
+      if (visibleInput) {
+        visibleInput.value = removeManagedExclusions(visibleInput.value);
+      }
+
       form.addEventListener('submit', handleSubmit);
 
       var checkboxes = form.querySelectorAll(selectors.filter);
@@ -135,6 +149,7 @@
     exclusionTags: EXCLUSION_TAGS.slice(),
     buildShopifyQuery: buildShopifyQuery,
     getExclusionClause: getExclusionClause,
+    normalizeHtmlEntities: normalizeHtmlEntities,
     removeManagedExclusions: removeManagedExclusions,
     init: init
   };
