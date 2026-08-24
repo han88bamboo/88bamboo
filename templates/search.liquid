@@ -1,6 +1,35 @@
 {% assign editorial_search_filter_tags_string = "Section: Books|Section: DuRhum Rum Reviews|Section: Rhythm and Booze|Section: Bottoms Up|Section: 88 Bamboo Philippines|Section: Japanese Whisky Dictionary|Section: Sku's Drinks|Section: Sicklehut|Section: SG Alcohol Guy|Section: Prints|Section: TV" %}
 {% assign editorial_search_filter_tags = editorial_search_filter_tags_string | split: '|' %}
-{% assign editorial_search_cleanup_tags_string = editorial_search_filter_tags_string | append: '|Panda Press' %}
+{% assign editorial_search_browse_section_definitions_string = "News::Section: News|Feature::Section: Feature|Interview::Section: Interview|Deep Dive::Section: Deep Dive|Review::Section: Review" %}
+{% assign editorial_search_browse_drink_definitions_string = "Beer::Beer|Gin::Gin|Rum::Rum|Sake::Sake|Tequila & Mezcal::Tequila~Mezcal|Whisky::Whisky|Wine::Wine|Other Drinks::Other Drinks" %}
+{% assign editorial_search_browse_country_definitions_string = "USA::USA~US~America|UK (incl Scotland)::UK~United Kingdom~England~Scotland|Ireland::Ireland|France::France|Australia::Australia|Germany::Germany|Japan::Japan|Korea::Korea|China::China|Taiwan::Taiwan|Italy::Italy|Philippines::Philippines|Hungary::Hungary" %}
+{% assign editorial_search_browse_producers_string = "1800 Tequila|Aberlour|Akita Jozo|Amabuki Shuzo|Amrut|Antelope|Ardbeg|Arette|Asahi|Asahi Shuzo|Atelier Guibert|Ballantine's|Bardstown|Bielle|Big Kahuna|Black Tot|Blackadder|Bonifacio|Bowmore|Brauerei Weihenstephan|Brooklyn Kura|Brown-Forman|Brugal|Bruichladdich|Byeolsan|Cairns Rum Company|Camus|Cascahuín|Champagne Palmer|Chichibu|Chivas Brothers|Chivas Regal|Clumzy Plumzy|Coyote Sotol|Craftbros|Dalho|Danong Bio|Dassai|Dassai Blue|Delamotte|Devanom|Diageo|Domaine de la Gyalthang|Domaine Pierre Damoy|Don Julio|Edrington|Elixir Distillers|Eminente|Estrella Damm|FAIR|Fattoria da Sasino|Fireball|Four Pillars Gin|Foursquare|G4 Tequila|Gaja|Gamuchi Soju|Glenfiddich|Glengoyne|Gordon & MacPhail|Gordon's|Gran Centenario|Great Northern Distillery|Grey Goose|haccoba|Hakushu|Hampden|Hana Makgeolli|Hendrick's|Hennessy|Henri Giraud|Hibiki|Hiraroku|Hwasim Jujo|Il Borro|Isautier|IWA 5 Sake|Iyoshi Cola|Jack Daniel's|Jiran Jigyo|Jose Cuervo|Kanosuke|Karuizawa|Kasa Kana|Kavalan|Kimchangsoo|Koch|Lark|Leeu Passant|LIBROM|Longmorn|Luisita|Maestro Dobel|Mas de Daumas Gassac|Masahiro|Minenohakubai Shuzo|Miyagikyo|Miyazaki Hideji|Moon Import|Mullineux|Nagura|Newton Johnson|Niigata Kameda|Nikka Whisky|Ninefold|Nobilis|nondo|Old Forester|Onzi Suldoga|Patron|Penfolds|Pernod Ricard|Pierre-Yves Colin-Morey (PYCM)|Podere Il Carnasciale|Renais Gin|Roederer Group|Roku Gin|Ron Zacapa|Royal Salute|Saburomaru|Sakari (Nihonsakari)|Sakurao|Samata Brewing|Sapporo|Savanna|Sazerac|Seochon Makgeolli|Shimazaki Shuzo|Sipsmith|Sula|Sullivans Cove|Suntory|Suntory Premium Malt's|Swell de Spirits|Szepsy|Taketsuru|Tatenokawa|TDL|Tenuta Pinino|Terada Honke|The Bruery|The Glenlivet|The Macallan|The Whisky Jury|Togouchi|Toki|Tormore|Tsingtao|Velier|Weightstone|Weingut Keller|Wild Turkey|Xiao Ling|Xiaopu|Yamazaki|Yangjudoga|Yoshida Denzai|Yuki No Bijin|Zephyr Wines" %}
+{% assign editorial_search_browse_section_definitions = editorial_search_browse_section_definitions_string | split: '|' %}
+{% assign editorial_search_browse_drink_definitions = editorial_search_browse_drink_definitions_string | split: '|' %}
+{% assign editorial_search_browse_country_definitions = editorial_search_browse_country_definitions_string | split: '|' %}
+{% assign editorial_search_browse_producers = editorial_search_browse_producers_string | split: '|' %}
+
+{% assign editorial_search_browse_cleanup_tags_string = '' %}
+{% assign editorial_search_browse_definition_groups = editorial_search_browse_section_definitions_string | append: '|' | append: editorial_search_browse_drink_definitions_string | append: '|' | append: editorial_search_browse_country_definitions_string | split: '|' %}
+{% for editorial_search_browse_definition in editorial_search_browse_definition_groups %}
+  {% assign editorial_search_browse_definition_parts = editorial_search_browse_definition | split: '::' %}
+  {% assign editorial_search_browse_definition_tags = editorial_search_browse_definition_parts[1] | split: '~' %}
+  {% for editorial_search_browse_definition_tag in editorial_search_browse_definition_tags %}
+    {% assign editorial_search_browse_cleanup_tags_string = editorial_search_browse_cleanup_tags_string | append: '|' | append: editorial_search_browse_definition_tag %}
+  {% endfor %}
+{% endfor %}
+{% for editorial_search_browse_producer in editorial_search_browse_producers %}
+  {% assign editorial_search_browse_producer_alias = editorial_search_browse_producer | remove_first: 'The ' | remove: ' Distillery' | remove: ' Brewery' | remove: ' Brewing' | remove: ' Inc.' | remove: ' Inc' | strip %}
+  {% assign editorial_search_browse_cleanup_tags_string = editorial_search_browse_cleanup_tags_string | append: '|' | append: editorial_search_browse_producer %}
+  {% if editorial_search_browse_producer_alias != editorial_search_browse_producer %}
+    {% assign editorial_search_browse_cleanup_tags_string = editorial_search_browse_cleanup_tags_string | append: '|' | append: editorial_search_browse_producer_alias %}
+  {% endif %}
+  {% if editorial_search_browse_producer == 'The Macallan' %}
+    {% assign editorial_search_browse_cleanup_tags_string = editorial_search_browse_cleanup_tags_string | append: '|Macallan Distillery' %}
+  {% endif %}
+{% endfor %}
+
+{% assign editorial_search_cleanup_tags_string = editorial_search_filter_tags_string | append: '|Panda Press' | append: editorial_search_browse_cleanup_tags_string %}
 {% assign editorial_search_cleanup_tags = editorial_search_cleanup_tags_string | split: '|' %}
 {% assign normalized_search_terms = search.terms | replace: '&amp;quot;', '"' | replace: '&quot;', '"' | replace: '&#34;', '"' | replace: '&#x22;', '"' | replace: '&apos;', "'" | replace: '&#39;', "'" | replace: '&#x27;', "'" %}
 {% assign visible_search_terms_with_spacing = normalized_search_terms %}
@@ -59,6 +88,13 @@
               value="{{ normalized_search_terms | escape }}"
               data-editorial-search-shopify-query
             />
+            <input
+              type="hidden"
+              name="browse_group"
+              value=""
+              data-editorial-search-browse-group-state
+              disabled
+            />
             <div class="input-group input-group--nowrap">
               <div class="input-group__field input-group__field--connected search-form__input-wrapper">
                 <input
@@ -105,6 +141,140 @@
 
   <div class="page-width search-page-results-layout">
     <aside class="search-page-filters-column" aria-label="Search result filters">
+      <details class="search-page-filters search-page-browse" open data-editorial-search-browse-panel>
+        <summary class="search-page-filters__summary">
+          <span>Browse</span>
+        </summary>
+        <div class="search-page-browse__content">
+          <div class="search-page-browse__toolbar">
+            <button type="button" class="search-page-browse__clear" data-editorial-search-browse-clear disabled>
+              Clear
+            </button>
+          </div>
+
+          <details class="search-page-browse__group" data-editorial-search-browse-group="section">
+            <summary class="search-page-browse__group-summary" data-editorial-search-browse-group-summary>
+              <span>Section</span>
+            </summary>
+            <fieldset class="search-page-browse__group-content">
+              <legend class="visually-hidden">Browse by section</legend>
+              <div class="search-page-filters__options">
+                {% for editorial_search_browse_definition in editorial_search_browse_section_definitions %}
+                  {% assign editorial_search_browse_definition_parts = editorial_search_browse_definition | split: '::' %}
+                  {% assign editorial_search_browse_label = editorial_search_browse_definition_parts[0] %}
+                  {% assign editorial_search_browse_tags = editorial_search_browse_definition_parts[1] %}
+                  {% assign editorial_search_browse_id = editorial_search_browse_label | handleize | prepend: 'SearchBrowse-section-' %}
+                  <div class="search-page-filters__option">
+                    <input
+                      id="{{ editorial_search_browse_id }}"
+                      type="checkbox"
+                      class="search-page-filters__checkbox"
+                      data-editorial-search-browse-filter
+                      data-editorial-search-browse-group-name="section"
+                      data-editorial-search-browse-tags="{{ editorial_search_browse_tags | escape }}"
+                      form="SearchPageForm"
+                    />
+                    <label for="{{ editorial_search_browse_id }}">{{ editorial_search_browse_label }}</label>
+                  </div>
+                {% endfor %}
+              </div>
+            </fieldset>
+          </details>
+
+          <details class="search-page-browse__group" data-editorial-search-browse-group="drink-type">
+            <summary class="search-page-browse__group-summary" data-editorial-search-browse-group-summary>
+              <span>Drink Type</span>
+            </summary>
+            <fieldset class="search-page-browse__group-content">
+              <legend class="visually-hidden">Browse by drink type</legend>
+              <div class="search-page-filters__options">
+                {% for editorial_search_browse_definition in editorial_search_browse_drink_definitions %}
+                  {% assign editorial_search_browse_definition_parts = editorial_search_browse_definition | split: '::' %}
+                  {% assign editorial_search_browse_label = editorial_search_browse_definition_parts[0] %}
+                  {% assign editorial_search_browse_tags = editorial_search_browse_definition_parts[1] %}
+                  {% assign editorial_search_browse_id = editorial_search_browse_label | handleize | prepend: 'SearchBrowse-drink-' %}
+                  <div class="search-page-filters__option">
+                    <input
+                      id="{{ editorial_search_browse_id }}"
+                      type="checkbox"
+                      class="search-page-filters__checkbox"
+                      data-editorial-search-browse-filter
+                      data-editorial-search-browse-group-name="drink-type"
+                      data-editorial-search-browse-tags="{{ editorial_search_browse_tags | escape }}"
+                      form="SearchPageForm"
+                    />
+                    <label for="{{ editorial_search_browse_id }}">{{ editorial_search_browse_label }}</label>
+                  </div>
+                {% endfor %}
+              </div>
+            </fieldset>
+          </details>
+
+          <details class="search-page-browse__group" data-editorial-search-browse-group="country">
+            <summary class="search-page-browse__group-summary" data-editorial-search-browse-group-summary>
+              <span>Country</span>
+            </summary>
+            <fieldset class="search-page-browse__group-content">
+              <legend class="visually-hidden">Browse by country</legend>
+              <div class="search-page-filters__options">
+                {% for editorial_search_browse_definition in editorial_search_browse_country_definitions %}
+                  {% assign editorial_search_browse_definition_parts = editorial_search_browse_definition | split: '::' %}
+                  {% assign editorial_search_browse_label = editorial_search_browse_definition_parts[0] %}
+                  {% assign editorial_search_browse_tags = editorial_search_browse_definition_parts[1] %}
+                  {% assign editorial_search_browse_id = editorial_search_browse_label | handleize | prepend: 'SearchBrowse-country-' %}
+                  <div class="search-page-filters__option">
+                    <input
+                      id="{{ editorial_search_browse_id }}"
+                      type="checkbox"
+                      class="search-page-filters__checkbox"
+                      data-editorial-search-browse-filter
+                      data-editorial-search-browse-group-name="country"
+                      data-editorial-search-browse-tags="{{ editorial_search_browse_tags | escape }}"
+                      form="SearchPageForm"
+                    />
+                    <label for="{{ editorial_search_browse_id }}">{{ editorial_search_browse_label }}</label>
+                  </div>
+                {% endfor %}
+              </div>
+            </fieldset>
+          </details>
+
+          <details class="search-page-browse__group" data-editorial-search-browse-group="producer">
+            <summary class="search-page-browse__group-summary" data-editorial-search-browse-group-summary>
+              <span>Producer</span>
+            </summary>
+            <fieldset class="search-page-browse__group-content">
+              <legend class="visually-hidden">Browse by producer</legend>
+              <div class="search-page-filters__options">
+                {% for editorial_search_browse_producer in editorial_search_browse_producers %}
+                  {% assign editorial_search_browse_producer_alias = editorial_search_browse_producer | remove_first: 'The ' | remove: ' Distillery' | remove: ' Brewery' | remove: ' Brewing' | remove: ' Inc.' | remove: ' Inc' | strip %}
+                  {% assign editorial_search_browse_producer_tags = editorial_search_browse_producer %}
+                  {% if editorial_search_browse_producer_alias != editorial_search_browse_producer %}
+                    {% assign editorial_search_browse_producer_tags = editorial_search_browse_producer_tags | append: '~' | append: editorial_search_browse_producer_alias %}
+                  {% endif %}
+                  {% if editorial_search_browse_producer == 'The Macallan' %}
+                    {% assign editorial_search_browse_producer_tags = editorial_search_browse_producer_tags | append: '~Macallan Distillery' %}
+                  {% endif %}
+                  {% assign editorial_search_browse_id = editorial_search_browse_producer | handleize | prepend: 'SearchBrowse-producer-' %}
+                  <div class="search-page-filters__option">
+                    <input
+                      id="{{ editorial_search_browse_id }}"
+                      type="checkbox"
+                      class="search-page-filters__checkbox"
+                      data-editorial-search-browse-filter
+                      data-editorial-search-browse-group-name="producer"
+                      data-editorial-search-browse-tags="{{ editorial_search_browse_producer_tags | escape }}"
+                      form="SearchPageForm"
+                    />
+                    <label for="{{ editorial_search_browse_id }}">{{ editorial_search_browse_producer }}</label>
+                  </div>
+                {% endfor %}
+              </div>
+            </fieldset>
+          </details>
+        </div>
+      </details>
+
       <details class="search-page-filters">
         <summary class="search-page-filters__summary">
           <span>Other Excluded Sections</span>
