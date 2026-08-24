@@ -90,14 +90,13 @@
           <span class="visually-hidden">{{ 'general.search.heading' | t: count: search.results_count }}:</span>
           {{ 'general.search.results_with_count' | t: terms: visible_search_terms, count: search.results_count }}
         {% endcomment %}
-        {{ search.results_count }} {% if search.results_count == 1 %}result{% else %}results{% endif %}
+        {{ search.results_count }} {% if search.results_count == 1 %}result{% else %}results{% endif %}<span
+          class="search-page-browse__active-filters"
+          data-editorial-search-browse-selection-summary
+          aria-live="polite"
+          hidden
+        ></span>
       </h1>
-      <p
-        class="search-page-browse__active-filters"
-        data-editorial-search-browse-selection-summary
-        aria-live="polite"
-        hidden
-      ></p>
   {% endif %}
       <div class="grid">
         <div class="grid__item medium-up--six-tenths medium-up--push-two-tenths">

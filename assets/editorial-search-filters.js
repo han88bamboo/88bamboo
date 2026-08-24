@@ -454,7 +454,7 @@
 
     if (activeFilters) {
       activeFilters.textContent = activeFilterLabels.length
-        ? '\u2014 ' + activeFilterLabels.join(', ')
+        ? ' under \u2014 ' + activeFilterLabels.join(', ')
         : '';
       activeFilters.hidden = activeFilterLabels.length === 0;
     }
