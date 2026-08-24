@@ -23,6 +23,8 @@
   ];
   var LEGACY_EXCLUSION_TAGS = ['Panda Press'];
   var CLEANUP_TAGS = EXCLUSION_TAGS.concat(LEGACY_EXCLUSION_TAGS);
+  var BROWSE_OPEN_PARAMETER = 'browse_open';
+  var NO_OPEN_BROWSE_GROUPS = 'none';
   var selectors = {
     form: '[data-editorial-search-form]',
     visibleQuery: '[data-editorial-search-visible-query]',
@@ -31,6 +33,7 @@
     browseFilter: '[data-editorial-search-browse-filter]',
     browseGroup: '[data-editorial-search-browse-group]',
     browseGroupSummary: '[data-editorial-search-browse-group-summary]',
+    browseOpenState: '[data-editorial-search-browse-open-state]',
     browseClear: '[data-editorial-search-browse-clear]'
   };
 
@@ -218,24 +221,30 @@
     return getBrowseGroupCheckboxes(form, groupName).length > 0;
   }
 
-  function getLegacyUrlBrowseGroup() {
+  function getUrlParameter(parameterName) {
     var queryString = window.location.search.replace(/^\?/, '');
     var pairs = queryString ? queryString.split('&') : [];
-    var browseGroup = '';
+    var parameterValue = null;
 
     pairs.some(function(pair) {
       var parts = pair.split('=');
       var name = decodeURIComponent((parts[0] || '').replace(/\+/g, ' '));
 
-      if (name !== 'browse_group') {
+      if (name !== parameterName) {
         return false;
       }
 
-      browseGroup = decodeURIComponent((parts[1] || '').replace(/\+/g, ' '));
+      parameterValue = decodeURIComponent(
+        (parts.slice(1).join('=') || '').replace(/\+/g, ' ')
+      );
       return true;
     });
 
-    return browseGroup;
+    return parameterValue;
+  }
+
+  function getLegacyUrlBrowseGroup() {
+    return getUrlParameter('browse_group') || '';
   }
 
   function queryHasExclusion(query, tag) {
@@ -367,8 +376,80 @@
     }
   }
 
-  function removeLegacyBrowseGroupFromPagination() {
+  function getBrowseOpenStateInput(form) {
+    return form.querySelector(selectors.browseOpenState);
+  }
+
+  function getSelectedBrowseGroupNames(form) {
+    return getFormBrowseFilters(form).reduce(function(groupNames, checkbox) {
+      if (checkbox.checked) {
+        addUnique(
+          groupNames,
+          checkbox.getAttribute('data-editorial-search-browse-group-name')
+        );
+      }
+
+      return groupNames;
+    }, []);
+  }
+
+  function getOpenBrowseGroupNames() {
+    return Array.prototype.reduce.call(
+      getBrowseGroupContainers(),
+      function(groupNames, container) {
+        if (container.open) {
+          addUnique(
+            groupNames,
+            container.getAttribute('data-editorial-search-browse-group')
+          );
+        }
+
+        return groupNames;
+      },
+      []
+    );
+  }
+
+  function getUrlBrowseOpenGroups(form) {
+    var openState = getUrlParameter(BROWSE_OPEN_PARAMETER);
+
+    if (openState === null) {
+      return null;
+    }
+
+    if (!openState || openState === NO_OPEN_BROWSE_GROUPS) {
+      return [];
+    }
+
+    return openState.split(',').reduce(function(groupNames, groupName) {
+      if (isValidBrowseGroup(form, groupName)) {
+        addUnique(groupNames, groupName);
+      }
+
+      return groupNames;
+    }, []);
+  }
+
+  function setBrowseOpenState(form, groupNames) {
+    var stateInput = getBrowseOpenStateInput(form);
+
+    if (!stateInput) {
+      return;
+    }
+
+    stateInput.value = groupNames.length
+      ? groupNames.join(',')
+      : NO_OPEN_BROWSE_GROUPS;
+    stateInput.disabled = false;
+  }
+
+  function syncPaginationBrowseState(form) {
     var paginationLinks = document.querySelectorAll('.pagination a[href]');
+    var stateInput = getBrowseOpenStateInput(form);
+
+    if (!stateInput) {
+      return;
+    }
 
     Array.prototype.forEach.call(paginationLinks, function(link) {
       if (typeof window.URL !== 'function') {
@@ -377,8 +458,37 @@
 
       var url = new window.URL(link.href, window.location.href);
       url.searchParams.delete('browse_group');
+      url.searchParams.set(BROWSE_OPEN_PARAMETER, stateInput.value);
       link.href = url.pathname + url.search + url.hash;
     });
+  }
+
+  function restoreBrowseOpenState(form) {
+    var openGroupNames = getUrlBrowseOpenGroups(form);
+
+    if (openGroupNames === null) {
+      openGroupNames = getSelectedBrowseGroupNames(form);
+    }
+
+    Array.prototype.forEach.call(
+      getBrowseGroupContainers(),
+      function(container) {
+        var groupName = container.getAttribute(
+          'data-editorial-search-browse-group'
+        );
+        container.open = openGroupNames.indexOf(groupName) !== -1;
+      }
+    );
+
+    setBrowseOpenState(form, openGroupNames);
+    syncPaginationBrowseState(form);
+  }
+
+  function syncBrowseOpenState(form) {
+    var openGroupNames = getOpenBrowseGroupNames();
+
+    setBrowseOpenState(form, openGroupNames);
+    syncPaginationBrowseState(form);
   }
 
   function initializeBrowseState(form, shopifyQuery) {
@@ -431,7 +541,7 @@
     });
 
     updateBrowseAvailability(form);
-    removeLegacyBrowseGroupFromPagination();
+    restoreBrowseOpenState(form);
   }
 
   function prepareForm(form) {
@@ -441,6 +551,8 @@
     if (!visibleInput || !shopifyQueryInput) {
       return true;
     }
+
+    syncBrowseOpenState(form);
 
     var visibleQuery = removeManagedFilters(visibleInput.value);
     visibleInput.value = visibleQuery;
@@ -532,6 +644,18 @@
     var clearButton = document.querySelector(selectors.browseClear);
     if (clearButton) {
       clearButton.addEventListener('click', handleBrowseClear);
+    }
+
+    var searchPageForm = document.getElementById('SearchPageForm');
+    if (searchPageForm) {
+      Array.prototype.forEach.call(
+        getBrowseGroupContainers(),
+        function(container) {
+          container.addEventListener('toggle', function() {
+            syncBrowseOpenState(searchPageForm);
+          });
+        }
+      );
     }
   }
 
