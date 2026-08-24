@@ -1,3 +1,22 @@
+{% assign panda_press_exclusion = '-tag:"Panda Press"' %}
+{% assign panda_press_exclusion_active = false %}
+{% if search.terms contains panda_press_exclusion %}
+  {% assign panda_press_exclusion_active = true %}
+{% endif %}
+
+{% assign visible_search_terms_with_spacing = search.terms | replace: panda_press_exclusion, ' ' %}
+{% assign visible_search_terms = '' %}
+{% assign visible_search_term_parts = visible_search_terms_with_spacing | split: ' ' %}
+{% for visible_search_term_part in visible_search_term_parts %}
+  {% if visible_search_term_part != blank %}
+    {% if visible_search_terms == blank %}
+      {% assign visible_search_terms = visible_search_term_part %}
+    {% else %}
+      {% assign visible_search_terms = visible_search_terms | append: ' ' | append: visible_search_term_part %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
 {% paginate search.results by 45 %}
 
 <div class="page-width">
@@ -8,7 +27,7 @@
     <div class="text-center">
       <h1 class="h2">
         <span class="visually-hidden">{{ 'general.search.heading' | t: count: search.results_count }}:</span>
-        {{ 'general.search.results_with_count' | t: terms: search.terms, count: search.results_count }}
+        {{ 'general.search.results_with_count' | t: terms: visible_search_terms, count: search.results_count }}
       </h1>
   {% endif %}
       <div class="grid">
@@ -18,13 +37,24 @@
               <p>{{ 'general.search.no_results' | t }}</p>
             </div>
           {% endif %}
-          <form action="{{ routes.search_url }}" method="get" role="search" class="search-form search-page-form">
+          <form
+            action="{{ routes.search_url }}"
+            method="get"
+            role="search"
+            class="search-form search-page-form"
+            data-editorial-search-form
+          >
+            <input
+              type="hidden"
+              name="q"
+              value="{{ search.terms | escape }}"
+              data-editorial-search-shopify-query
+            />
             <div class="input-group input-group--nowrap">
               <div class="input-group__field input-group__field--connected search-form__input-wrapper">
                 <input
                   type="search"
-                  name="q"
-                  value="{{ search.terms | escape }}"
+                  value="{{ visible_search_terms | escape }}"
                   placeholder="{{ 'general.search.placeholder' | t }}"
                   role="combobox"
                   aria-autocomplete="list"
@@ -34,6 +64,7 @@
                   aria-haspopup="listbox"
                   class="search-form__input"
                   data-search-page-predictive-search-input
+                  data-editorial-search-visible-query
                 />
 
                 <input type="hidden" name="options[prefix]" value="last" aria-hidden="true" />
@@ -49,6 +80,23 @@
                 {% render 'icon-search' %}
               </button>
             </div>
+
+            <fieldset class="search-page-filters">
+              <legend class="search-page-filters__title">Filter results</legend>
+              <div class="search-page-filters__group">
+                <span class="search-page-filters__group-label">Exclude</span>
+                <div class="search-page-filters__option">
+                  <input
+                    id="SearchExcludePandaPress"
+                    type="checkbox"
+                    class="search-page-filters__checkbox"
+                    data-editorial-search-panda-press-filter
+                    {% if panda_press_exclusion_active %}checked{% endif %}
+                  />
+                  <label for="SearchExcludePandaPress">Panda Press</label>
+                </div>
+              </div>
+            </fieldset>
           </form>
         </div>
       </div>

@@ -79,7 +79,20 @@
 
     {%- capture seo_title -%}
     {%- if request.page_type == 'search' and search.performed == true -%}
-      {{ 'general.search.heading' | t: count: search.results_count }}: {{ 'general.search.results_with_count' | t: terms: search.terms, count: search.results_count }}
+      {%- assign panda_press_exclusion = '-tag:"Panda Press"' -%}
+      {%- assign visible_search_terms_with_spacing = search.terms | replace: panda_press_exclusion, ' ' -%}
+      {%- assign visible_search_terms = '' -%}
+      {%- assign visible_search_term_parts = visible_search_terms_with_spacing | split: ' ' -%}
+      {%- for visible_search_term_part in visible_search_term_parts -%}
+        {%- if visible_search_term_part != blank -%}
+          {%- if visible_search_terms == blank -%}
+            {%- assign visible_search_terms = visible_search_term_part -%}
+          {%- else -%}
+            {%- assign visible_search_terms = visible_search_terms | append: ' ' | append: visible_search_term_part -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ 'general.search.heading' | t: count: search.results_count }}: {{ 'general.search.results_with_count' | t: terms: visible_search_terms, count: search.results_count }}
     {%- else -%}
       {{ page_title }}
     {%- endif -%}
@@ -184,6 +197,7 @@
     <script src="{{ 'lazysizes.js' | asset_url }}" async="async"></script>
     <script src="{{ 'vendor.js' | asset_url }}" defer="defer"></script>
     <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'editorial-search-filters.js' | asset_url }}" defer="defer"></script>
   {% endcapture %}
     <script>
       document.open();

@@ -6119,6 +6119,57 @@ $search-bar-button-hover: rgba($color-text-field-text, 0.6);
   height: 40vh;
 }
 
+.search-page-filters {
+  margin: 18px 0 0;
+  padding: 16px;
+  border: 1px solid $color-border;
+  border-radius: $border-radius;
+  text-align: left;
+}
+
+.search-page-filters__title {
+  width: auto;
+  margin: 0;
+  padding: 0 6px;
+  color: $color-body-text;
+  font-family: $font-stack-header;
+  font-size: em($font-size-base - 2px);
+  font-weight: $font-weight-header;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.search-page-filters__group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+}
+
+.search-page-filters__group-label {
+  font-weight: $font-weight-body--bold;
+}
+
+.search-page-filters__option {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+
+  label {
+    margin: 0;
+    padding: 10px 0 10px 8px;
+    cursor: pointer;
+  }
+}
+
+.search-page-filters__checkbox {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: $color-btn-primary;
+  cursor: pointer;
+}
+
 $predictive-search-image-size: 44px;
 $predictive-search-list-padding: 14px;
 $predictive-search-heading-title-font-size: em($font-size-base - 2px);
@@ -12042,7 +12093,6 @@ blockquote.tiktok-embed[data-unique-id="88.bamboo"] iframe {
   font-size: 30px; /* Adjust the size of the arrow */
 
 }
-
 
 
 
