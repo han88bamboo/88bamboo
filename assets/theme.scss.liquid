@@ -6140,14 +6140,19 @@ $search-bar-button-hover: rgba($color-text-field-text, 0.6);
 }
 
 .search-page-filters__group {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px 18px;
+  display: block;
 }
 
 .search-page-filters__group-label {
+  display: block;
+  margin-bottom: 4px;
   font-weight: $font-weight-body--bold;
+}
+
+.search-page-filters__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  column-gap: 18px;
 }
 
 .search-page-filters__option {
@@ -12093,6 +12098,5 @@ blockquote.tiktok-embed[data-unique-id="88.bamboo"] iframe {
   font-size: 30px; /* Adjust the size of the arrow */
 
 }
-
 
 

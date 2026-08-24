@@ -79,8 +79,13 @@
 
     {%- capture seo_title -%}
     {%- if request.page_type == 'search' and search.performed == true -%}
-      {%- assign panda_press_exclusion = '-tag:"Panda Press"' -%}
-      {%- assign visible_search_terms_with_spacing = search.terms | replace: panda_press_exclusion, ' ' -%}
+      {%- assign editorial_search_filter_tags_string = "Section: Books|Section: DuRhum Rum Reviews|Section: Rhythm and Booze|Section: Bottoms Up|Section: 88 Bamboo Philippines|Section: Japanese Whisky Dictionary|Section: Sku's Drinks|Section: Sicklehut|Section: SG Alcohol Guy|Section: Prints|Section: TV" -%}
+      {%- assign editorial_search_filter_tags = editorial_search_filter_tags_string | split: '|' -%}
+      {%- assign visible_search_terms_with_spacing = search.terms -%}
+      {%- for editorial_search_filter_tag in editorial_search_filter_tags -%}
+        {%- capture editorial_search_exclusion -%}-tag:"{{ editorial_search_filter_tag }}"{%- endcapture -%}
+        {%- assign visible_search_terms_with_spacing = visible_search_terms_with_spacing | replace: editorial_search_exclusion, ' ' -%}
+      {%- endfor -%}
       {%- assign visible_search_terms = '' -%}
       {%- assign visible_search_term_parts = visible_search_terms_with_spacing | split: ' ' -%}
       {%- for visible_search_term_part in visible_search_term_parts -%}

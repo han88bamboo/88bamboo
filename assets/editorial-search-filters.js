@@ -1,43 +1,76 @@
 (function() {
   'use strict';
 
-  var PANDA_PRESS_EXCLUSION = '-tag:"Panda Press"';
+  var EXCLUSION_TAGS = [
+    'Section: Books',
+    'Section: DuRhum Rum Reviews',
+    'Section: Rhythm and Booze',
+    'Section: Bottoms Up',
+    'Section: 88 Bamboo Philippines',
+    'Section: Japanese Whisky Dictionary',
+    "Section: Sku's Drinks",
+    'Section: Sicklehut',
+    'Section: SG Alcohol Guy',
+    'Section: Prints',
+    'Section: TV'
+  ];
   var selectors = {
     form: '[data-editorial-search-form]',
     visibleQuery: '[data-editorial-search-visible-query]',
     shopifyQuery: '[data-editorial-search-shopify-query]',
-    pandaPressFilter: '[data-editorial-search-panda-press-filter]'
+    filter: '[data-editorial-search-filter]'
   };
 
   function normalizeWhitespace(value) {
     return (value || '').replace(/\s+/g, ' ').trim();
   }
 
-  function removePandaPressExclusion(value) {
-    return normalizeWhitespace(
-      (value || '').split(PANDA_PRESS_EXCLUSION).join(' ')
-    );
+  function getExclusionClause(tag) {
+    return '-tag:"' + tag + '"';
   }
 
-  function buildShopifyQuery(value, exclusionActive) {
-    var visibleQuery = removePandaPressExclusion(value);
+  function removeManagedExclusions(value) {
+    var visibleQuery = value || '';
 
-    if (!exclusionActive || visibleQuery.length === 0) {
+    EXCLUSION_TAGS.forEach(function(tag) {
+      visibleQuery = visibleQuery.split(getExclusionClause(tag)).join(' ');
+    });
+
+    return normalizeWhitespace(visibleQuery);
+  }
+
+  function getActiveExclusionTags(form) {
+    var checkboxes = form.querySelectorAll(selectors.filter);
+
+    if (checkboxes.length > 0) {
+      return Array.prototype.reduce.call(checkboxes, function(tags, checkbox) {
+        if (checkbox.checked && tags.indexOf(checkbox.value) === -1) {
+          tags.push(checkbox.value);
+        }
+
+        return tags;
+      }, []);
+    }
+
+    if (
+      form.getAttribute('data-editorial-search-default-exclusions') === 'true'
+    ) {
+      return EXCLUSION_TAGS.slice();
+    }
+
+    return [];
+  }
+
+  function buildShopifyQuery(value, activeExclusionTags) {
+    var visibleQuery = removeManagedExclusions(value);
+
+    if (visibleQuery.length === 0) {
       return visibleQuery;
     }
 
-    return visibleQuery + ' ' + PANDA_PRESS_EXCLUSION;
-  }
-
-  function isExclusionActive(form) {
-    var checkbox = form.querySelector(selectors.pandaPressFilter);
-
-    if (checkbox) {
-      return checkbox.checked;
-    }
-
-    return (
-      form.getAttribute('data-editorial-search-exclude-panda-press') === 'true'
+    var exclusionClauses = activeExclusionTags.map(getExclusionClause);
+    return normalizeWhitespace(
+      [visibleQuery].concat(exclusionClauses).join(' ')
     );
   }
 
@@ -49,11 +82,11 @@
       return true;
     }
 
-    var visibleQuery = removePandaPressExclusion(visibleInput.value);
+    var visibleQuery = removeManagedExclusions(visibleInput.value);
     visibleInput.value = visibleQuery;
     shopifyQueryInput.value = buildShopifyQuery(
       visibleQuery,
-      isExclusionActive(form)
+      getActiveExclusionTags(form)
     );
 
     if (visibleQuery.length === 0) {
@@ -90,18 +123,19 @@
     Array.prototype.forEach.call(forms, function(form) {
       form.addEventListener('submit', handleSubmit);
 
-      var checkbox = form.querySelector(selectors.pandaPressFilter);
-      if (checkbox) {
+      var checkboxes = form.querySelectorAll(selectors.filter);
+      Array.prototype.forEach.call(checkboxes, function(checkbox) {
         checkbox.addEventListener('change', handleFilterChange);
-      }
+      });
     });
   }
 
   window.theme = window.theme || {};
   window.theme.EditorialSearchFilters = {
-    exclusion: PANDA_PRESS_EXCLUSION,
+    exclusionTags: EXCLUSION_TAGS.slice(),
     buildShopifyQuery: buildShopifyQuery,
-    removePandaPressExclusion: removePandaPressExclusion,
+    getExclusionClause: getExclusionClause,
+    removeManagedExclusions: removeManagedExclusions,
     init: init
   };
 

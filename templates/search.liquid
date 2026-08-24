@@ -1,10 +1,10 @@
-{% assign panda_press_exclusion = '-tag:"Panda Press"' %}
-{% assign panda_press_exclusion_active = false %}
-{% if search.terms contains panda_press_exclusion %}
-  {% assign panda_press_exclusion_active = true %}
-{% endif %}
-
-{% assign visible_search_terms_with_spacing = search.terms | replace: panda_press_exclusion, ' ' %}
+{% assign editorial_search_filter_tags_string = "Section: Books|Section: DuRhum Rum Reviews|Section: Rhythm and Booze|Section: Bottoms Up|Section: 88 Bamboo Philippines|Section: Japanese Whisky Dictionary|Section: Sku's Drinks|Section: Sicklehut|Section: SG Alcohol Guy|Section: Prints|Section: TV" %}
+{% assign editorial_search_filter_tags = editorial_search_filter_tags_string | split: '|' %}
+{% assign visible_search_terms_with_spacing = search.terms %}
+{% for editorial_search_filter_tag in editorial_search_filter_tags %}
+  {% capture editorial_search_exclusion %}-tag:"{{ editorial_search_filter_tag }}"{% endcapture %}
+  {% assign visible_search_terms_with_spacing = visible_search_terms_with_spacing | replace: editorial_search_exclusion, ' ' %}
+{% endfor %}
 {% assign visible_search_terms = '' %}
 {% assign visible_search_term_parts = visible_search_terms_with_spacing | split: ' ' %}
 {% for visible_search_term_part in visible_search_term_parts %}
@@ -85,15 +85,27 @@
               <legend class="search-page-filters__title">Filter results</legend>
               <div class="search-page-filters__group">
                 <span class="search-page-filters__group-label">Exclude</span>
-                <div class="search-page-filters__option">
-                  <input
-                    id="SearchExcludePandaPress"
-                    type="checkbox"
-                    class="search-page-filters__checkbox"
-                    data-editorial-search-panda-press-filter
-                    {% if panda_press_exclusion_active %}checked{% endif %}
-                  />
-                  <label for="SearchExcludePandaPress">Panda Press</label>
+                <div class="search-page-filters__options">
+                  {% for editorial_search_filter_tag in editorial_search_filter_tags %}
+                    {% capture editorial_search_exclusion %}-tag:"{{ editorial_search_filter_tag }}"{% endcapture %}
+                    {% assign editorial_search_filter_active = false %}
+                    {% if search.terms contains editorial_search_exclusion %}
+                      {% assign editorial_search_filter_active = true %}
+                    {% endif %}
+                    {% assign editorial_search_filter_label = editorial_search_filter_tag | remove: 'Section: ' %}
+                    {% assign editorial_search_filter_id = editorial_search_filter_label | handleize | prepend: 'SearchExclude-' %}
+                    <div class="search-page-filters__option">
+                      <input
+                        id="{{ editorial_search_filter_id }}"
+                        type="checkbox"
+                        value="{{ editorial_search_filter_tag | escape }}"
+                        class="search-page-filters__checkbox"
+                        data-editorial-search-filter
+                        {% if editorial_search_filter_active %}checked{% endif %}
+                      />
+                      <label for="{{ editorial_search_filter_id }}">{{ editorial_search_filter_label }}</label>
+                    </div>
+                  {% endfor %}
                 </div>
               </div>
             </fieldset>
