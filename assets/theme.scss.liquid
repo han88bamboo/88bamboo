@@ -6119,6 +6119,15 @@ $search-bar-button-hover: rgba($color-text-field-text, 0.6);
   height: 40vh;
 }
 
+// The desktop page-container transform creates a containing block for fixed
+// descendants. Remove it on search pages so the floating filters stay fixed to
+// the viewport instead of being positioned halfway down the results document.
+.template-search .page-container {
+  @include media-query($large-up) {
+    @include transform(none);
+  }
+}
+
 .search-page-filters {
   margin: 18px 0 0;
   border: 1px solid $color-border;
@@ -12155,4 +12164,3 @@ blockquote.tiktok-embed[data-unique-id="88.bamboo"] iframe {
   font-size: 30px; /* Adjust the size of the arrow */
 
 }
-
