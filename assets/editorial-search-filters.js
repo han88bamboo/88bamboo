@@ -24,7 +24,9 @@
   var LEGACY_EXCLUSION_TAGS = ['Panda Press'];
   var CLEANUP_TAGS = EXCLUSION_TAGS.concat(LEGACY_EXCLUSION_TAGS);
   var BROWSE_OPEN_PARAMETER = 'browse_open';
+  var BROWSE_PANEL_OPEN_PARAMETER = 'browse_panel_open';
   var NO_OPEN_BROWSE_GROUPS = 'none';
+  var DESKTOP_FILTERS_MEDIA_QUERY = '(min-width: 990px)';
   var selectors = {
     form: '[data-editorial-search-form]',
     visibleQuery: '[data-editorial-search-visible-query]',
@@ -33,7 +35,13 @@
     browseFilter: '[data-editorial-search-browse-filter]',
     browseGroup: '[data-editorial-search-browse-group]',
     browseGroupSummary: '[data-editorial-search-browse-group-summary]',
+    browseGroupSelection: '[data-editorial-search-browse-group-selection]',
+    browsePanel: '[data-editorial-search-browse-panel]',
+    browseSelectionSummary:
+      '[data-editorial-search-browse-selection-summary]',
     browseOpenState: '[data-editorial-search-browse-open-state]',
+    browsePanelOpenState:
+      '[data-editorial-search-browse-panel-open-state]',
     browseClear: '[data-editorial-search-browse-clear]'
   };
 
@@ -374,10 +382,79 @@
     if (clearButton) {
       clearButton.disabled = !hasBrowseSelections;
     }
+
+    updateBrowseSelectionSummaries(form);
+  }
+
+  function getBrowseFilterLabel(checkbox) {
+    var option = checkbox.parentNode;
+    var label = option && option.querySelector
+      ? option.querySelector('label')
+      : null;
+
+    return normalizeWhitespace(label ? label.textContent : '');
+  }
+
+  function getSelectedBrowseLabels(checkboxes) {
+    return checkboxes.reduce(function(labels, checkbox) {
+      if (checkbox.checked) {
+        addUnique(labels, getBrowseFilterLabel(checkbox));
+      }
+
+      return labels;
+    }, []);
+  }
+
+  function getBrowseSelectionSummary(labels) {
+    if (labels.length < 3) {
+      return labels.join(', ');
+    }
+
+    return labels.length + ' selected';
+  }
+
+  function setBrowseSelectionSummary(element, labels) {
+    if (!element) {
+      return;
+    }
+
+    var summary = getBrowseSelectionSummary(labels);
+    element.textContent = summary;
+    element.hidden = summary.length === 0;
+  }
+
+  function updateBrowseSelectionSummaries(form) {
+    Array.prototype.forEach.call(
+      getBrowseGroupContainers(),
+      function(container) {
+        var groupName = container.getAttribute(
+          'data-editorial-search-browse-group'
+        );
+        var summary = container.querySelector(
+          selectors.browseGroupSelection
+        );
+
+        setBrowseSelectionSummary(
+          summary,
+          getSelectedBrowseLabels(
+            getBrowseGroupCheckboxes(form, groupName)
+          )
+        );
+      }
+    );
+
+    setBrowseSelectionSummary(
+      document.querySelector(selectors.browseSelectionSummary),
+      getSelectedBrowseLabels(getFormBrowseFilters(form))
+    );
   }
 
   function getBrowseOpenStateInput(form) {
     return form.querySelector(selectors.browseOpenState);
+  }
+
+  function getBrowsePanelOpenStateInput(form) {
+    return form.querySelector(selectors.browsePanelOpenState);
   }
 
   function getSelectedBrowseGroupNames(form) {
@@ -446,8 +523,9 @@
   function syncPaginationBrowseState(form) {
     var paginationLinks = document.querySelectorAll('.pagination a[href]');
     var stateInput = getBrowseOpenStateInput(form);
+    var panelStateInput = getBrowsePanelOpenStateInput(form);
 
-    if (!stateInput) {
+    if (!stateInput || !panelStateInput) {
       return;
     }
 
@@ -459,8 +537,56 @@
       var url = new window.URL(link.href, window.location.href);
       url.searchParams.delete('browse_group');
       url.searchParams.set(BROWSE_OPEN_PARAMETER, stateInput.value);
+      url.searchParams.set(
+        BROWSE_PANEL_OPEN_PARAMETER,
+        panelStateInput.value
+      );
       link.href = url.pathname + url.search + url.hash;
     });
+  }
+
+  function setBrowsePanelOpenState(form, isOpen) {
+    var stateInput = getBrowsePanelOpenStateInput(form);
+
+    if (!stateInput) {
+      return;
+    }
+
+    stateInput.value = isOpen ? 'true' : 'false';
+    stateInput.disabled = false;
+  }
+
+  function restoreBrowsePanelOpenState(form) {
+    var panel = document.querySelector(selectors.browsePanel);
+    var urlState = getUrlParameter(BROWSE_PANEL_OPEN_PARAMETER);
+    var shouldOpen;
+
+    if (!panel) {
+      return;
+    }
+
+    if (urlState === 'true' || urlState === 'false') {
+      shouldOpen = urlState === 'true';
+    } else {
+      shouldOpen = window.matchMedia
+        ? window.matchMedia(DESKTOP_FILTERS_MEDIA_QUERY).matches
+        : true;
+    }
+
+    panel.open = shouldOpen;
+    setBrowsePanelOpenState(form, shouldOpen);
+    syncPaginationBrowseState(form);
+  }
+
+  function syncBrowsePanelOpenState(form) {
+    var panel = document.querySelector(selectors.browsePanel);
+
+    if (!panel) {
+      return;
+    }
+
+    setBrowsePanelOpenState(form, panel.open);
+    syncPaginationBrowseState(form);
   }
 
   function restoreBrowseOpenState(form) {
@@ -542,6 +668,7 @@
 
     updateBrowseAvailability(form);
     restoreBrowseOpenState(form);
+    restoreBrowsePanelOpenState(form);
   }
 
   function prepareForm(form) {
@@ -553,6 +680,7 @@
     }
 
     syncBrowseOpenState(form);
+    syncBrowsePanelOpenState(form);
 
     var visibleQuery = removeManagedFilters(visibleInput.value);
     visibleInput.value = visibleQuery;
@@ -656,6 +784,13 @@
           });
         }
       );
+
+      var browsePanel = document.querySelector(selectors.browsePanel);
+      if (browsePanel) {
+        browsePanel.addEventListener('toggle', function() {
+          syncBrowsePanelOpenState(searchPageForm);
+        });
+      }
     }
   }
 

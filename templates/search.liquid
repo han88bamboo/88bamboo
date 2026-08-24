@@ -121,6 +121,12 @@
               value="none"
               data-editorial-search-browse-open-state
             />
+            <input
+              type="hidden"
+              name="browse_panel_open"
+              value="false"
+              data-editorial-search-browse-panel-open-state
+            />
             <div class="input-group input-group--nowrap">
               <div class="input-group__field input-group__field--connected search-form__input-wrapper">
                 <input
@@ -167,20 +173,21 @@
 
   <div class="page-width search-page-results-layout">
     <aside class="search-page-filters-column" aria-label="Search result filters">
-      <details class="search-page-filters search-page-browse" open data-editorial-search-browse-panel>
+      <details class="search-page-filters search-page-browse" data-editorial-search-browse-panel>
         <summary class="search-page-filters__summary">
           <span>Browse</span>
+          <span
+            class="search-page-browse__selection-summary"
+            data-editorial-search-browse-selection-summary
+            aria-live="polite"
+            hidden
+          ></span>
         </summary>
         <div class="search-page-browse__content">
-          <div class="search-page-browse__toolbar">
-            <button type="button" class="search-page-browse__clear" data-editorial-search-browse-clear disabled>
-              Clear
-            </button>
-          </div>
-
           <details class="search-page-browse__group" data-editorial-search-browse-group="section">
             <summary class="search-page-browse__group-summary" data-editorial-search-browse-group-summary>
               <span>Section</span>
+              <span class="search-page-browse__selection-summary" data-editorial-search-browse-group-selection hidden></span>
             </summary>
             <fieldset class="search-page-browse__group-content">
               <legend class="visually-hidden">Browse by section</legend>
@@ -210,6 +217,7 @@
           <details class="search-page-browse__group" data-editorial-search-browse-group="drink-type">
             <summary class="search-page-browse__group-summary" data-editorial-search-browse-group-summary>
               <span>Drink Type</span>
+              <span class="search-page-browse__selection-summary" data-editorial-search-browse-group-selection hidden></span>
             </summary>
             <fieldset class="search-page-browse__group-content">
               <legend class="visually-hidden">Browse by drink type</legend>
@@ -239,6 +247,7 @@
           <details class="search-page-browse__group" data-editorial-search-browse-group="country">
             <summary class="search-page-browse__group-summary" data-editorial-search-browse-group-summary>
               <span>Country</span>
+              <span class="search-page-browse__selection-summary" data-editorial-search-browse-group-selection hidden></span>
             </summary>
             <fieldset class="search-page-browse__group-content">
               <legend class="visually-hidden">Browse by country</legend>
@@ -268,6 +277,7 @@
           <details class="search-page-browse__group" data-editorial-search-browse-group="producer">
             <summary class="search-page-browse__group-summary" data-editorial-search-browse-group-summary>
               <span>Producer</span>
+              <span class="search-page-browse__selection-summary" data-editorial-search-browse-group-selection hidden></span>
             </summary>
             <fieldset class="search-page-browse__group-content">
               <legend class="visually-hidden">Browse by producer</legend>
@@ -298,6 +308,12 @@
               </div>
             </fieldset>
           </details>
+
+          <div class="search-page-browse__footer">
+            <button type="button" class="search-page-browse__clear" data-editorial-search-browse-clear disabled>
+              Clear all
+            </button>
+          </div>
         </div>
       </details>
 
