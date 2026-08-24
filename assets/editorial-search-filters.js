@@ -48,8 +48,21 @@
     return normalizeWhitespace(visibleQuery);
   }
 
+  function getFormFilters(form) {
+    if (!form || !form.elements) {
+      return [];
+    }
+
+    return Array.prototype.filter.call(form.elements, function(element) {
+      return (
+        element.hasAttribute &&
+        element.hasAttribute('data-editorial-search-filter')
+      );
+    });
+  }
+
   function getActiveExclusionTags(form) {
-    var checkboxes = form.querySelectorAll(selectors.filter);
+    var checkboxes = getFormFilters(form);
 
     if (checkboxes.length > 0) {
       return Array.prototype.reduce.call(checkboxes, function(tags, checkbox) {
@@ -137,7 +150,7 @@
 
       form.addEventListener('submit', handleSubmit);
 
-      var checkboxes = form.querySelectorAll(selectors.filter);
+      var checkboxes = getFormFilters(form);
       Array.prototype.forEach.call(checkboxes, function(checkbox) {
         checkbox.addEventListener('change', handleFilterChange);
       });

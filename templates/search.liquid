@@ -46,6 +46,7 @@
             </div>
           {% endif %}
           <form
+            id="SearchPageForm"
             action="{{ routes.search_url }}"
             method="get"
             role="search"
@@ -88,40 +89,6 @@
                 {% render 'icon-search' %}
               </button>
             </div>
-
-            <details class="search-page-filters">
-              <summary class="search-page-filters__summary">
-                <span>Filter results</span>
-              </summary>
-              <fieldset class="search-page-filters__content">
-                <legend class="visually-hidden">Filter results</legend>
-                <div class="search-page-filters__group">
-                  <span class="search-page-filters__group-label">Exclude</span>
-                  <div class="search-page-filters__options">
-                    {% for editorial_search_filter_tag in editorial_search_filter_tags %}
-                      {% capture editorial_search_exclusion %}-tag:"{{ editorial_search_filter_tag }}"{% endcapture %}
-                      {% assign editorial_search_filter_active = false %}
-                      {% if normalized_search_terms contains editorial_search_exclusion %}
-                        {% assign editorial_search_filter_active = true %}
-                      {% endif %}
-                      {% assign editorial_search_filter_label = editorial_search_filter_tag | remove: 'Section: ' %}
-                      {% assign editorial_search_filter_id = editorial_search_filter_label | handleize | prepend: 'SearchExclude-' %}
-                      <div class="search-page-filters__option">
-                        <input
-                          id="{{ editorial_search_filter_id }}"
-                          type="checkbox"
-                          value="{{ editorial_search_filter_tag | escape }}"
-                          class="search-page-filters__checkbox"
-                          data-editorial-search-filter
-                          {% if editorial_search_filter_active %}checked{% endif %}
-                        />
-                        <label for="{{ editorial_search_filter_id }}">{{ editorial_search_filter_label }}</label>
-                      </div>
-                    {% endfor %}
-                  </div>
-                </div>
-              </fieldset>
-            </details>
           </form>
         </div>
       </div>
@@ -136,44 +103,85 @@
 
   <h2 class="visually-hidden">{{ 'general.search.heading' | t: count: search.results_count }}</h2>
 
-  <ul class="page-width list-view-items">
-    {% for item in search.results %}
-      <li class="list-view-item">
-        {% if item.object_type == 'product' %}
-          {% render 'product-card-list', product: item %}
-        {% else %}
-          <div class="product-card product-card--list">
-            <a href="{{ item.url }}" class="full-width-link">
-              <span class="visually-hidden">{{ item.title }}</span>
-            </a>
-            <div class="list-view-item__link">
-              <div class="list-view-item__image-column">
-                <div class="list-view-item__image-wrapper product-card__image-wrapper">
-                  {% unless item.image == null %}
-                    <img class="list-view-item__image" src="{{ item.image.src | img_url: '600x600' }}" alt="{{ item.image.alt | escape }}">
-                  {% endunless %}
+  <div class="page-width search-page-results-layout">
+    <aside class="search-page-filters-column" aria-label="Search result filters">
+      <details class="search-page-filters">
+        <summary class="search-page-filters__summary">
+          <span>Filter results</span>
+        </summary>
+        <fieldset class="search-page-filters__content">
+          <legend class="visually-hidden">Filter results</legend>
+          <div class="search-page-filters__group">
+            <span class="search-page-filters__group-label">Exclude</span>
+            <div class="search-page-filters__options">
+              {% for editorial_search_filter_tag in editorial_search_filter_tags %}
+                {% capture editorial_search_exclusion %}-tag:"{{ editorial_search_filter_tag }}"{% endcapture %}
+                {% assign editorial_search_filter_active = false %}
+                {% if normalized_search_terms contains editorial_search_exclusion %}
+                  {% assign editorial_search_filter_active = true %}
+                {% endif %}
+                {% assign editorial_search_filter_label = editorial_search_filter_tag | remove: 'Section: ' %}
+                {% assign editorial_search_filter_id = editorial_search_filter_label | handleize | prepend: 'SearchExclude-' %}
+                <div class="search-page-filters__option">
+                  <input
+                    id="{{ editorial_search_filter_id }}"
+                    type="checkbox"
+                    value="{{ editorial_search_filter_tag | escape }}"
+                    class="search-page-filters__checkbox"
+                    data-editorial-search-filter
+                    form="SearchPageForm"
+                    {% if editorial_search_filter_active %}checked{% endif %}
+                  />
+                  <label for="{{ editorial_search_filter_id }}">{{ editorial_search_filter_label }}</label>
                 </div>
-              </div>
-
-              <div class="list-view-item__title-column">
-                <div class="list-view-item__title" aria-hidden="true">
-                  <span class="product-card__title">{{ item.title }}</span>
-                </div>
-                <div>
-                  {% if item.published_at %}{{ item.published_at | date: format: "date" }} &#8212; {% endif %}
-                  {{ item.content | strip_html | truncate: 200 }}
-                </div>
-              </div>
+              {% endfor %}
             </div>
           </div>
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ul>
+        </fieldset>
+      </details>
+    </aside>
 
-  {%- if paginate.pages > 1 -%}
-    {% render 'pagination', paginate: paginate %}
-  {%- endif -%}
+    <div class="search-page-results-column">
+      <ul class="list-view-items">
+        {% for item in search.results %}
+          <li class="list-view-item">
+            {% if item.object_type == 'product' %}
+              {% render 'product-card-list', product: item %}
+            {% else %}
+              <div class="product-card product-card--list">
+                <a href="{{ item.url }}" class="full-width-link">
+                  <span class="visually-hidden">{{ item.title }}</span>
+                </a>
+                <div class="list-view-item__link">
+                  <div class="list-view-item__image-column">
+                    <div class="list-view-item__image-wrapper product-card__image-wrapper">
+                      {% unless item.image == null %}
+                        <img class="list-view-item__image" src="{{ item.image.src | img_url: '600x600' }}" alt="{{ item.image.alt | escape }}">
+                      {% endunless %}
+                    </div>
+                  </div>
+
+                  <div class="list-view-item__title-column">
+                    <div class="list-view-item__title" aria-hidden="true">
+                      <span class="product-card__title">{{ item.title }}</span>
+                    </div>
+                    <div>
+                      {% if item.published_at %}{{ item.published_at | date: format: "date" }} &#8212; {% endif %}
+                      {{ item.content | strip_html | truncate: 200 }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+
+      {%- if paginate.pages > 1 -%}
+        {% render 'pagination', paginate: paginate %}
+      {%- endif -%}
+    </div>
+  </div>
 {% endif %}
 
 {% if search.results_count < 2  %}

@@ -6119,13 +6119,42 @@ $search-bar-button-hover: rgba($color-text-field-text, 0.6);
   height: 40vh;
 }
 
-// The desktop page-container transform creates a containing block for fixed
-// descendants. Remove it on search pages so the floating filters stay fixed to
-// the viewport instead of being positioned halfway down the results document.
+// Sticky positioning needs to remain connected to the viewport rather than the
+// page container's non-scrolling overflow context.
 .template-search .page-container {
   @include media-query($large-up) {
-    @include transform(none);
+    overflow: visible;
   }
+}
+
+.search-page-results-layout {
+  @include media-query($large-up) {
+    display: grid;
+    grid-template-columns: 270px minmax(0, 1fr);
+    align-items: start;
+    column-gap: $grid-gutter;
+
+    &::after {
+      display: none;
+    }
+  }
+}
+
+.search-page-filters-column {
+  min-width: 0;
+
+  @include media-query($large-up) {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 190px;
+    align-self: start;
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+  }
+}
+
+.search-page-results-column {
+  min-width: 0;
 }
 
 .search-page-filters {
@@ -6136,16 +6165,7 @@ $search-bar-button-hover: rgba($color-text-field-text, 0.6);
   text-align: left;
 
   @include media-query($large-up) {
-    z-index: $z-index-dropdown;
-    position: fixed;
-    top: 50%;
-    left: $gutter-site-mobile;
-    width: 270px;
-    max-height: calc(100vh - 40px);
     margin: 0;
-    overflow-y: auto;
-    transform: translateY(-50%);
-    box-shadow: 0 4px 18px rgba($color-body-text, 0.16);
   }
 }
 
