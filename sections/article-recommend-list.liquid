@@ -161,6 +161,22 @@
       border-top: 1px solid #d6d6d6;
     }
   }
+
+  @media only screen and (min-width: 990px) {
+    .article-container .article-container--content {
+      grid-template-columns: 100px minmax(0, 1fr);
+    }
+
+    .article-container .article-container--content .article-container--img {
+      width: 100px;
+    }
+
+    .article-container .article-container--content .article-container--header {
+      min-width: 0;
+      margin: 0 0 0 8px;
+      overflow-wrap: anywhere;
+    }
+  }
 {% endstylesheet %}
 
 {% javascript %}

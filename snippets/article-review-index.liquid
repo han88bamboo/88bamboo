@@ -1,0 +1,37 @@
+{% include 'editorial-taxonomy' %}
+
+{% assign article_review_index_blogs_string = 'Whisky::whisky-reviews|Rum::rum-reviews|Sake::sake|Wine::wine-reviews|Beer::craft-beer|Tequila & Mezcal::tequila-mezcal-reviews|Gin::gin|Other::everything-nice' %}
+{% assign article_review_index_blogs = article_review_index_blogs_string | split: '|' %}
+
+<aside class="grid__item article-review-index-column" aria-labelledby="ArticleReviewIndexTitle">
+  <nav class="article-review-index" data-article-review-index aria-label="Browse reviews by drink">
+    <h2 class="article-review-index__title" id="ArticleReviewIndexTitle">Browse Reviews by Drink</h2>
+
+    <div class="article-review-index__tree">
+      {% for article_review_index_blog in article_review_index_blogs %}
+        {% assign article_review_index_blog_parts = article_review_index_blog | split: '::' %}
+        <details
+          class="article-review-index__branch article-review-index__branch--drink"
+          data-article-review-index-drink
+          data-blog-handle="{{ article_review_index_blog_parts[1] | escape }}"
+        >
+          <summary class="article-review-index__summary" aria-expanded="false">
+            <span>{{ article_review_index_blog_parts[0] }}</span>
+          </summary>
+          <div class="article-review-index__children" data-article-review-index-children aria-live="polite"></div>
+        </details>
+      {% endfor %}
+    </div>
+
+    <script type="application/json" data-article-review-index-config>
+      {
+        "apiVersion": "2026-07",
+        "countryDefinitions": {{ editorial_search_browse_country_definitions_string | json }},
+        "countryExtensions": {{ editorial_article_index_country_extensions_string | json }},
+        "additionalCountries": {{ editorial_article_index_additional_countries_string | json }},
+        "producers": {{ editorial_search_browse_producers_string | json }},
+        "producerExtensions": {{ editorial_article_index_producer_extensions_string | json }}
+      }
+    </script>
+  </nav>
+</aside>

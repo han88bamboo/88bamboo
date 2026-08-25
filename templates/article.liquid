@@ -9,6 +9,7 @@
 {% render 'article-SEO-snippet' %}
 <!-- End of article-SEO-snippet - script required for SEO optimization -->
 
+{{ 'article-review-index.css' | asset_url | stylesheet_tag }}
 
 <!-- top ad banner -->
 {% section 'article-advertising-top-banner' %}
@@ -18,9 +19,11 @@
 <article class="container"  > <!--style="display:inline-block;" style="margin: 0 0 !important;"-->
   <div class="grid">
     <div class="grid__item">
-      <div class="grid grid--full">
+      <div class="grid grid--full article-review-layout">
+        {% include 'article-review-index' %}
+
         <!-- left column -->
-        <div class="grid__item medium-up--seven-tenths" id="anchorforjavascripttoinsertnews-subscription">
+        <div class="grid__item medium-up--seven-tenths article-main-column" id="anchorforjavascripttoinsertnews-subscription">
         <!-- Title -->
         {% section 'article-title' %}
             {% comment %} 
@@ -109,14 +112,14 @@
         <style>
           @media (min-width: 750px) {
               /* Styles for 750px and above */
-              .grid__item.medium-up--seven-tenths {
+              .article-main-column {
                 padding: 0 40px 0 30px;
               }
             }
 
             @media (max-width: 749px) {
               /* Styles for below 750px */
-              .grid__item.medium-up--seven-tenths {
+              .article-main-column {
                 padding: 0 10px 0 30px;
               }
             }
@@ -124,7 +127,7 @@
         
         
         <!-- right column -->
-        <div class="grid__item medium-up--three-tenths">
+        <div class="grid__item medium-up--three-tenths article-sidebar-column">
           <div class="sidebar-section">
             <!-- newsletter + Drink-X signup triggers added by Zhe Han -->
             <div class="bamboo-nl-sidebar-slot">
@@ -170,6 +173,8 @@
 {% section 'article-bottom-links' %}
 
 </article>
+
+<script src="{{ 'article-review-index.js' | asset_url }}" defer="defer"></script>
 
 
 <!-- comments section -->
