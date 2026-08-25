@@ -2,8 +2,9 @@
   'use strict';
 
   var PAGE_SIZE = 250;
-  var COUNTRY_PRELOAD_MIN_WIDTH = 880;
-  var COUNTRY_PRELOAD_CONCURRENCY = 3;
+  var PRELOAD_MIN_WIDTH = 880;
+  var PRELOAD_CONCURRENCY = 3;
+  var ARTICLE_TITLE_MAX_LENGTH = 100;
   var requestCache = {};
   var countryRequestCache = {};
 
@@ -139,6 +140,79 @@
         }, [])
       };
     });
+  }
+
+  // Flat lookup from a normalised producer tag to its canonical label, so a
+  // section article can be prefixed without rescanning the producer list.
+  function buildProducerKeyMap(producers) {
+    var keyMap = {};
+
+    producers.forEach(function(producer) {
+      producer.matchKeys.forEach(function(matchKey) {
+        if (matchKey && !Object.prototype.hasOwnProperty.call(keyMap, matchKey)) {
+          keyMap[matchKey] = producer.label;
+        }
+      });
+    });
+
+    return keyMap;
+  }
+
+  // Country tags, keyed for lookup, so a place name is never read as a
+  // producer. Stripping " Distillery" collapses "Singapore Distillery" onto
+  // "Singapore", which would otherwise prefix every Singapore-tagged article.
+  // Matching on the raw tag keeps genuine "Singapore Distillery" tags working.
+  function buildCountryTagKeys(countries) {
+    var keys = {};
+
+    countries.forEach(function(country) {
+      country.tags.forEach(function(countryTag) {
+        keys[String(countryTag).toLowerCase()] = true;
+      });
+    });
+
+    return keys;
+  }
+
+  // Every canonical producer matched by an article's tags, in the article's own
+  // tag order and deduplicated case-insensitively by addUnique.
+  function getArticleProducerLabels(article, producerKeyMap, countryTagKeys) {
+    var labels = [];
+
+    (article.tags || []).forEach(function(articleTag) {
+      var matchKey = normalizeProducerName(articleTag);
+
+      if (
+        countryTagKeys &&
+        Object.prototype.hasOwnProperty.call(
+          countryTagKeys,
+          String(articleTag).toLowerCase()
+        )
+      ) {
+        return;
+      }
+
+      if (matchKey && Object.prototype.hasOwnProperty.call(producerKeyMap, matchKey)) {
+        addUnique(labels, producerKeyMap[matchKey]);
+      }
+    });
+
+    return labels;
+  }
+
+  // Shared by every index section: the visible title is capped at
+  // ARTICLE_TITLE_MAX_LENGTH characters, counting the ellipsis. Producer
+  // prefixes are added by the caller and sit outside this limit.
+  function truncateArticleTitle(title) {
+    var value = String(title || '').trim();
+
+    if (value.length <= ARTICLE_TITLE_MAX_LENGTH) {
+      return value;
+    }
+
+    return (
+      value.slice(0, ARTICLE_TITLE_MAX_LENGTH - 1).replace(/\s+$/, '') + '\u2026'
+    );
   }
 
   function articleHasTag(article, candidateTags) {
@@ -383,10 +457,10 @@
     container.appendChild(status);
   }
 
-  function showError(container, retry) {
+  function showError(container, message, retry) {
     var retryButton = document.createElement('button');
 
-    showStatus(container, 'Reviews could not be loaded.');
+    showStatus(container, message);
     retryButton.type = 'button';
     retryButton.className = 'article-review-index__retry';
     retryButton.textContent = 'Try again';
@@ -422,7 +496,7 @@
       })
       .catch(function() {
         details.setAttribute('data-load-state', 'error');
-        showError(container, function() {
+        showError(container, 'Reviews could not be loaded.', function() {
           loadOnce(details, loadingMessage, emptyMessage, loader, render);
         });
       });
@@ -508,7 +582,28 @@
       });
   }
 
-  function renderArticles(container, articles) {
+  // The source title and URL are never altered: only the visible text is
+  // shortened, while the tooltip and accessible name keep the full title.
+  function createArticleLink(article, producerKeyMap, countryTagKeys) {
+    var link = document.createElement('a');
+    var fullTitle = String(article.title || '');
+    var producerLabels = producerKeyMap
+      ? getArticleProducerLabels(article, producerKeyMap, countryTagKeys)
+      : [];
+    var producerPrefix = producerLabels.length
+      ? producerLabels.join(' / ') + ': '
+      : '';
+    var accessibleLabel = producerPrefix + fullTitle;
+
+    link.href = article.onlineStoreUrl;
+    link.textContent = producerPrefix + truncateArticleTitle(fullTitle);
+    link.setAttribute('title', accessibleLabel);
+    link.setAttribute('aria-label', accessibleLabel);
+
+    return link;
+  }
+
+  function renderArticleList(container, articles, producerKeyMap, countryTagKeys, emptyMessage) {
     var list = document.createElement('ul');
 
     list.className = 'article-review-index__articles';
@@ -522,21 +617,22 @@
       })
       .forEach(function(article) {
         var item = document.createElement('li');
-        var link = document.createElement('a');
 
         item.className = 'article-review-index__article';
-        link.href = article.onlineStoreUrl;
-        link.textContent = article.title;
-        item.appendChild(link);
+        item.appendChild(createArticleLink(article, producerKeyMap, countryTagKeys));
         list.appendChild(item);
       });
 
     if (!list.children.length) {
-      showStatus(container, 'No published review links found.');
+      showStatus(container, emptyMessage);
       return;
     }
 
     container.appendChild(list);
+  }
+
+  function renderArticles(container, articles) {
+    renderArticleList(container, articles, null, null, 'No published review links found.');
   }
 
   function renderCountries(
@@ -620,18 +716,27 @@
 
     var countries = parseCountries(config);
     var producers = parseProducers(config);
+    var producerKeyMap = buildProducerKeyMap(producers);
+    var countryTagKeys = buildCountryTagKeys(countries);
     var endpoint = '/api/' + config.apiVersion + '/graphql.json';
-    var drinkElements = index.querySelectorAll('[data-article-review-index-drink]');
-    var jobsByBlogHandle = {};
+    // One selector so the queue follows document order: the Reviews drinks
+    // first, then Interviews, Features and Deep Dives as displayed.
+    var drinkElements = index.querySelectorAll(
+      '[data-article-review-index-drink], [data-article-review-index-section-drink]'
+    );
+    var sectionElements = index.querySelectorAll('[data-article-review-index-section]');
+    var jobsByKey = {};
     var jobs = [];
     var queue = [];
     var activeJobCount = 0;
     var preloadingStarted = false;
 
+    function getDrinkContainer(drink) {
+      return drink.details.querySelector('[data-article-review-index-children]');
+    }
+
     function showDrinkLoading(drink) {
-      var container = drink.details.querySelector(
-        '[data-article-review-index-children]'
-      );
+      var container = getDrinkContainer(drink);
 
       if (
         !container ||
@@ -641,13 +746,16 @@
       }
 
       drink.details.setAttribute('data-load-state', 'loading');
-      showStatus(container, 'Loading countries\u2026');
+      showStatus(
+        container,
+        drink.kind === 'section'
+          ? 'Loading articles\u2026'
+          : 'Loading countries\u2026'
+      );
     }
 
     function showDrinkError(drink, job) {
-      var container = drink.details.querySelector(
-        '[data-article-review-index-children]'
-      );
+      var container = getDrinkContainer(drink);
 
       if (
         !container ||
@@ -657,15 +765,19 @@
       }
 
       drink.details.setAttribute('data-load-state', 'error');
-      showError(container, function() {
-        queueCountryJob(job, true, true);
-      });
+      showError(
+        container,
+        drink.kind === 'section'
+          ? 'Articles could not be loaded.'
+          : 'Reviews could not be loaded.',
+        function() {
+          queuePreloadJob(job, true, true);
+        }
+      );
     }
 
     function renderDrinkCountries(drink, articles) {
-      var container = drink.details.querySelector(
-        '[data-article-review-index-children]'
-      );
+      var container = getDrinkContainer(drink);
       var categoryArticles = getCategoryArticles(articles, drink.categoryTags);
       var availableCountries = getAvailableCountries(categoryArticles, countries);
 
@@ -691,8 +803,57 @@
       );
     }
 
-    function startNextCountryJobs() {
-      while (activeJobCount < COUNTRY_PRELOAD_CONCURRENCY && queue.length) {
+    // Flat sections stop at the drink level: the blog is fetched once and its
+    // articles are grouped locally by the shared drink tags.
+    function renderSectionDrinkArticles(drink, articles) {
+      var container = getDrinkContainer(drink);
+      var drinkArticles = drink.drinkTags.length
+        ? getCategoryArticles(articles, drink.drinkTags)
+        : [];
+
+      if (!container) {
+        return;
+      }
+
+      drink.details.setAttribute('data-load-state', 'loaded');
+      clearElement(container);
+
+      if (!drinkArticles.length) {
+        showStatus(container, 'No articles found.');
+        return;
+      }
+
+      renderArticleList(
+        container,
+        drinkArticles,
+        producerKeyMap,
+        countryTagKeys,
+        'No published article links found.'
+      );
+    }
+
+    function renderDrink(drink, articles) {
+      if (drink.kind === 'section') {
+        renderSectionDrinkArticles(drink, articles);
+        return;
+      }
+
+      renderDrinkCountries(drink, articles);
+    }
+
+    // Section jobs need the article fields their links render; review jobs only
+    // need tags to work out which countries exist. Both reuse their cache, so a
+    // promoted job never issues a second request.
+    function fetchJobArticles(job) {
+      if (job.kind === 'section') {
+        return fetchAllArticles(endpoint, job.blogHandle, null);
+      }
+
+      return fetchAllArticleTags(endpoint, job.blogHandle);
+    }
+
+    function startNextPreloadJobs() {
+      while (activeJobCount < PRELOAD_CONCURRENCY && queue.length) {
         (function(job) {
           queue.shift();
           job.state = 'loading';
@@ -700,16 +861,13 @@
 
           job.drinks.forEach(showDrinkLoading);
 
-          fetchAllArticleTags(endpoint, job.blogHandle).then(
-            job.resolve,
-            job.reject
-          );
+          fetchJobArticles(job).then(job.resolve, job.reject);
 
           job.promise.then(
             function(articles) {
               job.state = 'loaded';
               job.drinks.forEach(function(drink) {
-                renderDrinkCountries(drink, articles);
+                renderDrink(drink, articles);
               });
             },
             function() {
@@ -721,18 +879,18 @@
           ).then(
             function() {
               activeJobCount -= 1;
-              startNextCountryJobs();
+              startNextPreloadJobs();
             },
             function() {
               activeJobCount -= 1;
-              startNextCountryJobs();
+              startNextPreloadJobs();
             }
           );
         })(queue[0]);
       }
     }
 
-    function promoteCountryJob(job) {
+    function promotePreloadJob(job) {
       var jobIndex = queue.indexOf(job);
 
       if (jobIndex <= 0) {
@@ -743,13 +901,13 @@
       queue.unshift(job);
     }
 
-    function queueCountryJob(job, prioritize, retry) {
+    function queuePreloadJob(job, prioritize, retry) {
       if (job.state === 'queued') {
         if (prioritize) {
-          promoteCountryJob(job);
+          promotePreloadJob(job);
         }
 
-        startNextCountryJobs();
+        startNextPreloadJobs();
         return job.promise;
       }
 
@@ -774,24 +932,48 @@
       }
 
       job.drinks.forEach(showDrinkLoading);
-      startNextCountryJobs();
+      startNextPreloadJobs();
       return job.promise;
     }
 
+    Array.prototype.forEach.call(sectionElements, function(sectionDetails) {
+      var sectionSummary = sectionDetails.querySelector('summary');
+
+      if (!sectionSummary) {
+        return;
+      }
+
+      sectionDetails.addEventListener('toggle', function() {
+        sectionSummary.setAttribute(
+          'aria-expanded',
+          sectionDetails.open ? 'true' : 'false'
+        );
+      });
+    });
+
     Array.prototype.forEach.call(drinkElements, function(drinkDetails) {
       var blogHandle = drinkDetails.getAttribute('data-blog-handle');
+      var kind = drinkDetails.hasAttribute('data-article-review-index-section-drink')
+        ? 'section'
+        : 'reviews';
       var drink = {
         details: drinkDetails,
         summary: drinkDetails.querySelector('summary'),
+        kind: kind,
         blogHandle: blogHandle,
         categoryTags: splitTags(
           drinkDetails.getAttribute('data-category-tags')
-        )
+        ),
+        drinkTags: splitTags(drinkDetails.getAttribute('data-drink-tags'))
       };
-      var job = jobsByBlogHandle[blogHandle];
+      // Every drink sharing a blog shares one job, so a section blog is
+      // fetched once rather than once per drink.
+      var jobKey = kind + '::' + blogHandle;
+      var job = jobsByKey[jobKey];
 
       if (!job) {
         job = {
+          kind: kind,
           blogHandle: blogHandle,
           drinks: [],
           state: 'idle',
@@ -799,7 +981,7 @@
           resolve: null,
           reject: null
         };
-        jobsByBlogHandle[blogHandle] = job;
+        jobsByKey[jobKey] = job;
         jobs.push(job);
       }
 
@@ -812,34 +994,34 @@
         );
 
         if (drinkDetails.open) {
-          queueCountryJob(job, true, false);
+          queuePreloadJob(job, true, false);
         }
       });
     });
 
-    function beginCountryPreloading() {
+    function beginPreloading() {
       if (preloadingStarted) {
         return;
       }
 
       preloadingStarted = true;
       jobs.forEach(function(job) {
-        queueCountryJob(job, false, false);
+        queuePreloadJob(job, false, false);
       });
     }
 
     if (typeof window.matchMedia === 'function') {
       var preloadMediaQuery = window.matchMedia(
-        '(min-width: ' + COUNTRY_PRELOAD_MIN_WIDTH + 'px)'
+        '(min-width: ' + PRELOAD_MIN_WIDTH + 'px)'
       );
       var handlePreloadWidthChange = function(event) {
         if (event.matches) {
-          beginCountryPreloading();
+          beginPreloading();
         }
       };
 
       if (preloadMediaQuery.matches) {
-        beginCountryPreloading();
+        beginPreloading();
       }
 
       if (typeof preloadMediaQuery.addEventListener === 'function') {
@@ -849,9 +1031,9 @@
       }
     } else if (
       (window.innerWidth || document.documentElement.clientWidth) >=
-      COUNTRY_PRELOAD_MIN_WIDTH
+      PRELOAD_MIN_WIDTH
     ) {
-      beginCountryPreloading();
+      beginPreloading();
     }
   }
 

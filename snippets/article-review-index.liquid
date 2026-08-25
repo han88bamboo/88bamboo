@@ -1,25 +1,72 @@
 {% include 'editorial-taxonomy' %}
 
-{% assign article_review_index_blogs_string = 'Whisky::whisky-reviews|Rum::rum-reviews|Sake::sake|Wine::wine-reviews|Beer::craft-beer|Tequila & Mezcal::tequila-mezcal-reviews|Gin::gin|Vodka::everything-nice::Vodka|Brandy / Cognac::everything-nice::Brandy~Cognac~Armagnac~Bas Armagnac~Calvados|Baijiu::everything-nice::Baijiu|Shochu & Soju::everything-nice::Shochu~Imo Shochu~Kome Shochu~Mugi Shochu~Soju~Korean Soju~Gamuchi Soju~Won Soju|Makgeolli::everything-nice::Makgeolli|Jenever::everything-nice::Jenever~Genever~Belgian Jenever|Liqueurs, Aperitifs & Digestifs::everything-nice::Liqueur~Amaro~Aperitif~Aperitivo~Bitters~Cream Liqueur~Orange Liqueur~Umeshu~Vermouth~Limoncello|Mead::everything-nice::Mead~Classic Mead|Rice Wine & Regional Ferments::everything-nice::Rice Wine~Thai Sato~Shaoxing Wine~Tuak|Non-Alcoholic::everything-nice::0% ABV' %}
-{% assign article_review_index_blogs = article_review_index_blogs_string | split: '|' %}
+{%- comment -%}
+  Article Index sidebar. Drink rows in every section come from the single
+  shared definition in editorial-taxonomy so category mappings are not
+  duplicated per section. Each definition is:
+
+    Label::reviews blog handle::reviews category tags::article index drink tags
+
+  Reviews keeps its drink -> country -> producer -> review hierarchy and is
+  rendered from the first three fields. The flat sections below it each read
+  one blog and group it by the fourth field: Section -> Drink -> Articles.
+{%- endcomment -%}
+{% assign article_review_index_drinks = editorial_article_index_drink_definitions_string | split: '|' %}
+{% assign article_review_index_sections = editorial_article_index_section_definitions_string | split: '|' %}
 
 <aside class="grid__item article-review-index-column" aria-labelledby="ArticleReviewIndexTitle">
-  <nav class="article-review-index" data-article-review-index aria-label="Browse reviews by drink">
-    <h2 class="article-review-index__title" id="ArticleReviewIndexTitle">Browse Reviews by Drink</h2>
+  <nav class="article-review-index" data-article-review-index aria-label="Browse articles by drink">
+    <h2 class="article-review-index__title" id="ArticleReviewIndexTitle">Browse Articles by Drink</h2>
 
     <div class="article-review-index__tree">
-      {% for article_review_index_blog in article_review_index_blogs %}
-        {% assign article_review_index_blog_parts = article_review_index_blog | split: '::' %}
-        <details
-          class="article-review-index__branch article-review-index__branch--drink"
-          data-article-review-index-drink
-          data-blog-handle="{{ article_review_index_blog_parts[1] | escape }}"
-          data-category-tags="{{ article_review_index_blog_parts[2] | escape }}"
-        >
+      {%- comment -%}
+        Reviews stays first and open so its drink rows remain visible on load,
+        exactly as before this section wrapper was introduced.
+      {%- endcomment -%}
+      <details class="article-review-index__branch article-review-index__branch--section" data-article-review-index-section open>
+        <summary class="article-review-index__summary" aria-expanded="true">
+          <span>Reviews</span>
+        </summary>
+        <div class="article-review-index__children">
+          {% for article_review_index_drink in article_review_index_drinks %}
+            {% assign article_review_index_drink_parts = article_review_index_drink | split: '::' %}
+            <details
+              class="article-review-index__branch article-review-index__branch--drink"
+              data-article-review-index-drink
+              data-blog-handle="{{ article_review_index_drink_parts[1] | escape }}"
+              data-category-tags="{{ article_review_index_drink_parts[2] | escape }}"
+            >
+              <summary class="article-review-index__summary" aria-expanded="false">
+                <span>{{ article_review_index_drink_parts[0] }}</span>
+              </summary>
+              <div class="article-review-index__children" data-article-review-index-children aria-live="polite"></div>
+            </details>
+          {% endfor %}
+        </div>
+      </details>
+
+      {% for article_review_index_section in article_review_index_sections %}
+        {% assign article_review_index_section_parts = article_review_index_section | split: '::' %}
+        <details class="article-review-index__branch article-review-index__branch--section" data-article-review-index-section>
           <summary class="article-review-index__summary" aria-expanded="false">
-            <span>{{ article_review_index_blog_parts[0] }}</span>
+            <span>{{ article_review_index_section_parts[0] }}</span>
           </summary>
-          <div class="article-review-index__children" data-article-review-index-children aria-live="polite"></div>
+          <div class="article-review-index__children">
+            {% for article_review_index_drink in article_review_index_drinks %}
+              {% assign article_review_index_drink_parts = article_review_index_drink | split: '::' %}
+              <details
+                class="article-review-index__branch article-review-index__branch--drink"
+                data-article-review-index-section-drink
+                data-blog-handle="{{ article_review_index_section_parts[1] | escape }}"
+                data-drink-tags="{{ article_review_index_drink_parts[3] | escape }}"
+              >
+                <summary class="article-review-index__summary" aria-expanded="false">
+                  <span>{{ article_review_index_drink_parts[0] }}</span>
+                </summary>
+                <div class="article-review-index__children" data-article-review-index-children aria-live="polite"></div>
+              </details>
+            {% endfor %}
+          </div>
         </details>
       {% endfor %}
     </div>
