@@ -2,7 +2,10 @@
   'use strict';
 
   var PAGE_SIZE = 250;
+  var COUNTRY_PRELOAD_MIN_WIDTH = 880;
+  var COUNTRY_PRELOAD_CONCURRENCY = 3;
   var requestCache = {};
+  var countryRequestCache = {};
 
   function splitDefinitions(value) {
     return (value || '').split('|').filter(function(definition) {
@@ -278,6 +281,93 @@
     return requestCache[cacheKey];
   }
 
+  function fetchArticleTagsPage(endpoint, blogHandle, after) {
+    var graphqlQuery = [
+      'query ArticleReviewIndexCountryPreload($blogHandle: String!, $after: String) {',
+      '  blog(handle: $blogHandle) {',
+      '    articles(first: ' + PAGE_SIZE + ', after: $after, sortKey: PUBLISHED_AT, reverse: true) {',
+      '      nodes { tags }',
+      '      pageInfo { hasNextPage endCursor }',
+      '    }',
+      '  }',
+      '}'
+    ].join('\n');
+
+    return window
+      .fetch(endpoint, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          query: graphqlQuery,
+          variables: {
+            blogHandle: blogHandle,
+            after: after
+          }
+        })
+      })
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error('The review index request failed.');
+        }
+
+        return response.json();
+      })
+      .then(function(payload) {
+        if (payload.errors && payload.errors.length) {
+          throw new Error(payload.errors[0].message || 'The review index request failed.');
+        }
+
+        if (!payload.data || !payload.data.blog) {
+          throw new Error('The requested review blog is unavailable.');
+        }
+
+        return payload.data.blog.articles;
+      });
+  }
+
+  function fetchAllArticleTags(endpoint, blogHandle) {
+    if (countryRequestCache[blogHandle]) {
+      return countryRequestCache[blogHandle];
+    }
+
+    countryRequestCache[blogHandle] = new Promise(function(resolve, reject) {
+      var articles = [];
+      var seenCursors = {};
+
+      function fetchNextPage(after) {
+        fetchArticleTagsPage(endpoint, blogHandle, after)
+          .then(function(connection) {
+            var pageInfo = connection.pageInfo || {};
+
+            articles = articles.concat(connection.nodes || []);
+
+            if (pageInfo.hasNextPage) {
+              if (!pageInfo.endCursor || seenCursors[pageInfo.endCursor]) {
+                throw new Error('The review index pagination cursor did not advance.');
+              }
+
+              seenCursors[pageInfo.endCursor] = true;
+              fetchNextPage(pageInfo.endCursor);
+              return;
+            }
+
+            resolve(articles);
+          })
+          .catch(reject);
+      }
+
+      fetchNextPage(null);
+    }).catch(function(error) {
+      delete countryRequestCache[blogHandle];
+      throw error;
+    });
+
+    return countryRequestCache[blogHandle];
+  }
+
   function clearElement(element) {
     while (element.firstChild) {
       element.removeChild(element.firstChild);
@@ -374,6 +464,16 @@
     });
   }
 
+  function getCategoryArticles(articles, categoryTags) {
+    if (!categoryTags.length) {
+      return articles;
+    }
+
+    return articles.filter(function(article) {
+      return articleHasTag(article, categoryTags);
+    });
+  }
+
   function getAvailableProducers(articles, producers) {
     var availableByLabel = {};
 
@@ -439,6 +539,71 @@
     container.appendChild(list);
   }
 
+  function renderCountries(
+    container,
+    availableCountries,
+    endpoint,
+    blogHandle,
+    categoryTags,
+    producers
+  ) {
+    availableCountries.forEach(function(country) {
+      var countryDetails = createDisclosure(
+        country.label,
+        'country',
+        function(currentCountryDetails) {
+          var countryQuery = buildArticleQuery(categoryTags, country.tags);
+
+          loadOnce(
+            currentCountryDetails,
+            'Loading producers\u2026',
+            'No producers found.',
+            function() {
+              return fetchAllArticles(endpoint, blogHandle, countryQuery).then(
+                function(articles) {
+                  return getAvailableProducers(articles, producers);
+                }
+              );
+            },
+            function(producerContainer, availableProducers) {
+              availableProducers.forEach(function(producer) {
+                var producerDetails = createDisclosure(
+                  producer.label,
+                  'producer',
+                  function(currentProducerDetails) {
+                    var reviewQuery = buildArticleQuery(
+                      categoryTags,
+                      country.tags,
+                      producer.tags
+                    );
+
+                    loadOnce(
+                      currentProducerDetails,
+                      'Loading reviews\u2026',
+                      'No reviews found.',
+                      function() {
+                        return fetchAllArticles(
+                          endpoint,
+                          blogHandle,
+                          reviewQuery
+                        );
+                      },
+                      renderArticles
+                    );
+                  }
+                );
+
+                producerContainer.appendChild(producerDetails);
+              });
+            }
+          );
+        }
+      );
+
+      container.appendChild(countryDetails);
+    });
+  }
+
   function initializeIndex(index) {
     var configElement = index.querySelector('[data-article-review-index-config]');
     var config;
@@ -456,98 +621,238 @@
     var countries = parseCountries(config);
     var producers = parseProducers(config);
     var endpoint = '/api/' + config.apiVersion + '/graphql.json';
-    var drinks = index.querySelectorAll('[data-article-review-index-drink]');
+    var drinkElements = index.querySelectorAll('[data-article-review-index-drink]');
+    var jobsByBlogHandle = {};
+    var jobs = [];
+    var queue = [];
+    var activeJobCount = 0;
+    var preloadingStarted = false;
 
-    Array.prototype.forEach.call(drinks, function(drinkDetails) {
-      var summary = drinkDetails.querySelector('summary');
-      var blogHandle = drinkDetails.getAttribute('data-blog-handle');
-      var categoryTags = splitTags(
-        drinkDetails.getAttribute('data-category-tags')
+    function showDrinkLoading(drink) {
+      var container = drink.details.querySelector(
+        '[data-article-review-index-children]'
       );
 
-      drinkDetails.addEventListener('toggle', function() {
-        summary.setAttribute('aria-expanded', drinkDetails.open ? 'true' : 'false');
+      if (
+        !container ||
+        drink.details.getAttribute('data-load-state') === 'loaded'
+      ) {
+        return;
+      }
 
-        if (!drinkDetails.open) {
-          return;
+      drink.details.setAttribute('data-load-state', 'loading');
+      showStatus(container, 'Loading countries\u2026');
+    }
+
+    function showDrinkError(drink, job) {
+      var container = drink.details.querySelector(
+        '[data-article-review-index-children]'
+      );
+
+      if (
+        !container ||
+        drink.details.getAttribute('data-load-state') === 'loaded'
+      ) {
+        return;
+      }
+
+      drink.details.setAttribute('data-load-state', 'error');
+      showError(container, function() {
+        queueCountryJob(job, true, true);
+      });
+    }
+
+    function renderDrinkCountries(drink, articles) {
+      var container = drink.details.querySelector(
+        '[data-article-review-index-children]'
+      );
+      var categoryArticles = getCategoryArticles(articles, drink.categoryTags);
+      var availableCountries = getAvailableCountries(categoryArticles, countries);
+
+      if (!container) {
+        return;
+      }
+
+      drink.details.setAttribute('data-load-state', 'loaded');
+      clearElement(container);
+
+      if (!availableCountries.length) {
+        showStatus(container, 'No countries found.');
+        return;
+      }
+
+      renderCountries(
+        container,
+        availableCountries,
+        endpoint,
+        drink.blogHandle,
+        drink.categoryTags,
+        producers
+      );
+    }
+
+    function startNextCountryJobs() {
+      while (activeJobCount < COUNTRY_PRELOAD_CONCURRENCY && queue.length) {
+        (function(job) {
+          queue.shift();
+          job.state = 'loading';
+          activeJobCount += 1;
+
+          job.drinks.forEach(showDrinkLoading);
+
+          fetchAllArticleTags(endpoint, job.blogHandle).then(
+            job.resolve,
+            job.reject
+          );
+
+          job.promise.then(
+            function(articles) {
+              job.state = 'loaded';
+              job.drinks.forEach(function(drink) {
+                renderDrinkCountries(drink, articles);
+              });
+            },
+            function() {
+              job.state = 'error';
+              job.drinks.forEach(function(drink) {
+                showDrinkError(drink, job);
+              });
+            }
+          ).then(
+            function() {
+              activeJobCount -= 1;
+              startNextCountryJobs();
+            },
+            function() {
+              activeJobCount -= 1;
+              startNextCountryJobs();
+            }
+          );
+        })(queue[0]);
+      }
+    }
+
+    function promoteCountryJob(job) {
+      var jobIndex = queue.indexOf(job);
+
+      if (jobIndex <= 0) {
+        return;
+      }
+
+      queue.splice(jobIndex, 1);
+      queue.unshift(job);
+    }
+
+    function queueCountryJob(job, prioritize, retry) {
+      if (job.state === 'queued') {
+        if (prioritize) {
+          promoteCountryJob(job);
         }
 
-        loadOnce(
-          drinkDetails,
-          'Loading countries\u2026',
-          'No countries found.',
-          function() {
-            var categoryQuery = buildArticleQuery(categoryTags);
+        startNextCountryJobs();
+        return job.promise;
+      }
 
-            return fetchAllArticles(endpoint, blogHandle, categoryQuery).then(
-              function(articles) {
-                return getAvailableCountries(articles, countries);
-              }
-            );
-          },
-          function(countryContainer, availableCountries) {
-            availableCountries.forEach(function(country) {
-              var countryDetails = createDisclosure(
-                country.label,
-                'country',
-                function(currentCountryDetails) {
-                  var countryQuery = buildArticleQuery(
-                    categoryTags,
-                    country.tags
-                  );
+      if (job.state === 'loading' || job.state === 'loaded') {
+        return job.promise;
+      }
 
-                  loadOnce(
-                    currentCountryDetails,
-                    'Loading producers\u2026',
-                    'No producers found.',
-                    function() {
-                      return fetchAllArticles(endpoint, blogHandle, countryQuery).then(
-                        function(articles) {
-                          return getAvailableProducers(articles, producers);
-                        }
-                      );
-                    },
-                    function(producerContainer, availableProducers) {
-                      availableProducers.forEach(function(producer) {
-                        var producerDetails = createDisclosure(
-                          producer.label,
-                          'producer',
-                          function(currentProducerDetails) {
-                            var reviewQuery = buildArticleQuery(
-                              categoryTags,
-                              country.tags,
-                              producer.tags
-                            );
+      if (job.state === 'error' && !retry) {
+        return job.promise;
+      }
 
-                            loadOnce(
-                              currentProducerDetails,
-                              'Loading reviews\u2026',
-                              'No reviews found.',
-                              function() {
-                                return fetchAllArticles(
-                                  endpoint,
-                                  blogHandle,
-                                  reviewQuery
-                                );
-                              },
-                              renderArticles
-                            );
-                          }
-                        );
+      job.state = 'queued';
+      job.promise = new Promise(function(resolve, reject) {
+        job.resolve = resolve;
+        job.reject = reject;
+      });
 
-                        producerContainer.appendChild(producerDetails);
-                      });
-                    }
-                  );
-                }
-              );
+      if (prioritize) {
+        queue.unshift(job);
+      } else {
+        queue.push(job);
+      }
 
-              countryContainer.appendChild(countryDetails);
-            });
-          }
+      job.drinks.forEach(showDrinkLoading);
+      startNextCountryJobs();
+      return job.promise;
+    }
+
+    Array.prototype.forEach.call(drinkElements, function(drinkDetails) {
+      var blogHandle = drinkDetails.getAttribute('data-blog-handle');
+      var drink = {
+        details: drinkDetails,
+        summary: drinkDetails.querySelector('summary'),
+        blogHandle: blogHandle,
+        categoryTags: splitTags(
+          drinkDetails.getAttribute('data-category-tags')
+        )
+      };
+      var job = jobsByBlogHandle[blogHandle];
+
+      if (!job) {
+        job = {
+          blogHandle: blogHandle,
+          drinks: [],
+          state: 'idle',
+          promise: null,
+          resolve: null,
+          reject: null
+        };
+        jobsByBlogHandle[blogHandle] = job;
+        jobs.push(job);
+      }
+
+      job.drinks.push(drink);
+
+      drinkDetails.addEventListener('toggle', function() {
+        drink.summary.setAttribute(
+          'aria-expanded',
+          drinkDetails.open ? 'true' : 'false'
         );
+
+        if (drinkDetails.open) {
+          queueCountryJob(job, true, false);
+        }
       });
     });
+
+    function beginCountryPreloading() {
+      if (preloadingStarted) {
+        return;
+      }
+
+      preloadingStarted = true;
+      jobs.forEach(function(job) {
+        queueCountryJob(job, false, false);
+      });
+    }
+
+    if (typeof window.matchMedia === 'function') {
+      var preloadMediaQuery = window.matchMedia(
+        '(min-width: ' + COUNTRY_PRELOAD_MIN_WIDTH + 'px)'
+      );
+      var handlePreloadWidthChange = function(event) {
+        if (event.matches) {
+          beginCountryPreloading();
+        }
+      };
+
+      if (preloadMediaQuery.matches) {
+        beginCountryPreloading();
+      }
+
+      if (typeof preloadMediaQuery.addEventListener === 'function') {
+        preloadMediaQuery.addEventListener('change', handlePreloadWidthChange);
+      } else if (typeof preloadMediaQuery.addListener === 'function') {
+        preloadMediaQuery.addListener(handlePreloadWidthChange);
+      }
+    } else if (
+      (window.innerWidth || document.documentElement.clientWidth) >=
+      COUNTRY_PRELOAD_MIN_WIDTH
+    ) {
+      beginCountryPreloading();
+    }
   }
 
   function initializeAllIndexes() {
