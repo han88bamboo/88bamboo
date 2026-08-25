@@ -217,8 +217,9 @@
 }
 
 .article-review-index__see-more {
-  display: inline-block;
-  margin: 6px 0 6px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
   padding: 4px 11px;
   border: 1px solid #1a6132;
   border-radius: 999px;
