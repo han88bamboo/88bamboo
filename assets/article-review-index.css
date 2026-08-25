@@ -33,17 +33,24 @@
   }
 }
 
-.article-review-index {
+.article-review-index-stack {
   position: -webkit-sticky;
   position: sticky;
   top: 190px;
-  /* max-height: calc(100vh - 210px); */
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.article-review-index {
+  flex: 0 0 auto;
+  min-width: 0;
   border: 1px solid #d6d6d6;
   border-radius: 2px;
   background: #f4f8f5;
   color: #3d4246;
   overflow-x: hidden;
-  overflow-y: auto;
   text-align: left;
 }
 
@@ -175,25 +182,4 @@
 .article-review-index__retry:focus {
   background: #1a6132;
   color: #fff;
-}
-
-/* Section level (Reviews, Interviews, Features, Deep Dives). Drink rows keep
-   their existing flush alignment and separators inside a section, so the
-   Reviews list looks the same as it did before sections were introduced. */
-.article-review-index__branch--section > .article-review-index__summary {
-  font-weight: 600;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-}
-
-.article-review-index__branch--section > .article-review-index__children {
-  margin-left: 0;
-}
-
-.article-review-index__branch--section > .article-review-index__children > .article-review-index__branch--drink {
-  border-bottom: 1px solid #d6d6d6;
-}
-
-.article-review-index__branch--section > .article-review-index__children > .article-review-index__branch--drink:last-child {
-  border-bottom: 0;
 }

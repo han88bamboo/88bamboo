@@ -724,7 +724,6 @@
     var drinkElements = index.querySelectorAll(
       '[data-article-review-index-drink], [data-article-review-index-section-drink]'
     );
-    var sectionElements = index.querySelectorAll('[data-article-review-index-section]');
     var jobsByKey = {};
     var jobs = [];
     var queue = [];
@@ -935,21 +934,6 @@
       startNextPreloadJobs();
       return job.promise;
     }
-
-    Array.prototype.forEach.call(sectionElements, function(sectionDetails) {
-      var sectionSummary = sectionDetails.querySelector('summary');
-
-      if (!sectionSummary) {
-        return;
-      }
-
-      sectionDetails.addEventListener('toggle', function() {
-        sectionSummary.setAttribute(
-          'aria-expanded',
-          sectionDetails.open ? 'true' : 'false'
-        );
-      });
-    });
 
     Array.prototype.forEach.call(drinkElements, function(drinkDetails) {
       var blogHandle = drinkDetails.getAttribute('data-blog-handle');
