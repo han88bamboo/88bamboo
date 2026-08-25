@@ -15,15 +15,21 @@
   controller stays single: one shared config, one shared preload queue capped
   at three concurrent jobs, one blog fetch per box even if several drinks
   inside it are opened.
+
+  Each box is itself a <details> so it collapses under its own chevron;
+  Reviews opens by default, the other three start closed. This is purely a
+  display toggle - preloading still runs in the background regardless of
+  whether a box is open, exactly like the per-drink disclosures already do.
 {%- endcomment -%}
 {% assign article_review_index_drinks = editorial_article_index_drink_definitions_string | split: '|' %}
 {% assign article_review_index_sections = editorial_article_index_section_definitions_string | split: '|' %}
+{% assign article_review_index_reviews_visible_count = 7 %}
 
 <aside class="grid__item article-review-index-column" aria-label="Browse articles by drink">
   <div class="article-review-index-stack" data-article-review-index>
 
-    <nav class="article-review-index" aria-labelledby="ArticleReviewIndexTitle-reviews">
-      <h2 class="article-review-index__title" id="ArticleReviewIndexTitle-reviews">Browse Reviews by Drink</h2>
+    <details class="article-review-index" data-article-review-index-box open>
+      <summary class="article-review-index__title" aria-expanded="true">Browse Reviews by Drink</summary>
       <div class="article-review-index__tree">
         {% for article_review_index_drink in article_review_index_drinks %}
           {% assign article_review_index_drink_parts = article_review_index_drink | split: '::' %}
@@ -32,21 +38,26 @@
             data-article-review-index-drink
             data-blog-handle="{{ article_review_index_drink_parts[1] | escape }}"
             data-category-tags="{{ article_review_index_drink_parts[2] | escape }}"
+            {% if forloop.index > article_review_index_reviews_visible_count %}hidden{% endif %}
           >
             <summary class="article-review-index__summary" aria-expanded="false">
               <span>{{ article_review_index_drink_parts[0] }}</span>
             </summary>
             <div class="article-review-index__children" data-article-review-index-children aria-live="polite"></div>
           </details>
+          {% if forloop.index == article_review_index_reviews_visible_count %}
+            <button type="button" class="article-review-index__see-more" data-article-review-index-see-more>
+              See more
+            </button>
+          {% endif %}
         {% endfor %}
       </div>
-    </nav>
+    </details>
 
     {% for article_review_index_section in article_review_index_sections %}
       {% assign article_review_index_section_parts = article_review_index_section | split: '::' %}
-      {% assign article_review_index_section_id = 'ArticleReviewIndexTitle-' | append: article_review_index_section_parts[1] %}
-      <nav class="article-review-index" aria-labelledby="{{ article_review_index_section_id }}">
-        <h2 class="article-review-index__title" id="{{ article_review_index_section_id }}">Browse {{ article_review_index_section_parts[0] }}</h2>
+      <details class="article-review-index" data-article-review-index-box>
+        <summary class="article-review-index__title" aria-expanded="false">Browse {{ article_review_index_section_parts[0] }}</summary>
         <div class="article-review-index__tree">
           {% for article_review_index_drink in article_review_index_drinks %}
             {% assign article_review_index_drink_parts = article_review_index_drink | split: '::' %}
@@ -63,7 +74,7 @@
             </details>
           {% endfor %}
         </div>
-      </nav>
+      </details>
     {% endfor %}
 
     <script type="application/json" data-article-review-index-config>

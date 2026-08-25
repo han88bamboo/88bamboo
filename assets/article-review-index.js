@@ -983,6 +983,45 @@
       });
     });
 
+    // Each box (Reviews, Interviews, Features, Deep Dives) is its own
+    // <details> so it can be collapsed independently of the others. This is
+    // a pure display toggle: preloading is unaffected either way, exactly
+    // like the per-drink disclosures already work.
+    var boxElements = index.querySelectorAll('[data-article-review-index-box]');
+
+    Array.prototype.forEach.call(boxElements, function(boxDetails) {
+      var boxSummary = boxDetails.querySelector('.article-review-index__title');
+
+      if (!boxSummary) {
+        return;
+      }
+
+      boxDetails.addEventListener('toggle', function() {
+        boxSummary.setAttribute('aria-expanded', boxDetails.open ? 'true' : 'false');
+      });
+    });
+
+    // Reviews only: the drink list opens truncated, with the remaining rows
+    // revealed by "See more". The button removes itself once clicked so the
+    // full list simply reads on afterwards.
+    var seeMoreButtons = index.querySelectorAll('[data-article-review-index-see-more]');
+
+    Array.prototype.forEach.call(seeMoreButtons, function(seeMoreButton) {
+      seeMoreButton.addEventListener('click', function() {
+        var tree = seeMoreButton.closest('.article-review-index__tree');
+
+        if (!tree) {
+          return;
+        }
+
+        Array.prototype.forEach.call(tree.querySelectorAll('[hidden]'), function(hiddenDrink) {
+          hiddenDrink.hidden = false;
+        });
+
+        seeMoreButton.remove();
+      });
+    });
+
     function beginPreloading() {
       if (preloadingStarted) {
         return;
