@@ -75,6 +75,7 @@
     var alias = producer
       .replace('The ', '')
       .replace(/ Distillery/g, '')
+      .replace(/ Distillerie/g, '')
       .replace(/ Brewery/g, '')
       .replace(/ Brewing/g, '')
       .replace(/ Inc\./g, '')
@@ -100,7 +101,7 @@
     return normalized
       .replace(/[\u2018\u2019]/g, "'")
       .replace(/^The\s+/i, '')
-      .replace(/\s+(Distillery|Brewery|Brewing|Inc\.?)\b/gi, '')
+      .replace(/\s+(Distillery|Distillerie|Brewery|Brewing|Inc\.?)\b/gi, '')
       .replace(/\s+Whisky$/i, '')
       .replace(/\s+/g, ' ')
       .trim()

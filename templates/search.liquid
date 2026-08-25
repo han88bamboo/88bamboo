@@ -18,7 +18,7 @@
   {% endfor %}
 {% endfor %}
 {% for editorial_search_browse_producer in editorial_search_browse_producers %}
-  {% assign editorial_search_browse_producer_alias = editorial_search_browse_producer | remove_first: 'The ' | remove: ' Distillery' | remove: ' Brewery' | remove: ' Brewing' | remove: ' Inc.' | remove: ' Inc' | strip %}
+  {% assign editorial_search_browse_producer_alias = editorial_search_browse_producer | remove_first: 'The ' | remove: ' Distillery' | remove: ' Distillerie' | remove: ' Brewery' | remove: ' Brewing' | remove: ' Inc.' | remove: ' Inc' | strip %}
   {% assign editorial_search_browse_cleanup_tags_string = editorial_search_browse_cleanup_tags_string | append: '|' | append: editorial_search_browse_producer %}
   {% if editorial_search_browse_producer_alias != editorial_search_browse_producer %}
     {% assign editorial_search_browse_cleanup_tags_string = editorial_search_browse_cleanup_tags_string | append: '|' | append: editorial_search_browse_producer_alias %}
@@ -281,7 +281,7 @@
               <legend class="visually-hidden">Browse by producer</legend>
               <div class="search-page-filters__options">
                 {% for editorial_search_browse_producer in editorial_search_browse_producers %}
-                  {% assign editorial_search_browse_producer_alias = editorial_search_browse_producer | remove_first: 'The ' | remove: ' Distillery' | remove: ' Brewery' | remove: ' Brewing' | remove: ' Inc.' | remove: ' Inc' | strip %}
+                  {% assign editorial_search_browse_producer_alias = editorial_search_browse_producer | remove_first: 'The ' | remove: ' Distillery' | remove: ' Distillerie' | remove: ' Brewery' | remove: ' Brewing' | remove: ' Inc.' | remove: ' Inc' | strip %}
                   {% assign editorial_search_browse_producer_tags = editorial_search_browse_producer %}
                   {% if editorial_search_browse_producer_alias != editorial_search_browse_producer %}
                     {% assign editorial_search_browse_producer_tags = editorial_search_browse_producer_tags | append: '~' | append: editorial_search_browse_producer_alias %}
