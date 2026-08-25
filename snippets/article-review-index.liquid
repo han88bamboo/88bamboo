@@ -46,7 +46,7 @@
       {% assign article_review_index_section_parts = article_review_index_section | split: '::' %}
       {% assign article_review_index_section_id = 'ArticleReviewIndexTitle-' | append: article_review_index_section_parts[1] %}
       <nav class="article-review-index" aria-labelledby="{{ article_review_index_section_id }}">
-        <h2 class="article-review-index__title" id="{{ article_review_index_section_id }}">Browse {{ article_review_index_section_parts[0] }} by Drink</h2>
+        <h2 class="article-review-index__title" id="{{ article_review_index_section_id }}">Browse {{ article_review_index_section_parts[0] }}</h2>
         <div class="article-review-index__tree">
           {% for article_review_index_drink in article_review_index_drinks %}
             {% assign article_review_index_drink_parts = article_review_index_drink | split: '::' %}
