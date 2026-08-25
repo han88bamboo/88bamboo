@@ -1,8 +1,25 @@
 {% assign editorial_search_filter_tags_string = "Section: Books|Section: DuRhum Rum Reviews|Section: Rhythm and Booze|Section: Bottoms Up|Section: 88 Bamboo Japan|Section: 88 Bamboo Hong Kong|Section: 88 Bamboo Taiwan|Section: 88 Bamboo Philippines|Section: 88 Bamboo Thailand|Section: 88 Bamboo Vietnam|Section: 88 Bamboo Indonesia|Section: 88 Bamboo Korea|Section: Japanese Whisky Dictionary|Section: Sku's Drinks|Section: Sicklehut|Section: SG Alcohol Guy|Section: Prints|Section: TV" %}
 {% assign editorial_search_filter_tags = editorial_search_filter_tags_string | split: '|' %}
 {% assign editorial_search_browse_section_definitions_string = "News::Section: News|Feature::Section: Feature|Interview::Section: Interview|Deep Dive::Section: Deep Dive|Review::Section: Review" %}
-{% assign editorial_search_browse_drink_definitions_string = "Beer::Beer|Gin::Gin|Rum::Rum|Sake::Sake|Tequila & Mezcal::Tequila~Mezcal|Whisky::Whisky|Wine::Wine|Other Drinks::Other Drinks" %}
 {% include 'editorial-taxonomy' %}
+
+{% comment %}
+  "Other Drinks" is the union of every Article Index drink type that does not
+  have its own Search checkbox. Start with the legacy generic tag so existing
+  articles tagged "Other Drinks" continue to appear, then source the specific
+  aliases from the shared Article Index taxonomy.
+{% endcomment %}
+{% assign editorial_search_named_drink_labels_string = '|Whisky|Rum|Sake|Wine|Beer|Tequila & Mezcal|Gin|' %}
+{% assign editorial_search_other_drink_tags_string = 'Other Drinks' %}
+{% assign editorial_search_article_index_drinks = editorial_article_index_drink_definitions_string | split: '|' %}
+{% for editorial_search_article_index_drink in editorial_search_article_index_drinks %}
+  {% assign editorial_search_article_index_drink_parts = editorial_search_article_index_drink | split: '::' %}
+  {% capture editorial_search_article_index_drink_label %}|{{ editorial_search_article_index_drink_parts[0] }}|{% endcapture %}
+  {% unless editorial_search_named_drink_labels_string contains editorial_search_article_index_drink_label %}
+    {% assign editorial_search_other_drink_tags_string = editorial_search_other_drink_tags_string | append: '~' | append: editorial_search_article_index_drink_parts[3] %}
+  {% endunless %}
+{% endfor %}
+{% assign editorial_search_browse_drink_definitions_string = "Beer::Beer|Gin::Gin|Rum::Rum|Sake::Sake|Tequila & Mezcal::Tequila~Mezcal|Whisky::Whisky|Wine::Wine|Other Drinks::" | append: editorial_search_other_drink_tags_string %}
 {% assign editorial_search_browse_section_definitions = editorial_search_browse_section_definitions_string | split: '|' %}
 {% assign editorial_search_browse_drink_definitions = editorial_search_browse_drink_definitions_string | split: '|' %}
 {% assign editorial_search_browse_country_definitions = editorial_search_browse_country_definitions_string | split: '|' %}
