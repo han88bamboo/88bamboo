@@ -170,8 +170,12 @@
     return '(' + clauses.join(' OR ') + ')';
   }
 
-  function buildArticleQuery(countryTags, producerTags) {
+  function buildArticleQuery(categoryTags, countryTags, producerTags) {
     var groups = [];
+
+    if (categoryTags && categoryTags.length) {
+      groups.push(buildTagGroup(categoryTags));
+    }
 
     if (countryTags && countryTags.length) {
       groups.push(buildTagGroup(countryTags));
@@ -457,6 +461,9 @@
     Array.prototype.forEach.call(drinks, function(drinkDetails) {
       var summary = drinkDetails.querySelector('summary');
       var blogHandle = drinkDetails.getAttribute('data-blog-handle');
+      var categoryTags = splitTags(
+        drinkDetails.getAttribute('data-category-tags')
+      );
 
       drinkDetails.addEventListener('toggle', function() {
         summary.setAttribute('aria-expanded', drinkDetails.open ? 'true' : 'false');
@@ -470,9 +477,13 @@
           'Loading countries\u2026',
           'No countries found.',
           function() {
-            return fetchAllArticles(endpoint, blogHandle, '').then(function(articles) {
-              return getAvailableCountries(articles, countries);
-            });
+            var categoryQuery = buildArticleQuery(categoryTags);
+
+            return fetchAllArticles(endpoint, blogHandle, categoryQuery).then(
+              function(articles) {
+                return getAvailableCountries(articles, countries);
+              }
+            );
           },
           function(countryContainer, availableCountries) {
             availableCountries.forEach(function(country) {
@@ -480,7 +491,10 @@
                 country.label,
                 'country',
                 function(currentCountryDetails) {
-                  var countryQuery = buildArticleQuery(country.tags);
+                  var countryQuery = buildArticleQuery(
+                    categoryTags,
+                    country.tags
+                  );
 
                   loadOnce(
                     currentCountryDetails,
@@ -500,6 +514,7 @@
                           'producer',
                           function(currentProducerDetails) {
                             var reviewQuery = buildArticleQuery(
+                              categoryTags,
                               country.tags,
                               producer.tags
                             );

@@ -1,6 +1,6 @@
 {% include 'editorial-taxonomy' %}
 
-{% assign article_review_index_blogs_string = 'Whisky::whisky-reviews|Rum::rum-reviews|Sake::sake|Wine::wine-reviews|Beer::craft-beer|Tequila & Mezcal::tequila-mezcal-reviews|Gin::gin|Other::everything-nice' %}
+{% assign article_review_index_blogs_string = 'Whisky::whisky-reviews|Rum::rum-reviews|Sake::sake|Wine::wine-reviews|Beer::craft-beer|Tequila & Mezcal::tequila-mezcal-reviews|Gin::gin|Vodka::everything-nice::Vodka|Brandy / Cognac::everything-nice::Brandy~Cognac~Armagnac~Bas Armagnac~Calvados|Baijiu::everything-nice::Baijiu|Shochu & Soju::everything-nice::Shochu~Imo Shochu~Kome Shochu~Mugi Shochu~Soju~Korean Soju~Gamuchi Soju~Won Soju|Makgeolli::everything-nice::Makgeolli|Jenever::everything-nice::Jenever~Genever~Belgian Jenever|Liqueurs, Aperitifs & Digestifs::everything-nice::Liqueur~Amaro~Aperitif~Aperitivo~Bitters~Cream Liqueur~Orange Liqueur~Umeshu~Vermouth~Limoncello|Mead::everything-nice::Mead~Classic Mead|Rice Wine & Regional Ferments::everything-nice::Rice Wine~Thai Sato~Shaoxing Wine~Tuak|Non-Alcoholic::everything-nice::0% ABV' %}
 {% assign article_review_index_blogs = article_review_index_blogs_string | split: '|' %}
 
 <aside class="grid__item article-review-index-column" aria-labelledby="ArticleReviewIndexTitle">
@@ -14,6 +14,7 @@
           class="article-review-index__branch article-review-index__branch--drink"
           data-article-review-index-drink
           data-blog-handle="{{ article_review_index_blog_parts[1] | escape }}"
+          data-category-tags="{{ article_review_index_blog_parts[2] | escape }}"
         >
           <summary class="article-review-index__summary" aria-expanded="false">
             <span>{{ article_review_index_blog_parts[0] }}</span>
