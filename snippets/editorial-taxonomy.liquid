@@ -1,0 +1,19 @@
+{%- comment -%}
+  Shared static taxonomy for Search and the article review index.
+
+  The Search-facing country and producer strings are compatibility values. Keep
+  their labels, ordering, separators and aliases unchanged so Search continues
+  to build and clean up exactly the same queries.
+{%- endcomment -%}
+{% assign editorial_search_browse_country_definitions_string = "USA::USA~US~America|UK (incl Scotland)::UK~United Kingdom~England~Scotland|Ireland::Ireland|France::France|Australia::Australia|Germany::Germany|Japan::Japan|Korea::Korea|China::China|Taiwan::Taiwan|Italy::Italy|Philippines::Philippines|Hungary::Hungary" %}
+{% assign editorial_search_browse_producers_string = "1800 Tequila|Aberlour|Akita Jozo|Amabuki Shuzo|Amrut|Antelope|Ardbeg|Arette|Asahi|Asahi Shuzo|Atelier Guibert|Ballantine's|Bardstown|Bielle|Big Kahuna|Black Tot|Blackadder|Bonifacio|Bowmore|Brauerei Weihenstephan|Brooklyn Kura|Brown-Forman|Brugal|Bruichladdich|Byeolsan|Cairns Rum Company|Camus|Cascahuín|Champagne Palmer|Chichibu|Chivas Brothers|Chivas Regal|Clumzy Plumzy|Coyote Sotol|Craftbros|Dalho|Danong Bio|Dassai|Dassai Blue|Delamotte|Devanom|Diageo|Domaine de la Gyalthang|Domaine Pierre Damoy|Don Julio|Edrington|Elixir Distillers|Eminente|Estrella Damm|FAIR|Fattoria da Sasino|Fireball|Four Pillars Gin|Foursquare|G4 Tequila|Gaja|Gamuchi Soju|Glenfiddich|Glengoyne|Gordon & MacPhail|Gordon's|Gran Centenario|Great Northern Distillery|Grey Goose|haccoba|Hakushu|Hampden|Hana Makgeolli|Hendrick's|Hennessy|Henri Giraud|Hibiki|Hiraroku|Hwasim Jujo|Il Borro|Isautier|IWA 5 Sake|Iyoshi Cola|Jack Daniel's|Jiran Jigyo|Jose Cuervo|Kanosuke|Karuizawa|Kasa Kana|Kavalan|Kimchangsoo|Koch|Lark|Leeu Passant|LIBROM|Longmorn|Luisita|Maestro Dobel|Mas de Daumas Gassac|Masahiro|Minenohakubai Shuzo|Miyagikyo|Miyazaki Hideji|Moon Import|Mullineux|Nagura|Newton Johnson|Niigata Kameda|Nikka Whisky|Ninefold|Nobilis|nondo|Old Forester|Onzi Suldoga|Patron|Penfolds|Pernod Ricard|Pierre-Yves Colin-Morey (PYCM)|Podere Il Carnasciale|Renais Gin|Roederer Group|Roku Gin|Ron Zacapa|Royal Salute|Saburomaru|Sakari (Nihonsakari)|Sakurao|Samata Brewing|Sapporo|Savanna|Sazerac|Seochon Makgeolli|Shimazaki Shuzo|Sipsmith|Sula|Sullivans Cove|Suntory|Suntory Premium Malt's|Swell de Spirits|Szepsy|Taketsuru|Tatenokawa|TDL|Tenuta Pinino|Terada Honke|The Bruery|The Glenlivet|The Macallan|The Whisky Jury|Togouchi|Toki|Tormore|Tsingtao|Velier|Weightstone|Weingut Keller|Wild Turkey|Xiao Ling|Xiaopu|Yamazaki|Yangjudoga|Yoshida Denzai|Yuki No Bijin|Zephyr Wines" %}
+
+{%- comment -%}
+  The article index starts with the Search country groups above, then uses these
+  display labels and additional tag aliases to recognise review metadata without
+  broadening Search's existing managed tags. No country-to-producer relationship
+  is encoded here.
+{%- endcomment -%}
+{% assign editorial_article_index_country_extensions_string = "USA::United States::United States~American Whiskey|UK (incl Scotland)::Scotland::Scotch|Ireland::Ireland::Irish~Irish Whiskey|France::France::French|Australia::Australia::Australian|Germany::Germany::German|Japan::Japan::Japanese~Japanese Whisky~Japanese Whisy|Korea::South Korea::South Korea~Korean|China::China::Chinese|Taiwan::Taiwan::Taiwanese~Taiwanese Whisky|Italy::Italy::Italian|Philippines::Philippines::Philippine|Hungary::Hungary::Hungarian" %}
+{% assign editorial_article_index_additional_countries_string = "India::India~Indian~Indian Whisky" %}
+{% assign editorial_article_index_producer_extensions_string = "Nikka Whisky::Nikka" %}
