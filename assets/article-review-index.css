@@ -54,6 +54,19 @@
   text-align: left;
 }
 
+/* Without this, selected text falls back to the browser/OS default
+   selection color, which reads as near-black on this dark green
+   background. */
+.article-review-index ::selection {
+  background: #f2f0e3;
+  color: #0e6530;
+}
+
+.article-review-index ::-moz-selection {
+  background: #f2f0e3;
+  color: #0e6530;
+}
+
 .article-review-index__title {
   display: grid;
   grid-template-columns: 10px minmax(0, 1fr);
@@ -168,13 +181,22 @@
 
 /* Producers are leaves: the name links into Search pre-filtered to Review +
    that producer, so it is styled as a link rather than a disclosure row. It
-   sits where a nested summary's text would, allowing for the absent chevron. */
+   sits where a nested summary's text would, allowing for the absent chevron.
+   The padding lives on the link (not this wrapper) and the link is block-
+   level so its hover/focus background fills the full row edge-to-edge,
+   rather than hugging just the producer name. */
 .article-review-index__producer {
   min-width: 0;
-  padding: 5px 0 5px 12px;
+  box-shadow: 0 1px 0 0 #fff;
+}
+
+.article-review-index__producer:last-child {
+  box-shadow: none;
 }
 
 .article-review-index__producer-link {
+  display: block;
+  padding: 5px 0 5px 12px;
   color: #f2f0e3;
   font-size: 11.5px;
   font-weight: 700;
@@ -185,7 +207,8 @@
 
 .article-review-index__producer-link:hover,
 .article-review-index__producer-link:focus {
-  color: #fff;
+  background: #f2f0e3;
+  color: #0e6530;
   text-decoration: underline;
 }
 
