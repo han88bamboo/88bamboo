@@ -160,11 +160,38 @@
   margin-left: 6px;
 }
 
-.article-review-index__branch--country > .article-review-index__summary,
-.article-review-index__branch--producer > .article-review-index__summary {
+.article-review-index__branch--country > .article-review-index__summary {
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: 11.5px;
+}
+
+/* Producers are leaves: the name links into Search pre-filtered to Review +
+   that producer, so it is styled as a link rather than a disclosure row. It
+   sits where a nested summary's text would, allowing for the absent chevron. */
+.article-review-index__producer {
+  min-width: 0;
+  padding: 5px 0 5px 12px;
+}
+
+.article-review-index__producer-link {
+  color: #f2f0e3;
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.article-review-index__producer-link:hover,
+.article-review-index__producer-link:focus {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.article-review-index__producer-link:focus {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
 .article-review-index__articles {

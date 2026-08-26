@@ -77,14 +77,36 @@
       </details>
     {% endfor %}
 
+    {%- comment -%}
+      Producer rows link straight into Search, reproducing the state you would
+      get by ticking Section: Review plus that producer. Everything Search
+      needs is emitted here from the shared taxonomy - the exclusion tags it
+      applies by default, the Review section tag and checkbox id, and the
+      producer alias table (label::handle::tags) - so the link never has to
+      reimplement Search's derivation or Liquid's handleize.
+    {%- endcomment -%}
+    {% assign article_review_index_review_section_tag = '' %}
+    {% assign article_review_index_review_section_handle = '' %}
+    {% assign article_review_index_section_filters = editorial_search_browse_section_definitions_string | split: '|' %}
+    {% for article_review_index_section_filter in article_review_index_section_filters %}
+      {% assign article_review_index_section_filter_parts = article_review_index_section_filter | split: '::' %}
+      {% if article_review_index_section_filter_parts[0] == 'Review' %}
+        {% assign article_review_index_review_section_tag = article_review_index_section_filter_parts[1] %}
+        {% assign article_review_index_review_section_handle = article_review_index_section_filter_parts[0] | handleize %}
+      {% endif %}
+    {% endfor %}
+
     <script type="application/json" data-article-review-index-config>
       {
         "apiVersion": "2026-07",
         "countryDefinitions": {{ editorial_search_browse_country_definitions_string | json }},
         "countryExtensions": {{ editorial_article_index_country_extensions_string | json }},
         "additionalCountries": {{ editorial_article_index_additional_countries_string | json }},
-        "producers": {{ editorial_search_browse_producers_string | json }},
-        "producerExtensions": {{ editorial_article_index_producer_extensions_string | json }}
+        "producerAliases": {{ editorial_producer_alias_definitions_string | json }},
+        "searchUrl": {{ routes.search_url | json }},
+        "searchExclusionTags": {{ editorial_search_filter_tags_string | json }},
+        "reviewSectionTag": {{ article_review_index_review_section_tag | json }},
+        "reviewSectionFilterId": {{ article_review_index_review_section_handle | json }}
       }
     </script>
   </div>

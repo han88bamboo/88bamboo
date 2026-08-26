@@ -74,27 +74,6 @@
     return countries;
   }
 
-  function getLegacyProducerAliases(producer) {
-    var aliases = [producer];
-    var alias = producer
-      .replace('The ', '')
-      .replace(/ Distillery/g, '')
-      .replace(/ Distillerie/g, '')
-      .replace(/ Brewery/g, '')
-      .replace(/ Brewing/g, '')
-      .replace(/ Inc\./g, '')
-      .replace(/ Inc/g, '')
-      .trim();
-
-    addUnique(aliases, alias);
-
-    if (producer === 'The Macallan') {
-      addUnique(aliases, 'Macallan Distillery');
-    }
-
-    return aliases;
-  }
-
   function normalizeProducerName(value) {
     var normalized = String(value || '');
 
@@ -112,27 +91,18 @@
       .toLowerCase();
   }
 
-  function parseProducerExtensions(value) {
-    return splitDefinitions(value).reduce(function(extensions, definition) {
-      var parts = definition.split('::');
-
-      extensions[parts[0]] = splitTags(parts[1]);
-      return extensions;
-    }, {});
-  }
-
+  // The producer alias table is built once in editorial-taxonomy and shared
+  // with Search, so both resolve a producer to the same tag set. Each entry is
+  // "Label::handleized id::tag1~tag2"; the handle comes from Liquid's own
+  // handleize so producer links can address Search's checkboxes exactly.
   function parseProducers(config) {
-    var extensions = parseProducerExtensions(config.producerExtensions);
-
-    return splitDefinitions(config.producers).map(function(producer) {
-      var aliases = getLegacyProducerAliases(producer);
-
-      (extensions[producer] || []).forEach(function(alias) {
-        addUnique(aliases, alias);
-      });
+    return splitDefinitions(config.producerAliases).map(function(definition) {
+      var parts = definition.split('::');
+      var aliases = splitTags(parts[2]);
 
       return {
-        label: producer,
+        label: parts[0],
+        handle: parts[1],
         aliases: aliases,
         matchKeys: aliases.reduce(function(keys, alias) {
           addUnique(keys, normalizeProducerName(alias));
@@ -159,9 +129,10 @@
   }
 
   // Country tags, keyed for lookup, so a place name is never read as a
-  // producer. Stripping " Distillery" collapses "Singapore Distillery" onto
-  // "Singapore", which would otherwise prefix every Singapore-tagged article.
-  // Matching on the raw tag keeps genuine "Singapore Distillery" tags working.
+  // producer. Legacy suffix-stripping can collapse a producer onto a country
+  // name ("Singapore Distillery" -> "Singapore"); that producer has since
+  // been removed from the taxonomy, so this now guards against reintroducing
+  // such a collision rather than fixing a live one.
   function buildCountryTagKeys(countries) {
     var keys = {};
 
@@ -263,6 +234,55 @@
     }
 
     return groups.join(' AND ');
+  }
+
+  // Reproduces the URL Search itself would produce for "Section: Review" plus
+  // one producer. Two parameters matter and do different jobs: `q` drives the
+  // server-side results, while `browse_filters` only restores the checkbox UI
+  // (initializeBrowseState never re-runs the search), so both are required or
+  // the panel and the results disagree. Country is deliberately not included -
+  // in this index countries only group producers.
+  function buildProducerSearchUrl(config, producer) {
+    var exclusionTags = splitDefinitions(config.searchExclusionTags);
+    var terms = ['*'];
+
+    exclusionTags.forEach(function(tag) {
+      terms.push('-tag:"' + escapeSearchValue(tag) + '"');
+    });
+
+    var query = terms.join(' ');
+    var filterIds = [];
+
+    if (config.reviewSectionTag) {
+      query += ' AND ' + buildTagGroup([config.reviewSectionTag]);
+      filterIds.push('SearchBrowse-section-' + config.reviewSectionFilterId);
+    }
+
+    query += ' AND ' + buildTagGroup(producer.aliases);
+    filterIds.push('SearchBrowse-producer-' + producer.handle);
+
+    var parameters = [
+      ['q', query],
+      ['type', 'article'],
+      ['browse_filters', filterIds.join(',')],
+      ['browse_open', 'section,producer'],
+      ['browse_panel_open', 'true'],
+      ['options[prefix]', 'last']
+    ];
+
+    return (
+      (config.searchUrl || '/search') +
+      '?' +
+      parameters
+        .map(function(parameter) {
+          return (
+            encodeURIComponent(parameter[0]) +
+            '=' +
+            encodeURIComponent(parameter[1])
+          );
+        })
+        .join('&')
+    );
   }
 
   function fetchArticlePage(endpoint, blogHandle, articleQuery, after) {
@@ -563,11 +583,11 @@
           if (!availableByLabel[producer.label]) {
             availableByLabel[producer.label] = {
               label: producer.label,
-              tags: producer.aliases.slice()
+              handle: producer.handle,
+              aliases: producer.aliases.slice()
             };
           }
 
-          addUnique(availableByLabel[producer.label].tags, articleTag);
           return true;
         });
       });
@@ -635,13 +655,33 @@
     renderArticleList(container, articles, null, null, 'No published review links found.');
   }
 
+  // Producers are leaves now: instead of expanding to every review, the name
+  // links into Search pre-filtered to Review + that producer.
+  function createProducerLink(config, producer) {
+    var wrapper = document.createElement('div');
+    var link = document.createElement('a');
+
+    wrapper.className = 'article-review-index__producer';
+    link.className = 'article-review-index__producer-link';
+    link.href = buildProducerSearchUrl(config, producer);
+    link.textContent = producer.label;
+    link.setAttribute(
+      'title',
+      'See all ' + producer.label + ' reviews in Search'
+    );
+    wrapper.appendChild(link);
+
+    return wrapper;
+  }
+
   function renderCountries(
     container,
     availableCountries,
     endpoint,
     blogHandle,
     categoryTags,
-    producers
+    producers,
+    config
   ) {
     availableCountries.forEach(function(country) {
       var countryDetails = createDisclosure(
@@ -663,33 +703,9 @@
             },
             function(producerContainer, availableProducers) {
               availableProducers.forEach(function(producer) {
-                var producerDetails = createDisclosure(
-                  producer.label,
-                  'producer',
-                  function(currentProducerDetails) {
-                    var reviewQuery = buildArticleQuery(
-                      categoryTags,
-                      country.tags,
-                      producer.tags
-                    );
-
-                    loadOnce(
-                      currentProducerDetails,
-                      'Loading reviews\u2026',
-                      'No reviews found.',
-                      function() {
-                        return fetchAllArticles(
-                          endpoint,
-                          blogHandle,
-                          reviewQuery
-                        );
-                      },
-                      renderArticles
-                    );
-                  }
+                producerContainer.appendChild(
+                  createProducerLink(config, producer)
                 );
-
-                producerContainer.appendChild(producerDetails);
               });
             }
           );
@@ -798,7 +814,8 @@
         endpoint,
         drink.blogHandle,
         drink.categoryTags,
-        producers
+        producers,
+        config
       );
     }
 

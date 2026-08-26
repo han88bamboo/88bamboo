@@ -1,7 +1,5 @@
-{% assign editorial_search_filter_tags_string = "Section: Books|Section: DuRhum Rum Reviews|Section: Rhythm and Booze|Section: Bottoms Up|Section: 88 Bamboo Japan|Section: 88 Bamboo Hong Kong|Section: 88 Bamboo Taiwan|Section: 88 Bamboo Philippines|Section: 88 Bamboo Thailand|Section: 88 Bamboo Vietnam|Section: 88 Bamboo Indonesia|Section: 88 Bamboo Korea|Section: Japanese Whisky Dictionary|Section: Sku's Drinks|Section: Sicklehut|Section: SG Alcohol Guy|Section: Prints|Section: TV" %}
-{% assign editorial_search_filter_tags = editorial_search_filter_tags_string | split: '|' %}
-{% assign editorial_search_browse_section_definitions_string = "News::Section: News|Feature::Section: Feature|Interview::Section: Interview|Deep Dive::Section: Deep Dive|Review::Section: Review" %}
 {% include 'editorial-taxonomy' %}
+{% assign editorial_search_filter_tags = editorial_search_filter_tags_string | split: '|' %}
 
 {% comment %}
   "Other Drinks" is the union of every Article Index drink type that does not
@@ -34,6 +32,7 @@
 {% assign editorial_search_browse_drink_definitions = editorial_search_browse_drink_definitions_string | split: '|' %}
 {% assign editorial_search_browse_country_definitions = editorial_search_browse_country_definitions_string | split: '|' %}
 {% assign editorial_search_browse_producers = editorial_search_browse_producers_string | split: '|' %}
+{% assign editorial_search_producer_definitions = editorial_producer_alias_definitions_string | split: '|' %}
 
 {% assign editorial_search_browse_cleanup_tags_string = '' %}
 {% assign editorial_search_browse_definition_groups = editorial_search_browse_section_definitions_string | append: '|' | append: editorial_search_browse_drink_definitions_string | append: '|' | append: editorial_search_browse_country_definitions_string | split: '|' %}
@@ -44,15 +43,12 @@
     {% assign editorial_search_browse_cleanup_tags_string = editorial_search_browse_cleanup_tags_string | append: '|' | append: editorial_search_browse_definition_tag %}
   {% endfor %}
 {% endfor %}
-{% for editorial_search_browse_producer in editorial_search_browse_producers %}
-  {% assign editorial_search_browse_producer_alias = editorial_search_browse_producer | remove_first: 'The ' | remove: ' Distillery' | remove: ' Distillerie' | remove: ' Brewery' | remove: ' Brewing' | remove: ' Inc.' | remove: ' Inc' | strip %}
-  {% assign editorial_search_browse_cleanup_tags_string = editorial_search_browse_cleanup_tags_string | append: '|' | append: editorial_search_browse_producer %}
-  {% if editorial_search_browse_producer_alias != editorial_search_browse_producer %}
-    {% assign editorial_search_browse_cleanup_tags_string = editorial_search_browse_cleanup_tags_string | append: '|' | append: editorial_search_browse_producer_alias %}
-  {% endif %}
-  {% if editorial_search_browse_producer == 'The Macallan' %}
-    {% assign editorial_search_browse_cleanup_tags_string = editorial_search_browse_cleanup_tags_string | append: '|Macallan Distillery' %}
-  {% endif %}
+{% for editorial_search_producer_definition in editorial_search_producer_definitions %}
+  {% assign editorial_search_producer_definition_parts = editorial_search_producer_definition | split: '::' %}
+  {% assign editorial_search_producer_definition_tags = editorial_search_producer_definition_parts[2] | split: '~' %}
+  {% for editorial_search_producer_definition_tag in editorial_search_producer_definition_tags %}
+    {% assign editorial_search_browse_cleanup_tags_string = editorial_search_browse_cleanup_tags_string | append: '|' | append: editorial_search_producer_definition_tag %}
+  {% endfor %}
 {% endfor %}
 
 {% assign editorial_search_cleanup_tags_string = editorial_search_filter_tags_string | append: '|Panda Press' | append: editorial_search_browse_cleanup_tags_string %}
@@ -313,16 +309,11 @@
             <fieldset class="search-page-browse__group-content">
               <legend class="visually-hidden">Browse by producer</legend>
               <div class="search-page-filters__options">
-                {% for editorial_search_browse_producer in editorial_search_browse_producers %}
-                  {% assign editorial_search_browse_producer_alias = editorial_search_browse_producer | remove_first: 'The ' | remove: ' Distillery' | remove: ' Distillerie' | remove: ' Brewery' | remove: ' Brewing' | remove: ' Inc.' | remove: ' Inc' | strip %}
-                  {% assign editorial_search_browse_producer_tags = editorial_search_browse_producer %}
-                  {% if editorial_search_browse_producer_alias != editorial_search_browse_producer %}
-                    {% assign editorial_search_browse_producer_tags = editorial_search_browse_producer_tags | append: '~' | append: editorial_search_browse_producer_alias %}
-                  {% endif %}
-                  {% if editorial_search_browse_producer == 'The Macallan' %}
-                    {% assign editorial_search_browse_producer_tags = editorial_search_browse_producer_tags | append: '~Macallan Distillery' %}
-                  {% endif %}
-                  {% assign editorial_search_browse_id = editorial_search_browse_producer | handleize | prepend: 'SearchBrowse-producer-' %}
+                {% for editorial_search_producer_definition in editorial_search_producer_definitions %}
+                  {% assign editorial_search_producer_definition_parts = editorial_search_producer_definition | split: '::' %}
+                  {% assign editorial_search_browse_producer = editorial_search_producer_definition_parts[0] %}
+                  {% assign editorial_search_browse_producer_tags = editorial_search_producer_definition_parts[2] %}
+                  {% assign editorial_search_browse_id = editorial_search_producer_definition_parts[1] | prepend: 'SearchBrowse-producer-' %}
                   <div class="search-page-filters__option">
                     <input
                       id="{{ editorial_search_browse_id }}"
