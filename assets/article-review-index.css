@@ -33,6 +33,21 @@
   }
 }
 
+@media only screen and (min-width: 1201px) {
+  .template-article article.container {
+    width: calc(100% - 60px);
+    max-width: none;
+  }
+
+  .article-review-layout {
+    grid-template-columns: 171px minmax(0, 1fr) 285px;
+  }
+
+  .article-main-column #shopify-section-article-title > .container {
+    max-width: none;
+  }
+}
+
 .article-review-index-stack {
   position: -webkit-sticky;
   position: sticky;
