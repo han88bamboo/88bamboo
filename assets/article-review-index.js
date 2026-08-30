@@ -574,14 +574,24 @@
     });
   }
 
-  // An article that compares producers across borders carries every country
-  // tag and every producer tag at once, so matching a producer tag on an
-  // article the country query returned is not enough: the producer has to be
-  // declared as belonging to the country being rendered. A producer with no
-  // declared origin stays unrestricted, which is the behaviour that shipped
-  // before origins existed.
-  function producerBelongsToCountry(producer, country) {
-    if (!country || !producer.originKeys.length) {
+  // How many of the taxonomy's countries an article's tags name at once. One
+  // country is the ordinary case and needs no disambiguating; two or more is
+  // the shape that caused producers to leak across country tabs.
+  function countArticleCountries(article, countries) {
+    return countries.reduce(function(total, candidate) {
+      return articleHasTag(article, candidate.tags) ? total + 1 : total;
+    }, 0);
+  }
+
+  // Only an article naming several countries is ambiguous about which of its
+  // producers belongs to which of them, and only there is a producer's
+  // declared origin consulted. An article naming a single country speaks for
+  // itself: every producer on it belongs to that country's tab, whoever they
+  // are. That keeps origins a tie-breaker rather than a register that has to
+  // list every country a producer might ever appear under - a bottler's next
+  // release from a new country lists itself, with no taxonomy edit.
+  function producerBelongsToCountry(producer, country, isAmbiguous) {
+    if (!isAmbiguous || !country || !producer.originKeys.length) {
       return true;
     }
 
@@ -590,10 +600,12 @@
     );
   }
 
-  function getAvailableProducers(articles, producers, country) {
+  function getAvailableProducers(articles, producers, country, countries) {
     var availableByLabel = {};
 
     articles.forEach(function(article) {
+      var isAmbiguous = countArticleCountries(article, countries || []) > 1;
+
       (article.tags || []).forEach(function(articleTag) {
         var tagKey = normalizeProducerName(articleTag);
 
@@ -605,7 +617,7 @@
           // The tag belongs to this producer either way, so the scan stops
           // here; only the listing is withheld when the origin does not match.
           if (
-            producerBelongsToCountry(producer, country) &&
+            producerBelongsToCountry(producer, country, isAmbiguous) &&
             !availableByLabel[producer.label]
           ) {
             availableByLabel[producer.label] = {
@@ -708,6 +720,7 @@
     blogHandle,
     categoryTags,
     producers,
+    countries,
     config
   ) {
     availableCountries.forEach(function(country) {
@@ -724,7 +737,12 @@
             function() {
               return fetchAllArticles(endpoint, blogHandle, countryQuery).then(
                 function(articles) {
-                  return getAvailableProducers(articles, producers, country);
+                  return getAvailableProducers(
+                    articles,
+                    producers,
+                    country,
+                    countries
+                  );
                 }
               );
             },
@@ -899,6 +917,7 @@
         drink.blogHandle,
         drink.categoryTags,
         producers,
+        countries,
         config
       );
     }
