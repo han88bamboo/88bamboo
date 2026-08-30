@@ -95,8 +95,9 @@
 
   // The producer alias table is built once in editorial-taxonomy and shared
   // with Search, so both resolve a producer to the same tag set. Each entry is
-  // "Label::handleized id::tag1~tag2"; the handle comes from Liquid's own
-  // handleize so producer links can address Search's checkboxes exactly.
+  // "Label::handleized id::tag1~tag2::origin1~origin2"; the handle comes from
+  // Liquid's own handleize so producer links can address Search's checkboxes
+  // exactly. The origins are Article Index only - Search ignores that field.
   function parseProducers(config) {
     return splitDefinitions(config.producerAliases).map(function(definition) {
       var parts = definition.split('::');
@@ -106,6 +107,9 @@
         label: parts[0],
         handle: parts[1],
         aliases: aliases,
+        originKeys: splitTags(parts[3]).map(function(origin) {
+          return String(origin).toLowerCase();
+        }),
         matchKeys: aliases.reduce(function(keys, alias) {
           addUnique(keys, normalizeProducerName(alias));
           return keys;
@@ -570,7 +574,23 @@
     });
   }
 
-  function getAvailableProducers(articles, producers) {
+  // An article that compares producers across borders carries every country
+  // tag and every producer tag at once, so matching a producer tag on an
+  // article the country query returned is not enough: the producer has to be
+  // declared as belonging to the country being rendered. A producer with no
+  // declared origin stays unrestricted, which is the behaviour that shipped
+  // before origins existed.
+  function producerBelongsToCountry(producer, country) {
+    if (!country || !producer.originKeys.length) {
+      return true;
+    }
+
+    return (
+      producer.originKeys.indexOf(String(country.label).toLowerCase()) !== -1
+    );
+  }
+
+  function getAvailableProducers(articles, producers, country) {
     var availableByLabel = {};
 
     articles.forEach(function(article) {
@@ -582,7 +602,12 @@
             return false;
           }
 
-          if (!availableByLabel[producer.label]) {
+          // The tag belongs to this producer either way, so the scan stops
+          // here; only the listing is withheld when the origin does not match.
+          if (
+            producerBelongsToCountry(producer, country) &&
+            !availableByLabel[producer.label]
+          ) {
             availableByLabel[producer.label] = {
               label: producer.label,
               handle: producer.handle,
@@ -699,7 +724,7 @@
             function() {
               return fetchAllArticles(endpoint, blogHandle, countryQuery).then(
                 function(articles) {
-                  return getAvailableProducers(articles, producers);
+                  return getAvailableProducers(articles, producers, country);
                 }
               );
             },
