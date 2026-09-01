@@ -1,9 +1,12 @@
-/* The index is a column of .article-page-layout - the page-level grid in
-   templates/article.liquid that wraps everything from the article body down
-   to the back-to-blog button - rather than a column of .article-review-layout
-   inside <article>. That is what lets the green panel run the full height of
-   the page: it starts flush under the yellow reviews bar and stretches past
-   the comments and bottom ad areas, ending at the footer. */
+/* The index is a column of .article-page-layout, the page-level grid that wraps
+   everything a template renders, rather than a column of .article-review-layout
+   inside <article>. That is what lets the green panel run the full height of the
+   page: it starts flush under the yellow reviews bar and stretches past
+   everything below, ending at the footer.
+
+   Both templates/article.liquid and templates/index.liquid use it, and the
+   layout rules below are shared. The handful of rules that differ between the
+   two are scoped with .template-article / .template-index. */
 .article-review-index-column {
   display: none;
 }
@@ -35,7 +38,8 @@
 
   /* layout/theme.liquid sets margin-bottom on the reviews bar as an inline
      style, so overriding it needs !important. */
-  .template-article .reviews-bar {
+  .template-article .reviews-bar,
+  .template-index .reviews-bar {
     margin-bottom: 0 !important;
   }
 
@@ -45,12 +49,21 @@
      button instead: there it sits inside the layout's main column, so the rail
      stretches over it rather than stopping short of a white gap, and the
      button still clears the footer by the same distance as before. */
-  .template-article .site-footer {
+  .template-article .site-footer,
+  .template-index .site-footer {
     margin-top: 0;
   }
 
   #shopify-section-article-back-category {
     margin-bottom: 55px;
+  }
+
+  /* The homepage has no back-to-blog button to hang that 55px on - its last
+     section is whatever the editorial stack ends with - so the clearance goes
+     on the column itself. Padding rather than margin keeps it inside the grid
+     item, which is what lets the rail stretch over it. */
+  .template-index .article-page-layout__main {
+    padding-bottom: 55px;
   }
 
   .article-review-layout {

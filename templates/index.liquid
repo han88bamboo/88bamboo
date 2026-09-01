@@ -6,6 +6,16 @@
 <!-- NEWSLETTER TOP AD BANNER PROMO-->
 {% section 'article-advertising-top-banner-homepage' %}
 
+{{ 'article-review-index.css' | asset_url | stylesheet_tag }}
+
+<!-- added by Zhe Han: same page-level split as templates/article.liquid, so the
+     article index runs the full height of the homepage - flush under the yellow
+     reviews bar, down past every section, ending at the footer. The class name
+     is shared with the article page rather than duplicated; content_for_index
+     and the top banner stay above it at full width, exactly as on an article. -->
+<div class="article-page-layout">
+  {% include 'article-review-index' %}
+  <div class="article-page-layout__main">
 
 <!-- NEWS & RELEASES SECTION -->
 <div class="container">
@@ -1565,6 +1575,11 @@
     </div>
   </div>
 </div>
+
+  </div><!-- /.article-page-layout__main -->
+</div><!-- /.article-page-layout -->
+
+<script src="{{ 'article-review-index.js' | asset_url }}" defer="defer"></script>
 
 <style> 
 body * {
