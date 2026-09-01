@@ -134,6 +134,37 @@
     return keyMap;
   }
 
+  // Producers keyed by normalised tag, so resolving one article's producers is
+  // a lookup per tag instead of a scan of the whole producer list. The country
+  // guard below runs this over every article in a drink, which the linear scan
+  // in getAvailableProducers could not have afforded.
+  function buildProducerLookup(producers) {
+    var lookup = {};
+
+    producers.forEach(function(producer) {
+      producer.matchKeys.forEach(function(matchKey) {
+        if (matchKey && !Object.prototype.hasOwnProperty.call(lookup, matchKey)) {
+          lookup[matchKey] = producer;
+        }
+      });
+    });
+
+    return lookup;
+  }
+
+  function lookUpProducer(producerLookup, articleTag) {
+    var matchKey = normalizeProducerName(articleTag);
+
+    if (
+      !matchKey ||
+      !Object.prototype.hasOwnProperty.call(producerLookup, matchKey)
+    ) {
+      return null;
+    }
+
+    return producerLookup[matchKey];
+  }
+
   // Country tags, keyed for lookup, so a place name is never read as a
   // producer. Legacy suffix-stripping can collapse a producer onto a country
   // name ("Singapore Distillery" -> "Singapore"); that producer has since
@@ -556,11 +587,47 @@
     return details;
   }
 
-  function getAvailableCountries(articles, countries) {
-    return countries.filter(function(country) {
-      return articles.some(function(article) {
+  // A country is only worth showing if opening it would list a producer.
+  // Country membership and producer membership used to be decided by separate
+  // rules over the same articles, so a country could appear and then resolve to
+  // nothing: an article that merely mentions a country - a rum-cask Scotch
+  // tagged Trinidad - opened an empty Caribbean tab. Resolving producers for
+  // every country in one pass makes the two levels agree by construction.
+  //
+  // This runs on the tags already preloaded for the whole blog, so it needs no
+  // extra request, and it is a single pass over the articles rather than one
+  // per country.
+  function getAvailableCountries(articles, countries, producerLookup) {
+    var countryHasProducer = {};
+
+    articles.forEach(function(article) {
+      var articleCountries = countries.filter(function(country) {
         return articleHasTag(article, country.tags);
       });
+
+      if (!articleCountries.length) {
+        return;
+      }
+
+      var isAmbiguous = articleCountries.length > 1;
+
+      (article.tags || []).forEach(function(articleTag) {
+        var producer = lookUpProducer(producerLookup, articleTag);
+
+        if (!producer) {
+          return;
+        }
+
+        articleCountries.forEach(function(country) {
+          if (producerBelongsToCountry(producer, country, isAmbiguous)) {
+            countryHasProducer[country.label] = true;
+          }
+        });
+      });
+    });
+
+    return countries.filter(function(country) {
+      return countryHasProducer[country.label] === true;
     });
   }
 
@@ -835,6 +902,7 @@
     var countries = parseCountries(config);
     var producers = parseProducers(config);
     var producerKeyMap = buildProducerKeyMap(producers);
+    var producerLookup = buildProducerLookup(producers);
     var countryTagKeys = buildCountryTagKeys(countries);
     var endpoint = '/api/' + config.apiVersion + '/graphql.json';
     // One selector so the queue follows document order: the Reviews drinks
@@ -896,7 +964,11 @@
     function renderDrinkCountries(drink, articles) {
       var container = getDrinkContainer(drink);
       var categoryArticles = getCategoryArticles(articles, drink.categoryTags);
-      var availableCountries = getAvailableCountries(categoryArticles, countries);
+      var availableCountries = getAvailableCountries(
+        categoryArticles,
+        countries,
+        producerLookup
+      );
 
       if (!container) {
         return;
