@@ -14,14 +14,21 @@
 <!-- top ad banner -->
 {% section 'article-advertising-top-banner' %}
 
+<!-- added by Zhe Han: page-level split so the article index runs the full
+     height of the page. The index is a column of this grid rather than of
+     .article-review-layout inside <article>, so its green panel starts at the
+     top of the page and stretches past the comments and bottom ad areas,
+     ending only at the footer. Everything else the template renders sits in
+     the second column. -->
+<div class="article-page-layout">
+  {% include 'article-review-index' %}
+  <div class="article-page-layout__main">
 
 <!-- Main content section -->
 <article class="container"  > <!--style="display:inline-block;" style="margin: 0 0 !important;"-->
   <div class="grid">
     <div class="grid__item">
       <div class="grid grid--full article-review-layout">
-        {% include 'article-review-index' %}
-
         <!-- left column -->
         <div class="grid__item medium-up--seven-tenths article-main-column" id="anchorforjavascripttoinsertnews-subscription">
         <!-- Title -->
@@ -185,6 +192,9 @@
 
 <!-- back button -->
 {% section 'article-back-category' %}
+
+  </div><!-- /.article-page-layout__main -->
+</div><!-- /.article-page-layout -->
 
 
 

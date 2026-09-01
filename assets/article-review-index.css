@@ -1,11 +1,47 @@
+/* The index is a column of .article-page-layout - the page-level grid in
+   templates/article.liquid that wraps everything from the article body down
+   to the back-to-blog button - rather than a column of .article-review-layout
+   inside <article>. That is what lets the green panel run the full height of
+   the page: it starts flush under the yellow reviews bar and stretches past
+   the comments and bottom ad areas, ending at the footer. */
 .article-review-index-column {
   display: none;
 }
 
 @media only screen and (min-width: 990px) {
+  .article-page-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 15fr) minmax(0, 85fr);
+    /* Deliberately no align-items: start. The index column has to stretch to
+       the full height of the row - that stretch is what paints the green all
+       the way down to the footer. */
+  }
+
+  .article-page-layout__main {
+    min-width: 0;
+    /* The reviews bar's own 2.5rem bottom margin is zeroed below so the green
+       sits flush against the yellow; the breathing room that margin used to
+       give the article body is re-added here instead. */
+    padding-top: 2.5rem;
+  }
+
+  /* The panel runs flush to the left edge of the viewport, so it carries no
+     outer padding of its own - the gutter between it and the article body
+     comes from .article-main-column's padding. */
+  .article-review-index-column {
+    display: block;
+    background: #0e6530;
+  }
+
+  /* layout/theme.liquid sets margin-bottom on the reviews bar as an inline
+     style, so overriding it needs !important. */
+  .template-article .reviews-bar {
+    margin-bottom: 0 !important;
+  }
+
   .article-review-layout {
     display: grid;
-    grid-template-columns: minmax(0, 15fr) minmax(0, 60fr) minmax(0, 25fr);
+    grid-template-columns: minmax(0, 60fr) minmax(0, 25fr);
     align-items: start;
   }
 
@@ -17,11 +53,6 @@
     float: none;
     width: auto !important;
     min-width: 0;
-  }
-
-  .article-review-index-column {
-    display: block;
-    padding: 0 10px 0 0 !important;
   }
 
   .article-review-layout > .article-main-column {
@@ -39,8 +70,12 @@
     max-width: none;
   }
 
+  .article-page-layout {
+    grid-template-columns: 171px minmax(0, 1fr);
+  }
+
   .article-review-layout {
-    grid-template-columns: 171px minmax(0, 1fr) 285px;
+    grid-template-columns: minmax(0, 1fr) 285px;
   }
 
   .article-main-column #shopify-section-article-title > .container {
@@ -48,25 +83,26 @@
   }
 }
 
+/* The four boxes read as one continuous panel rather than as separate cards:
+   the column paints the green, the boxes are transparent, and the only thing
+   between two of them is a hairline. */
 .article-review-index-stack {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 190px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
   min-width: 0;
 }
 
 .article-review-index {
   flex: 0 0 auto;
   min-width: 0;
-  border: 1px solid #0b4321;
-  border-radius: 2px;
-  background: #0e6530;
+  background: transparent;
   color: #fff;
   overflow-x: hidden;
   text-align: left;
+}
+
+.article-review-index + .article-review-index {
+  border-top: 1px solid rgba(255, 255, 255, .3);
 }
 
 /* Without this, selected text falls back to the browser/OS default
