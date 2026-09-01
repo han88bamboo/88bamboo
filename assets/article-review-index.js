@@ -4,8 +4,6 @@
   var PAGE_SIZE = 250;
   var PRELOAD_MIN_WIDTH = 880;
   var PRELOAD_CONCURRENCY = 3;
-  var INDEX_LAYOUT_MIN_WIDTH = 990;
-  var INDEX_EXIT_OFFSET = 50;
   var ARTICLE_TITLE_MAX_LENGTH = 100;
   var requestCache = {};
   var countryRequestCache = {};
@@ -828,64 +826,7 @@
     });
   }
 
-  function initializeIndexLayoutObserver(index) {
-    var column = index.closest('.article-review-index-column');
-    var layout = index.closest('.article-review-layout');
-
-    if (
-      !column ||
-      !layout ||
-      typeof window.IntersectionObserver !== 'function' ||
-      typeof window.matchMedia !== 'function'
-    ) {
-      return;
-    }
-
-    var desktopMediaQuery = window.matchMedia(
-      '(min-width: ' + INDEX_LAYOUT_MIN_WIDTH + 'px)'
-    );
-    var observer = new IntersectionObserver(
-      function(entries) {
-        entries.forEach(function(entry) {
-          var indexHasPassed =
-            desktopMediaQuery.matches &&
-            entry.boundingClientRect.bottom <= -INDEX_EXIT_OFFSET;
-
-          layout.classList.toggle(
-            'article-review-layout--index-passed',
-            indexHasPassed
-          );
-        });
-      },
-      {
-        rootMargin: INDEX_EXIT_OFFSET + 'px 0px 0px 0px',
-        threshold: 0
-      }
-    );
-
-    function handleDesktopWidthChange(event) {
-      layout.classList.remove('article-review-layout--index-passed');
-
-      if (event.matches) {
-        // Re-observe after the column changes from display:none to grid content
-        // so a page restored at an existing scroll position is measured afresh.
-        observer.unobserve(column);
-        observer.observe(column);
-      }
-    }
-
-    observer.observe(column);
-
-    if (typeof desktopMediaQuery.addEventListener === 'function') {
-      desktopMediaQuery.addEventListener('change', handleDesktopWidthChange);
-    } else if (typeof desktopMediaQuery.addListener === 'function') {
-      desktopMediaQuery.addListener(handleDesktopWidthChange);
-    }
-  }
-
   function initializeIndex(index) {
-    initializeIndexLayoutObserver(index);
-
     var configElement = index.querySelector('[data-article-review-index-config]');
     var config;
 
