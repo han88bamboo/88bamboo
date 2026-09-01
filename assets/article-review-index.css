@@ -85,7 +85,7 @@
   }
 
   .article-page-layout {
-    grid-template-columns: 185px minmax(0, 1fr);
+    grid-template-columns: 191px minmax(0, 1fr);
   }
 
   .article-review-layout {
