@@ -720,7 +720,21 @@
     var accessibleLabel = producerPrefix + fullTitle;
 
     link.href = article.onlineStoreUrl;
-    link.textContent = producerPrefix + truncateArticleTitle(fullTitle);
+
+    // The row is styled like a producer leaf, but only the producer names
+    // carry that leaf's bold weight: the colon and the title after it stay at
+    // the link's own weight, so the prefix reads as the producer it names
+    // rather than as part of the headline.
+    if (producerLabels.length) {
+      var producerName = document.createElement('strong');
+
+      producerName.className = 'article-review-index__article-producer';
+      producerName.textContent = producerLabels.join(' / ');
+      link.appendChild(producerName);
+      link.appendChild(document.createTextNode(': '));
+    }
+
+    link.appendChild(document.createTextNode(truncateArticleTitle(fullTitle)));
     link.setAttribute('title', accessibleLabel);
     link.setAttribute('aria-label', accessibleLabel);
 
