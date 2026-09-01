@@ -5,6 +5,9 @@
   var PRELOAD_MIN_WIDTH = 880;
   var PRELOAD_CONCURRENCY = 3;
   var ARTICLE_TITLE_MAX_LENGTH = 100;
+  // Letters and digits, Latin-1 accents included, so a bounded title match
+  // treats "Cascahuin" as one word rather than breaking at its accent.
+  var PRODUCER_NON_WORD_PATTERN = '[^a-z0-9\\u00c0-\\u024f]';
   var requestCache = {};
   var countryRequestCache = {};
 
@@ -206,9 +209,121 @@
     return labels;
   }
 
+  // Producer aliases keyed by canonical label, so an article's title can be
+  // searched for the producers its tags name without rescanning the list.
+  function buildProducerMatchKeys(producers) {
+    var matchKeysByLabel = {};
+
+    producers.forEach(function(producer) {
+      matchKeysByLabel[producer.label] = producer.matchKeys;
+    });
+
+    return matchKeysByLabel;
+  }
+
+  // Site-wide weight for the tie-break below: how many articles across every
+  // blog the index preloads carry each canonical producer. These are the tags
+  // already fetched for the country and section trees, so a count costs a pass
+  // over data in hand rather than a request of its own.
+  function countArticleProducers(counts, articles, producerKeyMap, countryTagKeys) {
+    articles.forEach(function(article) {
+      getArticleProducerLabels(article, producerKeyMap, countryTagKeys).forEach(
+        function(label) {
+          counts[label] = (counts[label] || 0) + 1;
+        }
+      );
+    });
+  }
+
+  function escapeRegExp(value) {
+    return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  // Where the article's own title first names this producer, or -1 when it
+  // names none of its aliases. The title is normalised exactly as a producer
+  // tag is, so a headline's "Miyagikyo Distillery" and the tag "Miyagikyo"
+  // meet in the middle, and the match is bounded so "Gin" inside "Ginarte" is
+  // not read as a mention.
+  function findProducerInTitle(matchKeys, normalizedTitle) {
+    var position = -1;
+
+    (matchKeys || []).forEach(function(matchKey) {
+      if (!matchKey) {
+        return;
+      }
+
+      var pattern = new RegExp(
+        '(^|' + PRODUCER_NON_WORD_PATTERN + ')' +
+          escapeRegExp(matchKey) +
+          '(?=' + PRODUCER_NON_WORD_PATTERN + '|$)'
+      );
+      var match = pattern.exec(normalizedTitle);
+
+      if (match) {
+        var start = match.index + match[1].length;
+
+        if (position === -1 || start < position) {
+          position = start;
+        }
+      }
+    });
+
+    return position;
+  }
+
+  // A flat-box article often carries several producer tags - a brand, its
+  // group, a sister label - but only one can prefix it. It is chosen the way a
+  // reader reads the headline: the producer the title names first, because a
+  // piece headlined "Hampden Estate Rum" is about Hampden however many others
+  // are tagged on it. Only when the title names none of them does weight
+  // decide, then the shorter name, then alphabetically, so producers of equal
+  // weight always resolve the same way instead of by the order Shopify happens
+  // to return their tags in.
+  function selectArticleProducerLabel(labels, title, producerContext) {
+    var normalizedTitle = normalizeProducerName(title);
+    var ranked = labels.map(function(label) {
+      return {
+        label: label,
+        titlePosition: findProducerInTitle(
+          (producerContext.matchKeysByLabel || {})[label],
+          normalizedTitle
+        ),
+        count: (producerContext.counts || {})[label] || 0
+      };
+    });
+
+    ranked.sort(function(firstProducer, secondProducer) {
+      var firstIsNamed = firstProducer.titlePosition !== -1;
+      var secondIsNamed = secondProducer.titlePosition !== -1;
+
+      if (firstIsNamed !== secondIsNamed) {
+        return firstIsNamed ? -1 : 1;
+      }
+
+      if (
+        firstIsNamed &&
+        firstProducer.titlePosition !== secondProducer.titlePosition
+      ) {
+        return firstProducer.titlePosition - secondProducer.titlePosition;
+      }
+
+      if (firstProducer.count !== secondProducer.count) {
+        return secondProducer.count - firstProducer.count;
+      }
+
+      if (firstProducer.label.length !== secondProducer.label.length) {
+        return firstProducer.label.length - secondProducer.label.length;
+      }
+
+      return firstProducer.label.localeCompare(secondProducer.label);
+    });
+
+    return ranked[0].label;
+  }
+
   // Shared by every index section: the visible title is capped at
-  // ARTICLE_TITLE_MAX_LENGTH characters, counting the ellipsis. Producer
-  // prefixes are added by the caller and sit outside this limit.
+  // ARTICLE_TITLE_MAX_LENGTH characters, counting the ellipsis. The producer
+  // prefix is added by the caller and sits outside this limit.
   function truncateArticleTitle(title) {
     var value = String(title || '').trim();
 
@@ -708,28 +823,34 @@
 
   // The source title and URL are never altered: only the visible text is
   // shortened, while the tooltip and accessible name keep the full title.
-  function createArticleLink(article, producerKeyMap, countryTagKeys) {
+  function createArticleLink(article, producerContext) {
     var link = document.createElement('a');
     var fullTitle = String(article.title || '');
-    var producerLabels = producerKeyMap
-      ? getArticleProducerLabels(article, producerKeyMap, countryTagKeys)
+    var producerLabels = producerContext
+      ? getArticleProducerLabels(
+          article,
+          producerContext.keyMap,
+          producerContext.countryTagKeys
+        )
       : [];
-    var producerPrefix = producerLabels.length
-      ? producerLabels.join(' / ') + ': '
+    var producerLabel = producerLabels.length
+      ? selectArticleProducerLabel(producerLabels, fullTitle, producerContext)
       : '';
-    var accessibleLabel = producerPrefix + fullTitle;
+    var accessibleLabel = producerLabel
+      ? producerLabel + ': ' + fullTitle
+      : fullTitle;
 
     link.href = article.onlineStoreUrl;
 
-    // The row is styled like a producer leaf, but only the producer names
-    // carry that leaf's bold weight: the colon and the title after it stay at
-    // the link's own weight, so the prefix reads as the producer it names
+    // The row is styled like a producer leaf, but only the producer name
+    // carries that leaf's bold weight: the colon and the title after it stay
+    // at the link's own weight, so the prefix reads as the producer it names
     // rather than as part of the headline.
-    if (producerLabels.length) {
+    if (producerLabel) {
       var producerName = document.createElement('strong');
 
       producerName.className = 'article-review-index__article-producer';
-      producerName.textContent = producerLabels.join(' / ');
+      producerName.textContent = producerLabel;
       link.appendChild(producerName);
       link.appendChild(document.createTextNode(': '));
     }
@@ -741,7 +862,7 @@
     return link;
   }
 
-  function renderArticleList(container, articles, producerKeyMap, countryTagKeys, emptyMessage) {
+  function renderArticleList(container, articles, producerContext, emptyMessage) {
     var list = document.createElement('ul');
 
     list.className = 'article-review-index__articles';
@@ -757,7 +878,7 @@
         var item = document.createElement('li');
 
         item.className = 'article-review-index__article';
-        item.appendChild(createArticleLink(article, producerKeyMap, countryTagKeys));
+        item.appendChild(createArticleLink(article, producerContext));
         list.appendChild(item);
       });
 
@@ -770,7 +891,7 @@
   }
 
   function renderArticles(container, articles) {
-    renderArticleList(container, articles, null, null, 'No published review links found.');
+    renderArticleList(container, articles, null, 'No published review links found.');
   }
 
   // Producers are leaves now: instead of expanding to every review, the name
@@ -859,6 +980,14 @@
     var producerKeyMap = buildProducerKeyMap(producers);
     var producerLookup = buildProducerLookup(producers);
     var countryTagKeys = buildCountryTagKeys(countries);
+    // Everything selectArticleProducerLabel needs, filled in as blogs report:
+    // counts starts empty and grows by one entry per blog loaded.
+    var producerContext = {
+      keyMap: producerKeyMap,
+      countryTagKeys: countryTagKeys,
+      matchKeysByLabel: buildProducerMatchKeys(producers),
+      counts: {}
+    };
     var endpoint = '/api/' + config.apiVersion + '/graphql.json';
     // One selector so the queue follows document order: the Reviews drinks
     // first, then Interviews, Features and Deep Dives as displayed.
@@ -972,15 +1101,52 @@
       renderArticleList(
         container,
         drinkArticles,
-        producerKeyMap,
-        countryTagKeys,
+        producerContext,
         'No published article links found.'
       );
     }
 
+    // Which producer prefixes a section article is decided partly by weight
+    // across the whole site, so a section list is held back until every blog
+    // has reported in - otherwise the same article would be prefixed
+    // differently depending on which fetch happened to land first, and the
+    // prefix would visibly change as the later blogs arrived. Sections are
+    // queued after the review blogs, so this waits only on whatever is still
+    // in flight beside them; a blog that fails counts as reported rather than
+    // holding the sections back for good.
+    var deferredSectionRenders = [];
+
+    function hasEveryProducerCount() {
+      return (
+        !preloadingStarted ||
+        jobs.every(function(job) {
+          return job.state === 'loaded' || job.state === 'error';
+        })
+      );
+    }
+
+    function flushDeferredSectionRenders() {
+      if (!hasEveryProducerCount()) {
+        return;
+      }
+
+      var pendingRenders = deferredSectionRenders;
+
+      deferredSectionRenders = [];
+      pendingRenders.forEach(function(pendingRender) {
+        renderSectionDrinkArticles(pendingRender.drink, pendingRender.articles);
+      });
+    }
+
     function renderDrink(drink, articles) {
       if (drink.kind === 'section') {
-        renderSectionDrinkArticles(drink, articles);
+        if (hasEveryProducerCount()) {
+          renderSectionDrinkArticles(drink, articles);
+        } else {
+          // The row keeps its "Loading articles..." status until the flush.
+          deferredSectionRenders.push({ drink: drink, articles: articles });
+        }
+
         return;
       }
 
@@ -1012,6 +1178,19 @@
           job.promise.then(
             function(articles) {
               job.state = 'loaded';
+
+              // Each blog contributes to the site-wide producer weights once,
+              // whether it was fetched for the country tree or a section list.
+              if (!job.counted) {
+                job.counted = true;
+                countArticleProducers(
+                  producerContext.counts,
+                  articles,
+                  producerKeyMap,
+                  countryTagKeys
+                );
+              }
+
               job.drinks.forEach(function(drink) {
                 renderDrink(drink, articles);
               });
@@ -1025,10 +1204,12 @@
           ).then(
             function() {
               activeJobCount -= 1;
+              flushDeferredSectionRenders();
               startNextPreloadJobs();
             },
             function() {
               activeJobCount -= 1;
+              flushDeferredSectionRenders();
               startNextPreloadJobs();
             }
           );
@@ -1108,6 +1289,7 @@
           blogHandle: blogHandle,
           drinks: [],
           state: 'idle',
+          counted: false,
           promise: null,
           resolve: null,
           reject: null
