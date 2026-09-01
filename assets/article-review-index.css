@@ -39,6 +39,20 @@
     margin-bottom: 0 !important;
   }
 
+  /* The green has to meet the grey footer with nothing in between, so the
+     footer's own 55px top margin ($section-spacing in theme.scss.liquid) is
+     dropped - its padding is left alone. That 55px moves onto the back-to-blog
+     button instead: there it sits inside the layout's main column, so the rail
+     stretches over it rather than stopping short of a white gap, and the
+     button still clears the footer by the same distance as before. */
+  .template-article .site-footer {
+    margin-top: 0;
+  }
+
+  #shopify-section-article-back-category {
+    margin-bottom: 55px;
+  }
+
   .article-review-layout {
     display: grid;
     grid-template-columns: minmax(0, 60fr) minmax(0, 25fr);
@@ -71,7 +85,7 @@
   }
 
   .article-page-layout {
-    grid-template-columns: 171px minmax(0, 1fr);
+    grid-template-columns: 185px minmax(0, 1fr);
   }
 
   .article-review-layout {
