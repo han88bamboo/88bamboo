@@ -14,7 +14,7 @@
 @media only screen and (min-width: 990px) {
   .article-page-layout {
     display: grid;
-    grid-template-columns: minmax(0, 15fr) minmax(0, 85fr);
+    grid-template-columns: minmax(0, 19.5fr) minmax(0, 80.5fr);
     /* Deliberately no align-items: start. The index column has to stretch to
        the full height of the row - that stretch is what paints the green all
        the way down to the footer. */
@@ -98,7 +98,7 @@
   }
 
   .article-page-layout {
-    grid-template-columns: 191px minmax(0, 1fr);
+    grid-template-columns: 248px minmax(0, 1fr);
   }
 
   .article-review-layout {
